@@ -22,6 +22,16 @@ data class User(
     private var role: Role
 ){
     /**
+     * Metoda koja sluzi za inicijalizaciju objekta klase [User],
+     * postavlja njegove vrednosti na prosledjene, i pri tome hvata greske ukoliko postoje
+     */
+    init {
+        setId(id)
+        setEmail(email)
+        setPassword(password)
+        setRole(role)
+    }
+    /**
      * Metoda koja vraca id korisnika
      * @return String koji vraca [id] korisnika
      */
