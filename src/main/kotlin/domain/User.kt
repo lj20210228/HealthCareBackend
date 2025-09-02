@@ -106,7 +106,7 @@ data class User(
     fun setPassword(password: String?){
         if(password==null)
             throw NullPointerException("Lozinka ne moze biti null")
-        val regex = """^(?=.*[A-Z])(?=.*\d)(?=.*[@#\$%^&+=!]).{8,}$""".toRegex()
+        val regex = """^(?=.*[A-Z])(?=.*\d)(?=.*[@#\$%^&+=!.,/]).{8,}$""".toRegex()
         if(password.isEmpty()||!regex.matches(password))
             throw IllegalArgumentException("Lozinka mora sadrzati bar jedno veliko slovo,jedan broj i jedan specijalan karakter")
         this.password=password
