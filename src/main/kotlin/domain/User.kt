@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
  * klasa je Serializable kako bi mogla da se prevede u JSON objekat
  *
  * @author Lazar Janković
- * @param id Id korisnika u User tabeli, treba da bude jedinstven za svakoga
- * @param email Email korisnika, treba da bude jedinstven za svakoga
- * @param password Lozinka za korisnicki nalog
- * @param role Instanca [Role] klase, moze biti lekar ili pacijent
+ * @property id Id korisnika u User tabeli, treba da bude jedinstven za svakoga
+ * @property email Email korisnika, treba da bude jedinstven za svakoga
+ * @property password Lozinka za korisnicki nalog
+ * @property role Instanca [Role] klase, moze biti lekar ili pacijent
  *
  */
 @Serializable
@@ -145,12 +145,13 @@ data class User(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-
         other as User
 
 
-        return id == other.id || email == other.email
+
+        return id==other.id||email==other.email
     }
+
 
     /**
      * Metoda za generisanje hash koda za [User] objekta
@@ -172,6 +173,10 @@ data class User(
     override fun toString(): String {
         return "User(id='$id', email='$email', password='$password', role=$role)"
     }
+
+
+
+
 
 
 }
