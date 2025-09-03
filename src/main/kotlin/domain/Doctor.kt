@@ -1,6 +1,7 @@
 package com.example.domain
 
 import kotlinx.serialization.Serializable
+import kotlin.math.max
 
 /**
  * Klasa koja sluzi za cuvanje podataka o lekarima
@@ -41,6 +42,20 @@ data class Doctor(
          */
         private val regex = Regex("^[a-zA-ZšđčćžŠĐČĆŽ\\s]*\$")
 
+    }
+    /**
+     * Metoda koja sluzi za inicijalizaciju objekta klase [com.example.domain.Doctor],
+     * postavlja njegove vrednosti na prosledjene, i pri tome hvata greske ukoliko postoje
+     */
+    init {
+        setId(id)
+        setUserId(userId)
+        setHospitalId(hospitalId)
+        setCurrentPatients(currentPatients)
+        setMaxPatients(maxPatients)
+        setIsGeneral(isGeneral)
+        setFullName(fullName)
+        setSpecialization(specialization)
     }
     /**
      * Metoda koja vraca id lekara

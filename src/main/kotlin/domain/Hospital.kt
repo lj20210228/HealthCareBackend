@@ -31,6 +31,17 @@ data class Hospital(
         private val regex2 = Regex("^[a-zA-ZšđčćžŠĐČĆŽ0-9\\s]*\$")
 
     }
+    /**
+     * Metoda koja sluzi za inicijalizaciju objekta klase [Hospital],
+     * postavlja njegove vrednosti na prosledjene, i pri tome hvata greske ukoliko postoje
+     */
+    init {
+        setId(id)
+        setCity(city)
+        setName(name)
+        setAddress(address)
+
+    }
 
     /**
      * Funckija koja vraca id bolnice
@@ -126,7 +137,7 @@ data class Hospital(
             throw NullPointerException("Adresa bolnice ne moze biti null")
         if (address.isEmpty())
             throw IllegalArgumentException("Adresa ne moze biti prazan string")
-        if(address.matches(regex2))
+        if(!address.matches(regex2))
             throw IllegalArgumentException("Adresa moze sadrzati samo slova i brojeve")
         this.address=address
     }
