@@ -16,6 +16,12 @@ data class Patient(
          */
         private val regex = Regex("^[a-zA-ZšđčćžŠĐČĆŽ\\s]*\$")
     }
+    init {
+        setId(id)
+        setUserId(userId)
+        setFullName(fullName)
+        setHospitalId(hospitalId)
+    }
     /**
      * Metoda koja vraca id pacijenta
      * @return String koji vraca [id] pacijenta
