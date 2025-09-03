@@ -31,6 +31,17 @@ data class Hospital(
         private val regex2 = Regex("^[a-zA-ZšđčćžŠĐČĆŽ0-9\\s]*\$")
 
     }
+    /**
+     * Metoda koja sluzi za inicijalizaciju objekta klase [Hospital],
+     * postavlja njegove vrednosti na prosledjene, i pri tome hvata greske ukoliko postoje
+     */
+    init {
+        setId(id)
+        setCity(city)
+        setName(name)
+        setAddress(address)
+
+    }
 
     /**
      * Funckija koja vraca id bolnice
