@@ -126,7 +126,7 @@ class DoctorTests{
      * @throws NullPointerException Ako Test uhvati izuzetak prosao je
      */
     @Test
-    fun setImePrezime_null(){
+    fun setFullName_null(){
         assertThrows<NullPointerException>
         {
             doctor?.setFullName(null)
@@ -158,7 +158,7 @@ class DoctorTests{
         "Pera Peric 2",
 
     )
-    fun setImePrezime_nisuSamoSlova(fullName: String){
+    fun setFullName_nisuSamoSlova(fullName: String){
         assertThrows<IllegalArgumentException> {
             doctor?.setFullName(fullName)
         }
@@ -175,7 +175,7 @@ class DoctorTests{
         "Ivan Ivanović"
 
     )
-    fun setImePrezime_samoSlova(fullName: String){
+    fun setFullName_samoSlova(fullName: String){
         doctor?.setFullName(fullName)
         assertEquals(fullName,doctor?.getFullName())
 
