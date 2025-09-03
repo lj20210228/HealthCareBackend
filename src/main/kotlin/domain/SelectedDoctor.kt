@@ -25,6 +25,14 @@ data class SelectedDoctor(
     }
 
     /**
+     * Inicijalizacija objekta [com.example.domain.SelectedDoctor]
+     */
+    init {
+        setPatientId(patientId)
+        setDoctorId(doctorId)
+    }
+
+    /**
      * Funkcija koja dodeljuje [patientId] kome treba dodeliti i izabranog lekara
      * @param patientId Id pacijenta
      */
