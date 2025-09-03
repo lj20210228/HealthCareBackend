@@ -1,5 +1,6 @@
 package com.example.domainTests
 
+
 import com.example.domain.Role
 import com.example.domain.User
 import org.junit.jupiter.api.AfterAll
@@ -192,7 +193,7 @@ class UserTests {
     @ParameterizedTest
     @CsvSource(
         "1,1,test@test.com,test@test.com",
-                "1,2,test@test.com,test@test.com",
+        "1,2,test@test.com,test@test.com",
     )
     fun equals_isti_test(id1:String,id2: String,email1: String,email2: String){
         val user1= User(id1,email1,"Password123!",Role.ROLE_PATIENT)
@@ -222,9 +223,9 @@ class UserTests {
     fun hashCode_Isti(id1:String,id2: String,email1: String,email2: String){
         val user1= User(id1,email1,"Password123!",Role.ROLE_PATIENT)
         val user2= User(id2,email2,"Password123!",Role.ROLE_PATIENT)
-       assertTrue(
-           user1.hashCode().equals(user2.hashCode())
-       )
+        assertTrue(
+            user1.hashCode().equals(user2.hashCode())
+        )
     }
     /**
      * Parametrizovani test koji proverava hashCode metodu,
