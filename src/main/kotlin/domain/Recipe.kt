@@ -29,6 +29,19 @@ data class Recipe(
 ){
 
     /**
+     * Blok za inicijalizaciju klase [com.example.domain.Recipe]
+     */
+    init {
+        setId(id)
+        setPatientId(patientId)
+        setDoctorId(doctorId)
+        setMedication(medication)
+        setQuantity(quantity)
+        setInstructions(instructions)
+        setDateExpired(dateExpired)
+
+    }
+    /**
      * Metoda koja vraca id recepta
      * @return id recepta
      */
