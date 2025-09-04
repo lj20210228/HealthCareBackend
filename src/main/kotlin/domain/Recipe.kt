@@ -8,6 +8,8 @@ import java.time.LocalDate
 /**
  * Klasa koja predtavlja recept koji lekar izdaje pacijentu
  *
+ *
+ * @author Lazar Janković
  * @property id Id recepta koji sluzi kao identifikator recepta
  * @property patientId Id pacijenta kome je lek prepisan
  * @property doctorId Id lekara koji je prepisao recept

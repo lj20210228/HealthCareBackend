@@ -2,7 +2,15 @@ package com.example.domain
 
 import kotlinx.serialization.Serializable
 
-
+/**
+ * Klasa koja sluzi za cuvanje podataka o pacijentima
+ * @author Lazar Janković
+ * @property id Id pacijenta
+ * @property userId Spoljni kljuc ka [User] tabeli
+ * @property fullName Ime i prezime pacijenta
+ * @property hospitalId Id bolnice u kojoj se pacijent leci
+ * @see User
+ */
 @Serializable
 data class Patient(
     private var id: String,

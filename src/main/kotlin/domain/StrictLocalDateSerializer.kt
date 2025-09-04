@@ -14,6 +14,7 @@ import java.time.format.DateTimeParseException
  * Serializer koji obezbeđuje da se datumi serijalizuju i deserijalizuju
  * isključivo u formatu yyyy-MM-dd. Ako se prosledi drugačiji format,
  * baca se [IllegalArgumentException].
+ * @author Lazar Janković
  * @property descriptor Opisuje kakav tip podataka ce biti prosledjen JSON-u
  * @property formatter  Formater koji formatira datum u format "yyyy-MM-dd"
  *

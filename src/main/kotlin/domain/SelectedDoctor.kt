@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 /**
  * Klasa koja cuva podatke o izabranim lekarima za pacijente, jer postoji vise izabranih lekara koje pacijent moze da ima,
  * iz tog razloga se podaci o izabranom lekaru ne cuvaju u klasi [Patient], sluzi kao veza izmedju tabela [Patient] i [Doctor]
+ * @author Lazar Janković
  * @property patientId Id pacijenta kome je lekar izabran
  * @property doctorId Id lekara koji je izabrani lekar pacijentu
  * @see Doctor
