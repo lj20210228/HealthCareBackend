@@ -132,7 +132,7 @@ data class Patient(
      * Metoda koja proverava da li je neki objekat identican Doctor objektu
      *
      * @return [Boolean] Ukoliko se klasa razlikuje od [com.example.domain.Doctor] ili
-     * ukoliko je [id],[userId],[fullName] ili [hospitalId] razlicit kod 2 objekta, u suportnom
+     * ukoliko je [id] ili [userId]razlicit kod 2 objekta, u suportnom
      * vraca true
      */
     override fun equals(other: Any?): Boolean {
@@ -141,26 +141,20 @@ data class Patient(
 
         other as Patient
 
-        if (id != other.id) return false
-        if (userId != other.userId) return false
-        if (fullName != other.fullName) return false
-        if (hospitalId != other.hospitalId) return false
 
-        return true
-    }
+
+        return id==other.id ||userId==other.userId    }
     /**
      * Generiše hash kod za [com.example.domain.Patient] objekat.
      *
      * Hash kod koristi ista polja kao [equals] kako bi se osigurala konzistentnost:
-     * [id], [userId], [fullName] i [hospitalId]
+     * [id], [userId]
      *
      * @return Hash kod objekta
      */
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + userId.hashCode()
-        result = 31 * result + fullName.hashCode()
-        result = 31 * result + hospitalId.hashCode()
         return result
     }
 

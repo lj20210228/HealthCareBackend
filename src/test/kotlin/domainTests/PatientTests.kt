@@ -237,10 +237,9 @@ class PatientTests {
     @ParameterizedTest
     @CsvSource(
         ("1,2,Pera Peric,1,true"),
-        ("2,2,Pera Peric,1,false"),
-        ("1,1,Pera Peric,1,false"),
-        ("1,2,Pera Mitic,1,false"),
-        ("1,2,Pera Peric,2,false"),
+        ("2,2,Pera Peric,1,true"),
+        ("1,1,Pera Peric,1,true"),
+        ("2,3,Pera Peric,1,false"),
     )
     fun equals_test(id: String, userId: String, fullName: String, hospitalId: String, expected: Boolean){
         val patient2 = Patient(id,userId,fullName,hospitalId)
@@ -257,8 +256,8 @@ class PatientTests {
         ("1,2,Pera Peric,1,true"),
         ("2,2,Pera Peric,1,false"),
         ("1,1,Pera Peric,1,false"),
-        ("1,2,Pera Mitic,1,false"),
-        ("1,2,Pera Peric,2,false"),
+        ("2,3,Pera Mitic,1,false"),
+        ("2,1,Pera Peric,2,false"),
     )
     fun hashCodeTest(id: String, userId: String, fullName: String,hospitalId: String,expected: Boolean){
 

@@ -394,10 +394,10 @@ class DoctorTests{
         ("1,2,Pera Peric,Neurolog,30,0,4,false,true"),
         ("1,2,Pera Peric,Neurolog,30,1,3,false,true"),
         ("1,2,Pera Peric,Neurolog,40,0,3,false,true"),
-        ("1,2,Pera Mitic,Neurolog,40,0,3,false,false"),
+        ("1,2,Pera Mitic,Neurolog,40,0,3,false,true"),
         ("2,2,Pera Peric,Neurolog,40,0,3,false,false"),
         ("1,3,Pera Peric,Neurolog,40,0,3,false,false"),
-        ("1,2,Pera Peric,Kardiolog,40,0,3,false,false"),
+        ("1,2,Pera Peric,Kardiolog,40,0,3,false,true"),
         )
     fun hashCodeTest(id: String, userId: String, fullName: String, specialization: String,maxPatients:Int
                      ,currentPatients:Int,hospitalId: String,isGeneral: Boolean,expected: Boolean){
