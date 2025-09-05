@@ -25,6 +25,7 @@ interface DoctorServiceInterface {
      * @throws NullPointerException Ukoliko je doctorId null baca se izuzetak
      * @throws IllegalArgumentException Ukoliko je doctorId prazan string
      * @return [Doctor] Ukoliko se pronadju podaci o lekaru vracaju se, ukoliko ne vraca se null vrednost
+     * @return [null] AKo lekar sa zadatim id ne postoji u bazi
      */
     suspend fun getDoctorForId(doctorId: String?): Doctor?
     /**

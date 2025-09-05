@@ -48,7 +48,7 @@ class DoctorServiceImplementation: DoctorServiceInterface {
         if(doctorId==null)
             throw NullPointerException("Id lekara ne sme biti null")
         if(doctorId.isEmpty())
-            throw IllegalArgumentException("Id lekar ne sme biti prazan string")
+            throw IllegalArgumentException("Id lekara ne sme biti prazan string")
 
 
         return doctorList.find { it.getId()==doctorId }
