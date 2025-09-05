@@ -4,11 +4,23 @@ import com.example.domain.Patient
 import kotlinx.serialization.json.Json
 import java.io.File
 
+/**
+ * Klasa koja implementira metode interfejsa [PatientServiceInterface]
+ * @author Lazar Janković
+ * @see PatientServiceInterface
+ * @see Patient
+ * @property listOfPatients Lista pacijenata koju cemo pretrazivati i u nju dodavati pacijente
+ * @property file Json fajl koji simulira tabelu u bazi
+ *
+ */
 class PatientServiceImplementation: PatientServiceInterface {
     val file= File("patients.json")
     val listOfPatients=getAllPatients()
 
 
+    /**
+     * Funkcija za dodavanje pacijenta
+     */
     override suspend fun addPatient(patient: Patient?): Patient {
         if (patient==null)
             throw NullPointerException("Prosledjeni podaci o pacijentu su jednaki null")
@@ -23,6 +35,9 @@ class PatientServiceImplementation: PatientServiceInterface {
 
     }
 
+    /**
+     * Funckija za pronalazenje pacijenta po id
+     */
     override suspend fun getPatientById(patientId: String?): Patient? {
         if (patientId==null)
             throw NullPointerException("Prosledjeni patientId jendak je null")
@@ -34,6 +49,9 @@ class PatientServiceImplementation: PatientServiceInterface {
 
     }
 
+    /**
+     * Funkcija za pronalanje pacijenata iz jedne bolnice
+     */
     override suspend fun getAllPatientInHospital(hospitalId: String?): List<Patient> {
         if (hospitalId==null)
             throw NullPointerException("Prosledjeni hospital jendak je null")
@@ -43,6 +61,10 @@ class PatientServiceImplementation: PatientServiceInterface {
         }
         return listOfPatients.filter { it.getHospitalId()==hospitalId }
     }
+
+    /**
+     * Funkcija za ucitavanje svih pacijenata iz json fajla
+     */
     fun getAllPatients(): MutableList<Patient>{
         if (!file.exists()||file.readText().isBlank())return mutableListOf()
         val jsonString=file.readText()
