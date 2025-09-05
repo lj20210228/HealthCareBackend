@@ -1,0 +1,42 @@
+package com.example.service.patient
+
+import com.example.domain.Patient
+
+/**
+ * Interfejs koji sluzi za rukovanje podacima o pacijentima
+ * @author Lazar Janković
+ * @see Patient
+ */
+interface PatientServiceInterface {
+
+    /**
+     * Metoda za dodavanje novog pacijenta
+     * @param patient Podaci o pacijentu kojeg treba dodati
+     * @return Ako je pacijent uspesno dodat vracaju se podaci o njemu kao
+     * [Patient] objekat
+     * @throws NullPointerException Ako je [patient] null baca se izuzetak
+     * @throws IllegalArgumentException Ako pacijent vec postoji
+     */
+    suspend fun addPatient(patient: Patient?): Patient
+
+    /**
+     * Funkcija za pronalazak pacijenta po njegovom Id
+     * @param patientId Id pacijenta
+     * @return  Ako je pacijent pronadjen vraca se objekat [Patient] koji sadrzi podatke o njemu,
+     * ukoliko pacijent nije pronadjen vraca se null
+     * @throws NullPointerException ako je [patientId] null
+     * @throws IllegalArgumentException ako je [patientId] prazan string
+     */
+    suspend fun getPatientById(patientId: String?): Patient?
+
+    /**
+     * Funkcija koja vraca sve pacijente iz jedne bolnice
+     * @param hospitalId Id bolnice cije pacijente trazimo
+     * @return [List[Patient]] Ukoliko se pronadju podaci o pacijentu vraca se lista pacijenata,
+     * ukoliko ne vraca se prazna lista
+     * @throws NullPointerException Ukoliko je [hospitalId] null
+     * @throws IllegalArgumentException Ukoliko je [hospitalId] prazan string
+     */
+    suspend fun getAllPatientInHospital(hospitalId: String?): List<Patient>
+
+}

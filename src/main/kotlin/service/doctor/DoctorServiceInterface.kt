@@ -14,7 +14,6 @@ interface DoctorServiceInterface {
      * Funkcija koja sluzi za dodavanje lekara u bazu
      * @param doctor Podaci o lekaru kog treba dodati
      * @throws NullPointerException Ako je prosledjeni argument null
-     * @throws IllegalArgumentException Ako lekar vec postoji
      * @return [Doctor] ako je dodavanje uspesno kao odgovor vracaju se podaci o lekaru
      */
     suspend fun addDoctor(doctor: Doctor?): Doctor
@@ -25,7 +24,6 @@ interface DoctorServiceInterface {
      * @throws NullPointerException Ukoliko je doctorId null baca se izuzetak
      * @throws IllegalArgumentException Ukoliko je doctorId prazan string
      * @return [Doctor] Ukoliko se pronadju podaci o lekaru vracaju se, ukoliko ne vraca se null vrednost
-     * @return [null] AKo lekar sa zadatim id ne postoji u bazi
      */
     suspend fun getDoctorForId(doctorId: String?): Doctor?
     /**
