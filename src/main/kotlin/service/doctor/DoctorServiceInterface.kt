@@ -1,12 +1,11 @@
-package com.example.service
+package com.example.service.doctor
 
 import com.example.domain.Doctor
-
 
 /**
  * Interfejs koji sluzi za rukovanje podataka o lekarima
  * @author Lazar Janković
- * @see Doctor
+ * @see com.example.domain.Doctor
  */
 interface DoctorServiceInterface {
 
@@ -14,7 +13,7 @@ interface DoctorServiceInterface {
      * Funkcija koja sluzi za dodavanje lekara u bazu
      * @param doctor Podaci o lekaru kog treba dodati
      * @throws NullPointerException Ako je prosledjeni argument null
-     * @return [Doctor] ako je dodavanje uspesno kao odgovor vracaju se podaci o lekaru
+     * @return [com.example.domain.Doctor] ako je dodavanje uspesno kao odgovor vracaju se podaci o lekaru
      */
     suspend fun addDoctor(doctor: Doctor?): Doctor
 

@@ -1,10 +1,9 @@
-package com.example.service
+package com.example.service.doctor
 
 import com.example.domain.Doctor
+import com.example.service.doctor.DoctorServiceInterface
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FileWriter
-import java.io.Writer
 
 /**
  * Klasa koja sluzi za implementaciju [DoctorServiceInterface] interfejsa
@@ -22,7 +21,7 @@ class DoctorServiceImplementation: DoctorServiceInterface {
     /**
      * Dodaje novog lekara
      * @see DoctorServiceInterface
-     * @see Doctor
+     * @see com.example.domain.Doctor
      */
     override suspend fun addDoctor(doctor: Doctor?): Doctor {
         if (doctor==null)
@@ -31,7 +30,7 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw IllegalArgumentException("Lekar vec postoji")
 
         doctorList.add(doctor)
-        val jsonString=Json{prettyPrint=true}.encodeToString(doctorList)
+        val jsonString= Json { prettyPrint = true }.encodeToString(doctorList)
         file.writeText(jsonString)
 
 
@@ -110,6 +109,6 @@ class DoctorServiceImplementation: DoctorServiceInterface {
      fun getAllDoctors(): MutableList<Doctor>{
         if(!file.exists()||file.readText().isBlank())return mutableListOf()
         val jsonString=file.readText()
-        return Json.decodeFromString<MutableList<Doctor>>(jsonString)
+        return Json.Default.decodeFromString<MutableList<Doctor>>(jsonString)
     }
 }
