@@ -1,5 +1,7 @@
 package com.example.service
 
+import com.example.service.doctor.DoctorServiceImplementation
+
 /**
  * Klasa koja nasledjuje [DoctorServiceInterfaceTest]
  * @author Lazar Janković

@@ -1,7 +1,7 @@
 package com.example.service.doctor
 
 import com.example.domain.Doctor
-import com.example.service.doctor.DoctorServiceInterface
+import com.example.service.DoctorServiceInterface
 import kotlinx.serialization.json.Json
 import java.io.File
 
