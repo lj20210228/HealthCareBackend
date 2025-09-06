@@ -31,6 +31,8 @@ dependencies {
     testImplementation(libs.ktor.server.test.host)
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.24")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.24")
+    testImplementation("io.mockk:mockk:1.13.10") // verzija može biti novija
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
 
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
