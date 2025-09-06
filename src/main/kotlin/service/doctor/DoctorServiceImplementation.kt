@@ -141,15 +141,25 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Id lekara ne sme biti null")
         if(doctorId.isEmpty())
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
-        val doctor=getDoctorForId(doctorId)
-        if (doctor==null)
-            return false
-        if(doctor.getCurrentPatients()<doctor.getMaxPatients())
-        {
-            doctor.setCurrentPatients(doctor.getCurrentPatients()+1)
-            return true
-        }
-        return false
+        val index = doctorList.indexOfFirst { it.getId() == doctorId }
+        if (index == -1) return false
+
+        val doctor = doctorList[index]
+
+        if (doctor.getCurrentPatients() >= doctor.getMaxPatients()) return false
+
+        // Napravi novu instancu sa povećanim brojem pacijenata
+        val updatedDoctor = doctor.copy(currentPatients = doctor.getCurrentPatients() + 1)
+
+        // Zameni staru instancu u listi
+        doctorList[index] = updatedDoctor
+
+        // Upisi u fajl
+        val json = Json { prettyPrint = true }.encodeToString(doctorList)
+        file.writeText(json)
+
+        return true
+
 
     }
     /**
