@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Test klasa za interfejs [DoctorServiceInterface]
@@ -262,9 +263,67 @@ abstract class DoctorServiceInterfaceTest {
 
         }
     }
+    /**
+     * Funckija koja testira metodu getAllGeneralDoctorsInHospitalWithoutMaxPatients gde je prosledjena null vrednost
+     * @throws NullPointerException Ako metoda baci izuzetak test prolazi
+     */
+    @Test
+    fun getAllGeneralDoctorsInHospitalWithoutMaxPatientsTest_null(){
+        runBlocking {
+            assertThrows<NullPointerException> {
+                doctorService?.getAllGeneralDoctorsInHospitalWithoutMaxPatients(null)
+            }
+        }
+    }
+    /**
+     * Funckija koja testira metodu getAllGeneralDoctorsInHospitalWithoutMaxPatients gde je prosledjen prazan string
+     * @throws IllegalArgumentException Ako metoda baci izuzetak test prolazi
+     */
+    @Test
+    fun getAllGeneralDoctorInHospitalWithoutMaxPatients_PrazanString(){
+        runBlocking {
+            assertThrows<IllegalArgumentException> {
+                doctorService?.getAllGeneralDoctorsInHospitalWithoutMaxPatients("")
+            }
+        }
+    }
+    /**
+     * Funckija koja testira metodu getAllGeneralDoctorsInHospitalWithoutMaxPatients gde je prosledjena ispravna vrednost,
+     * ali ne postoji taj lekar u bazi
+     * @return [emptyList] Ako metoda vrati praznu listu test prolazi
+     */
+    @Test
+    fun getAllGeneralDoctorsInHospitalWithoutMaxPatients_praznaLista(){
+        runBlocking {
+            assertEquals(emptyList(),doctorService?.getAllGeneralDoctorsInHospitalWithoutMaxPatients("1"))
+        }
+    }
 
     /**
-     * Funckija koja testira metodu getAllDoctorsInHospitalForSpecialization,
+     * Funckija koja testira metodu getAllGeneralDoctorsInHospitalWithoutMaxPatients gde je prosledjena ispravna vrednost,
+     * @return [List[Doctor]] Ako metoda vrati listu lekara koja je jednaka lokalnoj,
+     *  gde su dodati isti lekari kao i u listi servisa, test prolazi
+     */
+    @Test
+    fun getAllGeneralDoctorsInHospitalWithoutMaxPatientsTest_ispravanId(){
+        runBlocking {
+            val doctor1= Doctor("7","7","Pera Peric","Lekar opste prakse",20,20,"1",true)
+            val doctor2= Doctor("1","1","Pera Mikic","Lekar opste prakse",20,0,"1",true)
+            val doctor3= Doctor("2","2","Jovan Jovic","Lekar opste prakse",20,0,"1",true)
+
+            doctorService?.addDoctor(doctor1)
+
+            doctorService?.addDoctor(doctor2)
+            doctorService?.addDoctor(doctor3)
+            val doctorList=listOf(doctor2,doctor3)
+
+            assertEquals(doctorList,doctorService?.getAllGeneralDoctorsInHospitalWithoutMaxPatients("1"))
+
+        }
+    }
+
+    /**
+     * Funckija koja testira metodu getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization,
      * gde su  prosledjene null vrednosti za hospitalId ili specialization
      * @throws NullPointerException Ako metoda baci izuzetak test prolazi
      */
@@ -280,6 +339,79 @@ abstract class DoctorServiceInterfaceTest {
         runBlocking {
             assertThrows<NullPointerException> {
                 doctorService?.getAllDoctorInHospitalForSpecialization(realHospitalId,realSpecialization)
+            }
+        }
+    }
+    /**
+     * Funckija koja testira metodu getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization,
+     * gde su  prosledjeni prazni stringovi za hospitalId ili specialization
+     * @throws IllegalArgumentException Ako metoda baci izuzetak test prolazi
+     */
+    @ParameterizedTest
+    @CsvSource(
+        "'',''",
+        "1,''",
+        "'',1"
+    )
+    fun getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization_prazanString(hospitalId: String,specialization:String){
+        runBlocking {
+            assertThrows<IllegalArgumentException> {
+                doctorService?.getAllDoctorInHospitalForSpecialization(hospitalId,specialization)
+            }
+        }
+    }
+
+
+    /**
+     * Funckija koja testira metodu getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization,
+     * gde je prosledjena ispravna vrednost,
+     * ali ne postoji taj lekar u bazi
+     * @return [emptyList] Ako metoda vrati praznu listu test prolazi
+     */
+    @Test
+    fun getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization_praznaLista(){
+        runBlocking {
+            assertEquals(emptyList(),doctorService?.getAllDoctorInHospitalForSpecialization("1","Neurolog"))
+        }
+    }
+    /**
+     * Funckija koja testira metodu getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization gde su prosledjene ispravne vrednosti,
+     * @return [List[Doctor]] Ako metoda vrati listu lekara koja je jednaka lokalnoj,
+     * gde su dodati isti lekari kao i u listi servisa, test prolazi
+     */
+    @Test
+    fun getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization_ispravavniId(){
+        runBlocking {
+            val doctor1= Doctor("7","7","Pera Peric","Dermatolog",20,20,"1",false)
+            val doctor2= Doctor("1","1","Pera Mikic","Dermatolog",20,0,"1",false)
+            val doctor3= Doctor("2","2","Jovan Jovic","Lekar opste prakse",20,0,"1",true)
+
+            doctorService?.addDoctor(doctor1)
+            doctorService?.addDoctor(doctor2)
+            doctorService?.addDoctor(doctor3)
+            val doctorList=listOf(doctor2)
+
+            assertEquals(doctorList,doctorService?.getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization("1","Dermatolog"))
+
+        }
+    }
+    /**
+     * Funckija koja testira metodu getAllDoctorsInHospitalForSpecialization,
+     * gde su  prosledjene null vrednosti za hospitalId ili specialization
+     * @throws NullPointerException Ako metoda baci izuzetak test prolazi
+     */
+    @ParameterizedTest
+    @CsvSource(
+        "null,null",
+        "1,null",
+        "null,1"
+    )
+    fun getAllDoctorsInHospitalWithoutMaxPatientsForSpecializationTest_null(hospitalId: String,specialization:String){
+        val realHospitalId = if (hospitalId == "null") null else hospitalId
+        val realSpecialization = if (specialization == "null") null else specialization
+        runBlocking {
+            assertThrows<NullPointerException> {
+                doctorService?.getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization(realHospitalId,realSpecialization)
             }
         }
     }
@@ -335,6 +467,39 @@ abstract class DoctorServiceInterfaceTest {
             assertEquals(doctorList,doctorService?.getAllDoctorInHospitalForSpecialization("1","Neurolog"))
 
         }
+    }
+
+
+    @Test
+    fun editCurrentPatientsTest_null(){
+       runBlocking {
+           assertThrows<NullPointerException> {
+
+               doctorService?.editCurrentPatients(null)
+           }
+       }
+
+    }
+    @Test
+    fun editCurrentPatientsTest_prazanString(){
+        runBlocking {
+            assertThrows<IllegalArgumentException> {
+
+                doctorService?.editCurrentPatients("")
+            }
+        }
+
+    }
+    @Test
+    fun editCurrentPatientsTest_ispravno(){
+        runBlocking {
+            val doctor= Doctor("5","5","Pera Peric","Neurolog",20,4,"1",false)
+            doctorService?.addDoctor(doctor)
+            assertTrue(doctorService?.editCurrentPatients("5")!!)
+
+            assertEquals(5,doctorService?.getDoctorForId("5")?.getCurrentPatients())
+        }
+
     }
 
 }
