@@ -66,6 +66,18 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
         return doctorList
     }
+    /**
+     * Pronalazi sve lekare opste prakse u jednoj bolnici koji imaju mesta da budu izabrani
+     * @see DoctorServiceInterface
+     * @see Doctor
+     */
+    override suspend fun getAllGeneralDoctorsInHospitalWithoutMaxPatients(hospitalId: String?): List<Doctor> {
+        if (hospitalId==null)
+            throw NullPointerException("Id bolnice ne sme biti null")
+        if(hospitalId.isEmpty())
+            throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
+        return doctorList.filter{doctor -> doctor.getIsGeneral()&&doctor.getCurrentPatients()<doctor.getMaxPatients()}
+    }
 
     /**
      * Pronalazi sve lekare opste prakse u jednoj bolnici
@@ -101,7 +113,45 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw IllegalArgumentException("Specijalizacija lekara ne sme biti prazan string")
         return doctorList.filter{doctor -> doctor.getSpecialization()==specialization&&doctor.getHospitalId()==hospitalId}
     }
+    /**
+     *
+     * Pronalazi sve lekare odredjene specijalizacije u jednoj bolnici, koji imaju mesta da budu izabrani
+     * @see DoctorServiceInterface
+     * @see Doctor
+     *
+     */
+    override suspend fun getAllDoctorsInHospitalWithoutMaxPatientsForSpecialization(hospitalId: String?,specialization: String?): List<Doctor> {
+        if (hospitalId==null)
+            throw NullPointerException("Id bolnice ne sme biti null")
+        if(hospitalId.isEmpty())
+            throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
+        if (specialization==null)
+            throw NullPointerException("Specijalizacije lekara ne sme biti null")
+        if(specialization.isEmpty())
+            throw IllegalArgumentException("Specijalizacija lekara ne sme biti prazan string")
+        return doctorList.filter{doctor -> doctor.getSpecialization()==specialization&&doctor.getHospitalId()==hospitalId&&doctor.getCurrentPatients()<doctor.getMaxPatients()}
+    }
 
+    /**
+     * Povecava broj trenutnih pacijenata za 1
+     * @see Doctor
+     */
+    override suspend fun editCurrentPatients(doctorId: String?): Boolean {
+        if (doctorId==null)
+            throw NullPointerException("Id lekara ne sme biti null")
+        if(doctorId.isEmpty())
+            throw IllegalArgumentException("Id lekara ne sme biti prazan string")
+        val doctor=getDoctorForId(doctorId)
+        if (doctor==null)
+            return false
+        if(doctor.getCurrentPatients()<doctor.getMaxPatients())
+        {
+            doctor.setCurrentPatients(doctor.getCurrentPatients()+1)
+            return true
+        }
+        return false
+
+    }
     /**
      * Funkcija koja ucitava listu svih lekara u JSON fajlu
      * @return [MutableList[Doctor]] Lista svih lekara
