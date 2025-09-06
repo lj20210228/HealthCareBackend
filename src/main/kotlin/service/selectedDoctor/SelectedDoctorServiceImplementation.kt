@@ -3,7 +3,7 @@ package com.example.service.selectedDoctor
 import com.example.domain.Doctor
 import com.example.domain.Patient
 import com.example.domain.SelectedDoctor
-import com.example.service.doctor.DoctorServiceInterface
+import com.example.service.DoctorServiceInterface
 import com.example.service.patient.PatientServiceInterface
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -21,7 +21,7 @@ import java.io.File
  * @see PatientServiceInterface
  *
  */
-class SelectedDoctorServiceImplementation(val doctorServiceInterface: DoctorServiceInterface,val patientService: PatientServiceInterface): SelectedDoctorServiceInterface {
+class SelectedDoctorServiceImplementation(val doctorServiceInterface: DoctorServiceInterface, val patientService: PatientServiceInterface): SelectedDoctorServiceInterface {
     val file= File("selectedDoctors.json")
     val listOfSelectedDoctors=getAllSelectedDoctors()
 
