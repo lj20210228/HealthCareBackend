@@ -24,7 +24,7 @@ interface HospitalServiceInterface {
      * @throws IllegalArgumentException Ukoliko je [hospitalId] prazan string baca se izuzetak
      * @return [Hospital] Ukoliko je bolnica uspesno pronadjena vraca se objekat klase [Hospital]
      */
-    suspend fun getHospitalById(hospitalId: String?): Hospital
+    suspend fun getHospitalById(hospitalId: String?): Hospital?
     /**
      * Metoda za pretrazivanje bolnice po njenom imenu
      * @param name Ime bolnice koju treba pronaci
@@ -32,7 +32,7 @@ interface HospitalServiceInterface {
      * @throws IllegalArgumentException Ukoliko je [name] prazan string baca se izuzetak
      * @return [Hospital] Ukoliko je bolnica uspesno pronadjena vraca se objekat klase [Hospital]
      */
-    suspend fun getHospitalByName(name: String?): Hospital
+    suspend fun getHospitalByName(name: String?): Hospital?
     /**
      * Metoda za pretrazivanje bolnica imenu grada u kom se nalazi
      * @param city Ime grada cije bolnice treba pronaci
