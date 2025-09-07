@@ -11,6 +11,7 @@ import com.example.domain.User
 interface UserServiceInterface {
     /**
      * Funckija koja sluzi za dodavanje novog [User]
+     * @param user Korisnik kog treba dodati
      * @throws NullPointerException Ukoliko je prosledjeni argument null
      * @throws IllegalArgumentException Ukoliko prosledjeni argument vec postoji
      * @return [User] Vracaju se podaci o useru
@@ -19,6 +20,7 @@ interface UserServiceInterface {
 
     /**
      * Funkcija koja sluzi za pretrazivanje usera po id
+     * @param id Id usera
      * @throws NullPointerException Ukoliko je prosledjeni argument null
      * @throws IllegalArgumentException Ukoliko je prosledjeni argument prazan string
      * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njemu,
@@ -27,6 +29,7 @@ interface UserServiceInterface {
     fun getUserById(id: String?): User?
     /**
      * Funkcija koja sluzi za pretrazivanje usera po [email]
+     * @param email Email usera
      * @throws NullPointerException Ukoliko je prosledjeni argument null
      * @throws IllegalArgumentException Ukoliko je prosledjeni argument prazan string
      * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njemu,
@@ -35,6 +38,7 @@ interface UserServiceInterface {
     fun getUserByEmail(email: String?): User?
     /**
      * Funkcija koja sluzi za pretrazivanje usera po [role]
+     * @param role Rola usera
      * @throws NullPointerException Ukoliko je prosledjeni argument null
      * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njima u listi,
      * ukoliko ne postoji vraca se prazna lista
