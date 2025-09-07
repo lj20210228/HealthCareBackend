@@ -36,7 +36,6 @@ interface UserServiceInterface {
     /**
      * Funkcija koja sluzi za pretrazivanje usera po [role]
      * @throws NullPointerException Ukoliko je prosledjeni argument null
-     * @throws IllegalArgumentException Ukoliko je prosledjeni argument prazan string
      * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njima u listi,
      * ukoliko ne postoji vraca se prazna lista
      */
