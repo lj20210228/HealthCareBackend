@@ -302,15 +302,16 @@ class RecipeTests {
      */
     @ParameterizedTest
     @CsvSource(
-        "1,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,true",
-        "1,2,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "1,1,2,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "1,1,1,Eftil 200mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "1,1,1,Eftil 400mg,1,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "1,1,1,Eftil 400mg,2,1 tableta ujutru i 2 uvece,2025-09-24,false",
-        "1,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-25,false"
+        "1,99,88,Neki drugi lek,5,Neko drugo uputstvo,2025-12-12,true",
+        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,true",
+        "2,2,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
+        "2,1,2,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
+        "2,1,1,Eftil 200mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
+        "2,1,1,Eftil 400mg,1,1 tableta ujutru i 1 uvece,2025-09-24,false",
+        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 2 uvece,2025-09-24,false",
+        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-25,false"
     )
-    fun equals_Test_nisu_jednaki(id: String,patientId: String,doctorId: String,medication: String,
+    fun equals_Test(id: String,patientId: String,doctorId: String,medication: String,
                                quantity: Int,instructions: String,date: LocalDate,boolean: Boolean  ){
         val recipe2= Recipe(id,patientId,doctorId,medication,quantity,instructions,date)
         assertEquals(boolean, recipe?.equals(recipe2))
