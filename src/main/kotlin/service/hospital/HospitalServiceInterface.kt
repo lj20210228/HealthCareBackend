@@ -38,8 +38,14 @@ interface HospitalServiceInterface {
      * @param city Ime grada cije bolnice treba pronaci
      * @throws NullPointerException Ukoliko je [city] null baca se  izuzetak
      * @throws IllegalArgumentException Ukoliko je [city] prazan string baca se izuzetak
-     * @return [Hospital] Ukoliko je bolnica uspesno pronadjena vraca se objekat klase [Hospital]
+     * @return [List[Hospital]] Ukoliko su bolnice uspesno pronadjena vraca se lista objekata klase [Hospital]
      */
     suspend fun getHospitalsInCity(city: String?): List<Hospital>
+
+    /**
+     * Metoda koja vraca sve bolnice
+     * @return [List[Hospital]] Ukoliko su bolnice uspesno pronadjene vraca se lista objekata klase [Hospital]
+     */
+    suspend fun getAllHospitals(): List<Hospital>
 
 }
