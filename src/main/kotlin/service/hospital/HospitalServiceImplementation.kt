@@ -38,7 +38,7 @@ class HospitalServiceImplementation: HospitalServiceInterface {
         if (hospitalId==null)
             throw NullPointerException("Id bolnice ne moze biti null")
         if (hospitalId.isEmpty())
-            throw NullPointerException("Id bolnice ne moze biti prazan string")
+            throw IllegalArgumentException("Id bolnice ne moze biti prazan string")
         return list.find { it.getId()==hospitalId }
 
     }
@@ -49,7 +49,7 @@ class HospitalServiceImplementation: HospitalServiceInterface {
         if (name==null)
             throw NullPointerException("Ime bolnice ne moze biti null")
         if (name.isEmpty())
-            throw NullPointerException("Ime bolnice ne moze biti prazan string")
+            throw IllegalArgumentException("Ime bolnice ne moze biti prazan string")
         return list.find { it.getName()==name }
     }
     /**
@@ -59,7 +59,7 @@ class HospitalServiceImplementation: HospitalServiceInterface {
         if (city==null)
             throw NullPointerException("Ime grada ne moze biti null")
         if (city.isEmpty())
-            throw NullPointerException("Ime grada ne moze biti prazan string")
+            throw IllegalArgumentException("Ime grada ne moze biti prazan string")
         return list.filter { it.getCity()==city }
     }
 
