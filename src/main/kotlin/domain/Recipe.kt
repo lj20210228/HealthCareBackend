@@ -200,8 +200,14 @@ data class Recipe(
     }
 
     /**
-     * Metoda koja poredi 2 objekta klase [com.example.domain.Recipe]
-     * @return [Boolean] Ukoliko je objekat druge klase,ili im je razlicit neki od parametara vraca se false, a ako im ni jedan parametar nije razlicit true
+     * Metoda koja poredi 2 objekta klase [com.example.domain.Recipe].
+     *
+     * Pravila poređenja:
+     * - Ako je `id` isti → objekti se smatraju jednakim bez obzira na ostale atribute.
+     * - Ako je `id` različit → objekti se smatraju jednakim samo ako su svi ostali atributi jednaki:
+     *   `quantity`, `patientId`, `doctorId`, `medication`, `instructions`, `dateExpired`.
+     *
+     * @return [Boolean] true ako su objekti jednaki prema definisanim pravilima, false inače
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -209,25 +215,28 @@ data class Recipe(
 
         other as Recipe
 
-        if (quantity != other.quantity) return false
-        if (id != other.id) return false
-        if (patientId != other.patientId) return false
-        if (doctorId != other.doctorId) return false
-        if (medication != other.medication) return false
-        if (instructions != other.instructions) return false
-        if (dateExpired != other.dateExpired) return false
+        if (id == other.id) return true
 
-        return true
+        return quantity == other.quantity &&
+                patientId == other.patientId &&
+                doctorId == other.doctorId &&
+                medication == other.medication &&
+                instructions == other.instructions &&
+                dateExpired == other.dateExpired
     }
 
     /**
-     * Metoda koja pretvara objekat klase [com.example.domain.Recipe] u hashCode
-     * @return [Int] hashCode  objekta [com.example.domain.Recipe]
+     * Metoda koja pretvara objekat klase [com.example.domain.Recipe] u hashCode.
+     *
+     * Pravila moraju biti u skladu sa equals:
+     * - Ako se dva objekta porede po `id`, njihov hashCode se računa na osnovu `id`.
+     * - Ako se porede po ostalim atributima, hashCode se računa na osnovu njih.
+     *
+     * @return [Int] hashCode objekta [com.example.domain.Recipe]
      */
-
     override fun hashCode(): Int {
-        var result = quantity
-        result = 31 * result + id.hashCode()
+        var result = id.hashCode()
+        result = 31 * result + quantity.hashCode()
         result = 31 * result + patientId.hashCode()
         result = 31 * result + doctorId.hashCode()
         result = 31 * result + medication.hashCode()
