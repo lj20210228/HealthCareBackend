@@ -11,8 +11,24 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Test klasa za metode [UserServiceInterface]
+ * @author Lazar Janković
+ * @see UserServiceInterface
+ * @see User
+ * @property service Instanca [UserServiceInterface] cije metode ce se koristiti
+ * @property file Json fajl koji simulira tabelu u bazi
+ * @property user1 Instanca klase [User]
+ * @property user2 Instanca klase [User]
+ * @property user3 Instanca klase [User]
+ *
+ */
 abstract class UserServiceInterfaceTest {
+    /**
+     * Funckija koja sluzi za instanciranje klasa koje nasledjuju [UserServiceInterface]
+     */
     abstract fun getInstance(): UserServiceInterface
+
 
     var service: UserServiceInterface?=null
     val file= File("users.json")
@@ -21,7 +37,9 @@ abstract class UserServiceInterfaceTest {
     private lateinit var user3: User
 
 
-
+    /**
+     * Funkcija za inicijalizaciju pre svakog testa
+     */
     @BeforeEach
     fun setUp(){
         service=getInstance()
@@ -32,13 +50,20 @@ abstract class UserServiceInterfaceTest {
 
 
 
-    }
+    }/**
+     * Funkcija za inicijalizaciju posle svakog testa
+     */
     @AfterEach
     fun tearDown(){
         service=null
         file.writeText("")
 
     }
+
+    /**
+     * Test za metodu addUser kada je prosledjeni argument null,
+     * ako se baci [NullPointerException] test prolazi
+     */
     @Test
     fun addUserTest_null(){
         runBlocking {
@@ -47,6 +72,10 @@ abstract class UserServiceInterfaceTest {
             }
         }
     }
+    /**
+     * Test za metodu addUser kada  prosledjeni argument vec postoji,
+     * ako se baci [IllegalArgumentException] test prolazi
+     */
     @Test
     fun addUserTest_VecPostoji(){
         runBlocking {
@@ -56,6 +85,10 @@ abstract class UserServiceInterfaceTest {
             }
         }
     }
+    /**
+     * Test za metodu addUser kada je prosledjeni argument ispravan i ne postoji,
+     * ako je vraceni objekat jednak prosledjenom test prolazi
+     */
     @Test
     fun addUserTest_uspesnoDodavanje(){
         runBlocking {
@@ -63,6 +96,11 @@ abstract class UserServiceInterfaceTest {
             assertEquals(result,user1)
         }
     }
+
+    /**
+     * Test za funkciju getUserById, kada je prosledjeni argument null,
+     * ako je bacen [NullPointerException] test prolazi
+     */
     @Test
     fun getUserByIdTest_null(){
         runBlocking {
@@ -71,6 +109,10 @@ abstract class UserServiceInterfaceTest {
             }
         }
     }
+    /**
+     * Test za funkciju getUserById, kada je prosledjeni argument prazan string,
+     * ako je bacen [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getUserByIdTest_prazanString(){
         runBlocking {
@@ -79,12 +121,20 @@ abstract class UserServiceInterfaceTest {
             }
         }
     }
+    /**
+     * Test za funkciju getUserById, kada je prosledjeni argument ispravan,
+     * ali taj user ne postoji u bazi pa se vraca null
+     */
     @Test
     fun getUserByIdTest_userNePostoji(){
         runBlocking {
             assertEquals(null,service?.getUserById("7"))
         }
     }
+    /**
+     * Test za funkciju getUserById, kada je prosledjeni argument ispravan,
+     * i user postoji, ako je vraacen argument jednak prosledjenom test prolazi
+     */
     @Test
     fun getUserByIdTest_uspesno(){
         runBlocking {
@@ -92,6 +142,10 @@ abstract class UserServiceInterfaceTest {
            assertEquals(user1,service?.getUserById("1"))
         }
     }
+    /**
+     * Test za funkciju getUserByEmail, kada je prosledjeni argument null,
+     * ako je bacen [NullPointerException] test prolazi
+     */
     @Test
     fun getUserByEmailTest_null(){
         runBlocking {
@@ -100,6 +154,10 @@ abstract class UserServiceInterfaceTest {
             }
         }
     }
+    /**
+     * Test za funkciju getUserByEmail, kada je prosledjeni argument prazan string,
+     * ako je bacen [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getUserByEmailTest_prazanString(){
         runBlocking {
@@ -108,12 +166,20 @@ abstract class UserServiceInterfaceTest {
             }
         }
     }
+    /**
+     * Test za funkciju getUserByEmail, kada je prosledjeni argument ispravan,
+     * ali taj user ne postoji u bazi pa se vraca null
+     */
     @Test
     fun getUserByEmailTest_userNePostoji(){
         runBlocking {
             assertEquals(null,service?.getUserByEmail("7"))
         }
     }
+    /**
+     * Test za funkciju getUserByEmail, kada je prosledjeni argument ispravan,
+     * i user postoji, ako je vraacen argument jednak prosledjenom test prolazi
+     */
     @Test
     fun getUserByEmailTest_uspesno(){
         runBlocking {
@@ -121,6 +187,10 @@ abstract class UserServiceInterfaceTest {
             assertEquals(user1,service?.getUserByEmail("user@user.com"))
         }
     }
+    /**
+     * Test za funkciju getUserByRole, kada je prosledjeni argument null,
+     * ako je bacen [NullPointerException] test prolazi
+     */
     @Test
     fun getUsersForRoleTest_null(){
         runBlocking {
@@ -130,6 +200,9 @@ abstract class UserServiceInterfaceTest {
         }
     }
 
+    /**
+     * Test za funkciju getUserByRole, u slucaju kada ne postoje useri sa tom rolom pa se vraca prazna lista
+     */
     @Test
     fun getUsersForRoleTest_userNePostoji(){
         runBlocking {
@@ -137,6 +210,10 @@ abstract class UserServiceInterfaceTest {
             assertEquals(emptyList(),service?.getUsersForRole(Role.ROLE_PATIENT))
         }
     }
+    /**
+     * Test za funkciju getUserByRole, u slucaju kada postoje useri sa tom rolom,
+     * ako je lista koja je zadata jednaka vracenoj test prolazi
+     */
     @Test
     fun getUsersForRoleTest_uspesno(){
         runBlocking {
