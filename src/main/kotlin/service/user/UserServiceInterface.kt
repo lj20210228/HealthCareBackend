@@ -15,7 +15,7 @@ interface UserServiceInterface {
      * @throws IllegalArgumentException Ukoliko prosledjeni argument vec postoji
      * @return [User] Vracaju se podaci o useru
      */
-    fun addUser(user: User?): User
+    suspend fun addUser(user: User?): User
 
     /**
      * Funkcija koja sluzi za pretrazivanje usera po id
@@ -24,7 +24,7 @@ interface UserServiceInterface {
      * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njemu,
      * ukoliko ne postoji null
      */
-    fun getUserById(id: String?): User?
+    suspend fun getUserById(id: String?): User?
     /**
      * Funkcija koja sluzi za pretrazivanje usera po [email]
      * @throws NullPointerException Ukoliko je prosledjeni argument null
@@ -32,12 +32,12 @@ interface UserServiceInterface {
      * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njemu,
      * ukoliko ne postoji null
      */
-    fun getUserByEmail(email: String?): User?
+    suspend fun getUserByEmail(email: String?): User?
     /**
      * Funkcija koja sluzi za pretrazivanje usera po [role]
      * @throws NullPointerException Ukoliko je prosledjeni argument null
      * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njima u listi,
      * ukoliko ne postoji vraca se prazna lista
      */
-    fun getUsersForRole(role: Role?): List<User>
+    suspend fun getUsersForRole(role: Role?): List<User>
 }
