@@ -144,8 +144,9 @@ data class Hospital(
 
     /**
      * Metoda koja poredi 2 objekta, jedan [com.example.domain.Hospital] i jedan Any
-     * @return Ukoliko objekat nije [Hospital] vraca true,
-     * ukoliko im je neki parametar drugaciji vraca se false
+     * @return Ukoliko objekat nije [Hospital] vraca false,
+     * ukoliko imaju isti id ili ukoliko im se poklapaju ime, grad i adresa vraca true,
+     * u suprotnom vraca false
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -153,24 +154,21 @@ data class Hospital(
 
         other as Hospital
 
-        if (id != other.id) return false
-        if (name != other.name) return false
-        if (city != other.city) return false
-        if (address != other.address) return false
 
-        return true
+
+        return id==other.id||(name==other.name&&address==other.address&&city==other.city)
     }
 
     /**
-     * Funkcija koj pravi hashCode od [com.example.domain.Hospital] objekta
+     * Funkcija koja pravi hashCode od [com.example.domain.Hospital] objekta.
+     * Mora biti u skladu sa equals metodom:
+     * - Ako se dva objekta porede po id-u, koristi se hash od id-a.
+     * - Ako se porede po name, city i address, koristi se kombinacija hashCode-ova tih polja.
+     *
      * @return [Int] vrednost koja predstavlja hash objekta
      */
     override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + city.hashCode()
-        result = 31 * result + address.hashCode()
-        result=31*result+id.hashCode()
-        return result
+        return id.hashCode() + 31 * (name.hashCode() + city.hashCode() + address.hashCode())
     }
 
     /**

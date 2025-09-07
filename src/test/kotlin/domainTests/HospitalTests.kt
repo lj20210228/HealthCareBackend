@@ -235,18 +235,51 @@ class HospitalTests {
         assertEquals(address,hospital?.getAddress())
     }
 
+    /**
+     * Parametrizovani test za proveru ispravnosti implementacije metode [Hospital.equals].
+     *
+     * Test koristi [CsvSource] kako bi pokrio više slučajeva:
+     * 1. Kada je `id` isti → objekti se smatraju jednakim bez obzira na ostale atribute.
+     * 2. Kada su `name`, `city` i `address` isti, a `id` različit → objekti se takođe smatraju jednakim.
+     * 3. Kada se razlikuje `name` → objekti se smatraju različitim.
+     * 4. Kada se razlikuje `city` → objekti se smatraju različitim.
+     * 5. Kada se razlikuje `address` → objekti se smatraju različitim.
+     *
+     * @param id Id druge bolnice
+     * @param name Ime druge bolnice
+     * @param city Grad druge bolnice
+     * @param address Adresa druge bolnice
+     * @param expected Očekivani rezultat poređenja (`true` ako objekti treba da budu jednaki, `false` inače)
+     */
     @ParameterizedTest
     @CsvSource(
-        "1,Opsta bolnica Uzice,Uzice,Milosa Obrenovica 32,true",
+        // isti id -> equals = true
+        "1,Druga bolnica,Beograd,Nemanjina 4,true",
+        // sve isto osim id -> equals = true (jer se poklapaju name, city i address)
+        "2,Opsta bolnica Uzice,Uzice,Milosa Obrenovica 32,true",
+        // razlika u imenu -> equals = false
         "2, bolnica Uzice,Uzice,Milosa Obrenovica 32,false",
-        "1,Opsta bolnica Uzice,Cacak,Milosa Obrenovica 32,false",
-        "1,Opsta bolnica Uzice,Uzice,Milosa Obrenovica 34,false",
-        )
-    fun equals_TEST(id: String,name: String,city: String,address: String,boolean: Boolean){
-        val hospital2= Hospital(id,name,city,address)
-        assertEquals(boolean,hospital?.equals(hospital2)!!)
+        // razlika u gradu -> equals = false
+        "2,Opsta bolnica Uzice,Cacak,Milosa Obrenovica 32,false",
+        // razlika u adresi -> equals = false
+        "2,Opsta bolnica Uzice,Uzice,Milosa Obrenovica 34,false"
+    )
+    fun equals_TEST(id: String, name: String, city: String, address: String, expected: Boolean) {
+        // original hospital
+        val hospital1 = Hospital("1", "Opsta bolnica Uzice", "Uzice", "Milosa Obrenovica 32")
+        val hospital2 = Hospital(id, name, city, address)
 
+        assertEquals(expected, hospital1 == hospital2)
     }
+    /**
+     * Test za proveru ispravnosti implementacije metode [Hospital.hashCode].
+     *
+     * Pravilo je da ukoliko su dva objekta jednaka prema [Hospital.equals],
+     * njihov [hashCode] mora biti identičan.
+     *
+     * U ovom testu se kreira novi objekat sa istim vrednostima kao i postojeći `hospital`,
+     * i proverava se da li oba objekta vraćaju isti hash kod.
+     */
 
     @Test
     fun hashCode_test(){
@@ -254,6 +287,16 @@ class HospitalTests {
 
         assertEquals(hospital.hashCode(),hospital2.hashCode())
     }
+
+    /**
+     * Test za proveru ispravnosti implementacije metode [Hospital.toString].
+     *
+     * Metoda [Hospital.toString] treba da vraća string reprezentaciju objekta
+     * koja uključuje sve njegove atribute: `id`, `name`, `city` i `address`.
+     *
+     * U ovom testu se poziva `toString()` nad objektom `hospital` i proverava se
+     * da li vraćeni string sadrži sve vrednosti atributa koje su bile postavljene u objektu.
+     */
     @Test
     fun toString_test(){
         val string=hospital.toString()
