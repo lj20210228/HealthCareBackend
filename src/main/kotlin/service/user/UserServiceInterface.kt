@@ -1,0 +1,43 @@
+package com.example.service.user
+
+import com.example.domain.Role
+import com.example.domain.User
+
+/**
+ * Interfejs koji sluzi za rukovanje podacima o [User]
+ * @author Lazar Janković
+ * @see UserServiceInterface
+ */
+interface UserServiceInterface {
+    /**
+     * Funckija koja sluzi za dodavanje novog [User]
+     * @throws NullPointerException Ukoliko je prosledjeni argument null
+     * @throws IllegalArgumentException Ukoliko prosledjeni argument vec postoji
+     * @return [User] Vracaju se podaci o useru
+     */
+    fun addUser(user: User?): User
+
+    /**
+     * Funkcija koja sluzi za pretrazivanje usera po id
+     * @throws NullPointerException Ukoliko je prosledjeni argument null
+     * @throws IllegalArgumentException Ukoliko je prosledjeni argument prazan string
+     * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njemu,
+     * ukoliko ne postoji null
+     */
+    fun getUserById(id: String?): User?
+    /**
+     * Funkcija koja sluzi za pretrazivanje usera po [email]
+     * @throws NullPointerException Ukoliko je prosledjeni argument null
+     * @throws IllegalArgumentException Ukoliko je prosledjeni argument prazan string
+     * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njemu,
+     * ukoliko ne postoji null
+     */
+    fun getUserByEmail(email: String?): User?
+    /**
+     * Funkcija koja sluzi za pretrazivanje usera po [role]
+     * @throws NullPointerException Ukoliko je prosledjeni argument null
+     * @return [User] Ukoliko je prosledjeni argument ispravan  i User postoji vracaju se podaci o njima u listi,
+     * ukoliko ne postoji vraca se prazna lista
+     */
+    fun getUsersForRole(role: Role?): List<User>
+}
