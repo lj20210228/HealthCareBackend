@@ -23,7 +23,7 @@ class UserServiceImplementation: UserServiceInterface {
     /**
      * Dodavanje usera
      */
-    override fun addUser(user: User?): User {
+    override suspend fun addUser(user: User?): User {
         if (user==null)
             throw NullPointerException("Podaci o korisniku ne mogu biti null")
         if (list.contains(user))
@@ -37,7 +37,7 @@ class UserServiceImplementation: UserServiceInterface {
     /**
      * Pretrazivanje usera po id
      */
-    override fun getUserById(id: String?): User? {
+    override suspend fun getUserById(id: String?): User? {
         if(id==null)
             throw NullPointerException("Id usera ne moze biti null")
         if(id.isEmpty())
@@ -50,7 +50,7 @@ class UserServiceImplementation: UserServiceInterface {
     /**
      * Pretrazivanje usera po email
      */
-    override fun getUserByEmail(email: String?): User? {
+    override suspend fun getUserByEmail(email: String?): User? {
         if(email==null)
             throw NullPointerException("Email usera ne moze biti null")
         if(email.isEmpty())
@@ -62,7 +62,7 @@ class UserServiceImplementation: UserServiceInterface {
     /**
      * Pretrazivanje usera po ulozi
      */
-    override fun getUsersForRole(role: Role?): List<User> {
+    override suspend fun getUsersForRole(role: Role?): List<User> {
         if(role==null)
             throw NullPointerException("Uloga usera ne moze biti null")
 
