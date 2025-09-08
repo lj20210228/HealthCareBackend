@@ -1,4 +1,4 @@
-package com.example.domain
+package com.example.date
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -18,8 +18,8 @@ import java.time.format.DateTimeParseException
  * @property descriptor Opisuje kakav tip podataka ce biti prosledjen JSON-u
  * @property formatter  Formater koji formatira datum u format "yyyy-MM-dd"
  *
- * @see LocalDate
- * @see DateTimeFormatter
+ * @see java.time.LocalDate
+ * @see java.time.format.DateTimeFormatter
  */
 object StrictLocalDateSerializer: KSerializer<LocalDate> {
 
