@@ -12,12 +12,28 @@ import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-
+/**
+ * Klasa koja testira metode [RecipeServiceInterface]
+ * @see RecipeServiceInterface
+ * @author Lazar Janković
+ * @see RecipeServiceImplementationTest
+ * @property service Instanca [RecipeServiceInterface]
+ * @property file Fajl koji simulira bazu
+ * @property recipe Instanca klase recept koji ce se koristiti u testovima
+ */
 abstract class RecipeServiceInterfaceTest {
+    /**
+     * Funkcija koja dohvata koje je klase objekat [RecipeServiceInterface]
+     */
     abstract fun getInstance(): RecipeServiceInterface
     var service: RecipeServiceInterface?=null
     val file= File("recipes.json")
     private lateinit var recipe: Recipe
+
+    /**
+     * Inicijalizacija parametara pre pokretanja svakog testa
+     *
+     */
     @BeforeEach
     fun setUp(){
         service=getInstance()
@@ -31,7 +47,10 @@ abstract class RecipeServiceInterfaceTest {
             quantity = 10,
             dateExpired = LocalDate.now().plusDays(5)
         )
-    }
+    }/**
+     * Inicijalizacija parametara posle izrvsavanja svakog testa
+     *
+     */
     @AfterEach
     fun tearDown()
     {
@@ -39,6 +58,11 @@ abstract class RecipeServiceInterfaceTest {
         file.writeText("")
 
     }
+
+    /**
+     * Test metoda za dodavanje recepata kada je prosledjeni argument null,
+     * ako se baci [NullPointerException] test prolazi
+     */
     @Test
     fun addRecipeTest_null(){
         runBlocking {
@@ -46,7 +70,12 @@ abstract class RecipeServiceInterfaceTest {
                 service?.addRecipe(null)
             }
         }
+
     }
+    /**
+     * Test metoda za dodavanje recepata kada  prosledjeni recept vec postoji ,
+     * ako se baci [IllegalArgumentException] test prolazi
+     */
     @Test
     fun addRecipeTest_receptPostoji(){
 
@@ -58,6 +87,10 @@ abstract class RecipeServiceInterfaceTest {
             }
         }
     }
+    /**
+     * Test metoda za dodavanje recepata kada je prosledjeni recept ispravan i ne postoji ,
+     * ako je prosledjeni recept isti kao ovaj koji vraca metoda addRecipe test prolazi
+     */
     @Test
     fun addRecipe_uspesnoDodavanje(){
 
@@ -68,6 +101,11 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+
+    /**
+     * Test za metodu getAllRecipesForDoctor, kada je prosledjeni argument null,
+     * ako se baci [NullPointerException] test prolazi
+     */
     @Test
     fun getAllRecipesForDoctorTest_null(){
         runBlocking  {
@@ -78,6 +116,10 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllRecipesForDoctor, kada je prosledjeni argument prazan string,
+     * ako se baci [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getAllRecipesForDoctorTest_prazanString(){
         runBlocking  {
@@ -88,12 +130,20 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllRecipesForDoctor, kada je prosledjeni argument ispravan ali ne postoje recepti za tog doktora,
+     * ako se vrati prazna lista test prolazi
+     */
     @Test
     fun getALlRecipesForDoctorTest_nemaRecepata(){
         runBlocking {
             assertEquals(emptyList(),service?.getAllRecipesForDoctor("44"))
         }
     }
+    /**
+     * Test za metodu getAllRecipesForDoctor, kada je prosledjeni argument ispravan i postoje recepti za tog doktora,
+     * ako se vrati lista recepata test prolazi
+     */
     @Test
     fun  getAllRecipesForDoctorTest_uspesno(){
         runBlocking {
@@ -114,6 +164,10 @@ abstract class RecipeServiceInterfaceTest {
             assertEquals(list,service?.getAllRecipesForDoctor("d1"))
         }
     }
+    /**
+     * Test za metodu getAllRecipesForPatient, kada je prosledjeni argument null,
+     * ako se baci [NullPointerException] test prolazi
+     */
     @Test
     fun getAllRecipesForPatientTest_null(){
         runBlocking  {
@@ -124,6 +178,10 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllRecipesForPatient, kada je prosledjeni argument prazan string,
+     * ako se baci [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getAllRecipesForPatientTest_prazanString(){
         runBlocking  {
@@ -134,12 +192,20 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllRecipesForPatient, kada je prosledjeni argument ispravan ali ne postoje recepti za tog pacijenta,
+     * ako se vrati prazna lista test prolazi
+     */
     @Test
     fun getALlRecipesForPatientTest_nemaRecepata(){
         runBlocking {
             assertEquals(emptyList(),service?.getAllRecipesForPatient("44"))
         }
     }
+    /**
+     * Test za metodu getAllRecipesForPatient, kada je prosledjeni argument ispravan i postoje recepti za tog pacijenta,
+     * ako se vrati lista recepata test prolazi
+     */
     @Test
     fun  getAllRecipesForPatientTest_uspesno(){
         runBlocking {
@@ -160,6 +226,11 @@ abstract class RecipeServiceInterfaceTest {
             assertEquals(list,service?.getAllRecipesForPatient("p1"))
         }
     }
+
+    /**
+     * Test koji testira metodu getRecipeForId kada je prosledjeni argument null, ako se baci
+     * [NullPointerException] test prolazi
+     */
     @Test
     fun getRecipeForIdTest_null(){
         runBlocking  {
@@ -170,6 +241,10 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test koji testira metodu getRecipeForId kada je prosledjeni argument prazan string, ako se baci
+     * [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getRecipeFOrIdTest_prazanString(){
         runBlocking  {
@@ -180,12 +255,20 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test koji testira metodu getRecipeForId kada je prosledjeni argument ispravan, ali nema tog recepta,
+     * ako se vrati null test prolazi
+     */
     @Test
     fun getRecipeForIdTest_nemaRecepata(){
         runBlocking {
             assertEquals(null,service?.getRecipeForId("44"))
         }
     }
+    /**
+     * Test koji testira metodu getRecipeForId kada je prosledjeni argument ispravan, i pronadjen je taj recept,
+     * ako se vrati recept koji je prethodno dodat, test prolazi
+     */
     @Test
     fun  getRecipeForIdTest_uspesno(){
         runBlocking {
@@ -196,6 +279,10 @@ abstract class RecipeServiceInterfaceTest {
         }
     }
 
+    /**
+     * Test za metodu getAllRecipesForMedication, kada je prosledjeni argument null,
+     * ako se baci [NullPointerException] test prolazi
+     */
     @Test
     fun getAllRecipesForMedicationTest_null(){
         runBlocking  {
@@ -206,6 +293,10 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllRecipesForMedication, kada je prosledjeni argument prazan string,
+     * ako se baci [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getAllRecipesForMedicationTest_prazanString(){
         runBlocking  {
@@ -216,12 +307,20 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllRecipesForMedication, kada je prosledjeni argument ispravan ali ne postoje recepti sa tim lekom,
+     * ako se vrati prazna lista test prolazi
+     */
     @Test
     fun getALlRecipesForMedicationTest_nemaRecepata(){
         runBlocking {
             assertEquals(emptyList(),service?.getRecipesForMedication("Eftil"))
         }
     }
+    /**
+     * Test za metodu getAllRecipesForPatient, kada je prosledjeni argument ispravan i postoje recepti za taj lek,
+     * ako se vrati lista recepata test prolazi
+     */
     @Test
     fun  getAllRecipesForMedicationTest_uspesno(){
         runBlocking {
@@ -242,6 +341,10 @@ abstract class RecipeServiceInterfaceTest {
             assertEquals(list,service?.getRecipesForMedication("brufen"))
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForDoctor, kada je prosledjeni argument null,
+     * ako se baci [NullPointerException] test prolazi
+     */
     @Test
     fun getAllValidRecipesForDoctorTest_null(){
         runBlocking  {
@@ -252,6 +355,10 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForDoctor, kada je prosledjeni argument prazan string,
+     * ako se baci [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getAllValidRecipesForDoctorTest_prazanString(){
         runBlocking  {
@@ -262,6 +369,10 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForDoctor, kada je prosledjeni argument ispravan ali ne postoje recepti za tog doktora, ili su svi istekli,
+     * ako se vrati prazna lista test prolazi
+     */
     @Test
     fun getALlValidRecipesForDoctorTest_nemaRecepata(){
         runBlocking {
@@ -278,6 +389,10 @@ abstract class RecipeServiceInterfaceTest {
             assertEquals(emptyList(),service?.getAllValidRecipesForDoctor("d2"))
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForDoctor, kada je prosledjeni argument ispravan i postoje recepti za tog doktora, i nisu istekli,
+     * ako se vrati lista recepata test prolazi
+     */
     @Test
     fun  getAllValidRecipesForDoctorTest_uspesno(){
         runBlocking {
@@ -298,6 +413,10 @@ abstract class RecipeServiceInterfaceTest {
             assertEquals(list,service?.getAllValidRecipesForDoctor("d1"))
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForPatient, kada je prosledjeni argument null,
+     * ako se baci [NullPointerException] test prolazi
+     */
     @Test
     fun getAllValidRecipesForPatientTest_null(){
         runBlocking  {
@@ -308,6 +427,10 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForPatient, kada je prosledjeni argument prazan string,
+     * ako se baci [IllegalArgumentException] test prolazi
+     */
     @Test
     fun getAllValidRecipesForPatientTest_prazanString(){
         runBlocking  {
@@ -318,12 +441,20 @@ abstract class RecipeServiceInterfaceTest {
 
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForPatient, kada je prosledjeni argument ispravan ali ne postoje recepti za tog pacijenta, ili su svi istekli
+     * ako se vrati prazna lista test prolazi
+     */
     @Test
     fun getALlValidRecipesForPatientTest_nemaRecepata(){
         runBlocking {
             assertEquals(emptyList(),service?.getAllValidRecipesForPatient("44"))
         }
     }
+    /**
+     * Test za metodu getAllValidRecipesForPatient, kada je prosledjeni argument ispravan i postoje recepti za tog pacijenta, i nisu istekli,
+     * ako se vrati lista recepata test prolazi
+     */
     @Test
     fun  getAllValidRecipesForPatientTest_uspesno(){
         runBlocking {
