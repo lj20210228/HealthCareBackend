@@ -12,6 +12,7 @@ import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+
 abstract class RecipeServiceInterfaceTest {
     abstract fun getInstance(): RecipeServiceInterface
     var service: RecipeServiceInterface?=null
@@ -80,7 +81,7 @@ abstract class RecipeServiceInterfaceTest {
     @Test
     fun getAllRecipesForDoctorTest_prazanString(){
         runBlocking  {
-            assertThrows<NullPointerException> {
+            assertThrows<IllegalArgumentException> {
                 service?.getAllRecipesForDoctor("")
             }
 
@@ -126,7 +127,7 @@ abstract class RecipeServiceInterfaceTest {
     @Test
     fun getAllRecipesForPatientTest_prazanString(){
         runBlocking  {
-            assertThrows<NullPointerException> {
+            assertThrows<IllegalArgumentException> {
                 service?.getAllRecipesForPatient("")
             }
 
@@ -141,6 +142,190 @@ abstract class RecipeServiceInterfaceTest {
     }
     @Test
     fun  getAllRecipesForPatientTest_uspesno(){
+        runBlocking {
+            val recipe2=Recipe(
+                id = "2",
+                patientId = "p1",
+                doctorId = "d2",
+                medication = "Brufen",
+                instructions = "2x dnevno",
+                quantity = 10,
+                dateExpired = LocalDate.now().plusDays(5)
+            )
+            service?.addRecipe(recipe)
+            service?.addRecipe(recipe2)
+            val list=mutableListOf<Recipe>()
+            list.add(recipe)
+            list.add(recipe2)
+            assertEquals(list,service?.getAllRecipesForPatient("p1"))
+        }
+    }
+    @Test
+    fun getRecipeForIdTest_null(){
+        runBlocking  {
+            assertThrows<NullPointerException> {
+                service?.getRecipeForId(null)
+            }
+
+
+        }
+    }
+    @Test
+    fun getRecipeFOrIdTest_prazanString(){
+        runBlocking  {
+            assertThrows<IllegalArgumentException> {
+                service?.getRecipeForId("")
+            }
+
+
+        }
+    }
+    @Test
+    fun getRecipeForIdTest_nemaRecepata(){
+        runBlocking {
+            assertEquals(null,service?.getRecipeForId("44"))
+        }
+    }
+    @Test
+    fun  getRecipeForIdTest_uspesno(){
+        runBlocking {
+
+            service?.addRecipe(recipe)
+
+            assertEquals(recipe,service?.getRecipeForId("1"))
+        }
+    }
+
+    @Test
+    fun getAllRecipesForMedicationTest_null(){
+        runBlocking  {
+            assertThrows<NullPointerException> {
+                service?.getRecipesForMedication(null)
+            }
+
+
+        }
+    }
+    @Test
+    fun getAllRecipesForMedicationTest_prazanString(){
+        runBlocking  {
+            assertThrows<IllegalArgumentException> {
+                service?.getRecipesForMedication("")
+            }
+
+
+        }
+    }
+    @Test
+    fun getALlRecipesForMedicationTest_nemaRecepata(){
+        runBlocking {
+            assertEquals(emptyList(),service?.getRecipesForMedication("Eftil"))
+        }
+    }
+    @Test
+    fun  getAllRecipesForMedicationTest_uspesno(){
+        runBlocking {
+            val recipe2=Recipe(
+                id = "2",
+                patientId = "p1",
+                doctorId = "d2",
+                medication = "Brufen",
+                instructions = "2x dnevno",
+                quantity = 10,
+                dateExpired = LocalDate.now().plusDays(5)
+            )
+            service?.addRecipe(recipe)
+            service?.addRecipe(recipe2)
+            val list=mutableListOf<Recipe>()
+            list.add(recipe)
+            list.add(recipe2)
+            assertEquals(list,service?.getRecipesForMedication("brufen"))
+        }
+    }
+    @Test
+    fun getAllValidRecipesForDoctorTest_null(){
+        runBlocking  {
+            assertThrows<NullPointerException> {
+                service?.getAllValidRecipesForDoctor(null)
+            }
+
+
+        }
+    }
+    @Test
+    fun getAllValidRecipesForDoctorTest_prazanString(){
+        runBlocking  {
+            assertThrows<IllegalArgumentException> {
+                service?.getAllValidRecipesForDoctor("")
+            }
+
+
+        }
+    }
+    @Test
+    fun getALlValidRecipesForDoctorTest_nemaRecepata(){
+        runBlocking {
+           val recipe2= Recipe(
+                id = "1",
+                patientId = "p1",
+                doctorId = "d2",
+                medication = "Brufen",
+                instructions = "2x dnevno",
+                quantity = 10,
+                dateExpired = LocalDate.now()
+            )
+            service?.addRecipe(recipe2)
+            assertEquals(emptyList(),service?.getAllValidRecipesForDoctor("d2"))
+        }
+    }
+    @Test
+    fun  getAllValidRecipesForDoctorTest_uspesno(){
+        runBlocking {
+            val recipe2=Recipe(
+                id = "2",
+                patientId = "p2",
+                doctorId = "d1",
+                medication = "Brufen",
+                instructions = "2x dnevno",
+                quantity = 10,
+                dateExpired = LocalDate.now().plusDays(5)
+            )
+            service?.addRecipe(recipe)
+            service?.addRecipe(recipe2)
+            val list=mutableListOf<Recipe>()
+            list.add(recipe)
+            list.add(recipe2)
+            assertEquals(list,service?.getAllValidRecipesForDoctor("d1"))
+        }
+    }
+    @Test
+    fun getAllValidRecipesForPatientTest_null(){
+        runBlocking  {
+            assertThrows<NullPointerException> {
+                service?.getAllValidRecipesForPatient(null)
+            }
+
+
+        }
+    }
+    @Test
+    fun getAllValidRecipesForPatientTest_prazanString(){
+        runBlocking  {
+            assertThrows<IllegalArgumentException> {
+                service?.getAllValidRecipesForPatient("")
+            }
+
+
+        }
+    }
+    @Test
+    fun getALlValidRecipesForPatientTest_nemaRecepata(){
+        runBlocking {
+            assertEquals(emptyList(),service?.getAllValidRecipesForPatient("44"))
+        }
+    }
+    @Test
+    fun  getAllValidRecipesForPatientTest_uspesno(){
         runBlocking {
             val recipe2=Recipe(
                 id = "2",
