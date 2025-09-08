@@ -14,12 +14,14 @@ import kotlin.test.assertEquals
 /**
  * Test klasa za testiranje [PatientServiceInterface]
  * @property patientService Instanca interfejsa [PatientServiceInterface]
+ * @property file Fajl koji simulira bazu
  * @author Lazar Janković
  * @see PatientServiceInterface
  */
 abstract class PatientServiceInterfaceTest {
 
     var patientService: PatientServiceInterface?=null
+    val file= File("patients.json")
 
     /**
      * Funkcija za odredjivanje koja tacno klasa nasledjuje interfejs
@@ -32,6 +34,7 @@ abstract class PatientServiceInterfaceTest {
     @BeforeEach
     fun setUp(){
         patientService=getInstance()
+        file.writeText("")
     }
     /**
      * Pre svakog testa se inicijalizuje [patientService] na null,
@@ -40,7 +43,8 @@ abstract class PatientServiceInterfaceTest {
     @AfterEach
     fun tearDown(){
         patientService=null
-        File("patients.json").writeText("")
+        file.writeText("")
+
     }
 
     /**
@@ -80,7 +84,6 @@ abstract class PatientServiceInterfaceTest {
     fun addPatient_ispravno(){
         val patient1= Patient("1","1","Pera Peric","1")
         runBlocking {
-            patientService?.addPatient(patient1)
             val result = patientService!!.addPatient(patient1)
 
             assertEquals(patient1,result)
@@ -133,7 +136,6 @@ abstract class PatientServiceInterfaceTest {
     fun getPatientById_ispravno(){
         val patient1= Patient("1","1","Pera Peric","1")
         runBlocking {
-            patientService?.addPatient(patient1)
             val result = patientService!!.addPatient(patient1)
 
             assertEquals(patient1,result)

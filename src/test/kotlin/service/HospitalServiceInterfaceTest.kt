@@ -220,7 +220,7 @@ class HospitalServiceInterfaceTest {
     @Test
     fun getHospitalsInCityTest_bolnicaNePostoji(){
         runBlocking {
-            assertEquals(null,hospitalService?.getHospitalsInCity("Sabac"))
+            assertEquals(emptyList(),hospitalService?.getHospitalsInCity("Sabac"))
         }
     }
     /**
