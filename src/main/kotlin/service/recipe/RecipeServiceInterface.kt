@@ -67,4 +67,14 @@ interface RecipeServiceInterface {
      * @return Ukoliko se pronadju vraca se lista recepata, u suprotnom prazna lista
      */
     suspend fun getAllValidRecipesForPatient(patientId: String?): List<Recipe>
+    /**
+     * Funkcija za vracanje svih recepata koji su prepisani pacijentu koji i dalje vaze
+     * @param jmbg Jmbg pacijenta ciji se recepti traze
+     * @throws NullPointerException Ako je [jmbg] null
+     * @throws IllegalArgumentException Ako je [jmbg] prazan string
+     * @throws IllegalArgumentException Ako  [jmbg] ne sadrzi samo cifre
+     * @throws IllegalArgumentException Ako  je duzina[jmbg] razlicita od 13
+     * @return Ukoliko se pronadju vraca se lista recepata, u suprotnom prazna lista
+     */
+    suspend fun getAllValidRecipesForPatientForJmbg(jmbg: String?): List<Recipe>
 }

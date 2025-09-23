@@ -50,6 +50,27 @@ class PatientServiceImplementation: PatientServiceInterface {
     }
 
     /**
+     * Funckija za pronalazenje pacijenta po jmbg
+     */
+    override suspend fun getPatientByJmbg(jmbg: String?): Patient? {
+        if (jmbg==null)
+            throw NullPointerException("Prosledjeni jmbg jendak je null")
+        if(jmbg.isEmpty()){
+            throw IllegalArgumentException("Jmbg ne moze biti null")
+
+        }
+        if(!jmbg.all { it.isDigit() }){
+            throw IllegalArgumentException("Jmbg mora sadrzati samo brojeve")
+
+        }
+        if(jmbg.length!=13){
+            throw IllegalArgumentException("Duzina jmbg-a mora biti 13 cifara")
+
+        }
+        return listOfPatients.find { patient -> patient.getJmbg()==jmbg }
+    }
+
+    /**
      * Funkcija za pronalanje pacijenata iz jedne bolnice
      */
     override suspend fun getAllPatientInHospital(hospitalId: String?): List<Patient> {

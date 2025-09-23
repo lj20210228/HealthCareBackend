@@ -97,6 +97,24 @@ class RecipeServiceImplementation: RecipeServiceInterface {
             throw IllegalArgumentException("Id pacijenta ne sme biti prazan string")
         return list.filter { it.getPatientId()==patientId &&it.getExpiredDate().isAfter(LocalDate.now())}
     }
+    /**
+     * Metoda kojima se vracaju recepti koji su prepisanu pacijentu, po pacijentovom jmbg, koji nisu istekli
+     */
+    override suspend fun getAllValidRecipesForPatientForJmbg(jmbg: String?): List<Recipe> {
+        if (jmbg==null)
+            throw NullPointerException("Id pacijenta ne sme biti null")
+        if (jmbg.isEmpty())
+            throw IllegalArgumentException("Id pacijenta ne sme biti prazan string")
+        if(!jmbg.all { it.isDigit() }){
+            throw IllegalArgumentException("Jmbg mora sadrzati samo brojeve")
+
+        }
+        if(jmbg.length!=13){
+            throw IllegalArgumentException("Duzina jmbg-a mora biti 13 cifara")
+
+        }
+        return list.filter { it.getPatientId()==jmbg &&it.getExpiredDate().isAfter(LocalDate.now())}
+    }
 
     /**
      * Funkcija za pretvaranje json fajla u listu recepata

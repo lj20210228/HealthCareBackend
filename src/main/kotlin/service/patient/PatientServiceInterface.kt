@@ -28,6 +28,18 @@ interface PatientServiceInterface {
      * @throws IllegalArgumentException ako je [patientId] prazan string
      */
     suspend fun getPatientById(patientId: String?): Patient?
+    /**
+     * Funkcija za pronalazak pacijenta po njegovom JMBG
+     * @param jmbg JMBG pacijenta
+     * @return  Ako je pacijent pronadjen vraca se objekat [Patient] koji sadrzi podatke o njemu,
+     * ukoliko pacijent nije pronadjen vraca se null
+     * @throws NullPointerException ako je [jmbg] null
+     * @throws IllegalArgumentException ako je [jmbg] prazan string
+     * @throws IllegalArgumentException ako  [jmbg] ne sadrzi samo brojeve
+     * @throws IllegalArgumentException ako je [jmbg] duzine razlicite od 13
+     */
+    suspend fun getPatientByJmbg(jmbg: String?): Patient?
+
 
     /**
      * Funkcija koja vraca sve pacijente iz jedne bolnice
