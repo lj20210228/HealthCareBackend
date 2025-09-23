@@ -136,4 +136,34 @@ data class WorkTime(
         }
         this.dayIn=dayInWeek
     }
+
+    /**
+     * Funkcija koja pretvara objekat klase [com.example.domain.WorkTime] u string
+     * @return [String] Vraca se string sa svim atrbutima
+     */
+    override fun toString(): String {
+        return "WorkTime(id='$id', startTime=$startTime, endTime=$endTime, doctorId='$doctorId', dayIn=$dayIn)"
+    }
+
+    /**
+     * Metoda za poredjenje 2 objekta klase [com.example.domain.WorkTime]
+     * @return [Boolean] Ukoliko im je id isti vratice true, u suprotnom false, vratice false i ako
+     * nisu iste klase
+     */
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as WorkTime
+
+        return id == other.id
+    }
+
+    /**
+     * Metoda koja pravi [hashCode] za objekat [com.example.domain.WorkTime]
+     * @return [Int] vraca se hash vrednost objekta, hesuje mu se samo id
+     */
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
