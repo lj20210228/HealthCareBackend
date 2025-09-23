@@ -53,7 +53,7 @@ data class WorkTime(
         if(id==null)
             throw NullPointerException("Id ne sme biti null")
         if(id.isEmpty()){
-            throw NullPointerException("Id ne sme biti prazan string")
+            throw IllegalArgumentException("Id ne sme biti prazan string")
         }
         this.id=id
     }
@@ -74,7 +74,7 @@ data class WorkTime(
         if(doctorId==null)
             throw NullPointerException("Id lekara ne sme biti null")
         if(doctorId.isEmpty()){
-            throw NullPointerException("Id lekara sme biti prazan string")
+            throw IllegalArgumentException("Id lekara sme biti prazan string")
         }
         this.doctorId=doctorId
     }
