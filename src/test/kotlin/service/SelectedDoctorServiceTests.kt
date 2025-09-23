@@ -204,7 +204,7 @@ class SelectedDoctorServiceTests {
     @Test
     fun getSelectedPatientsForDoctor_ispravno(){
         runBlocking {
-            val patient= Patient("1","1","Pera Peric","1")
+            val patient= Patient("1","1","Pera Peric","1","1007002790023")
             val selected= SelectedDoctor("1","1")
 
             service.listOfSelectedDoctors.add(selected)

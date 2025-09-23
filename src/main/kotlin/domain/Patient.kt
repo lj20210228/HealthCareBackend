@@ -31,6 +31,7 @@ data class Patient(
         setUserId(userId)
         setFullName(fullName)
         setHospitalId(hospitalId)
+        setJmbg(jmbg)
     }
     /**
      * Metoda koja vraca id pacijenta
@@ -200,7 +201,7 @@ data class Patient(
      * @return [String] Sa podacima o pacijentu
      */
     override fun toString(): String {
-        return "Patient(id='$id', userId='$userId', fullName='$fullName', hospitalId='$hospitalId')"
+        return "Patient(id='$id', userId='$userId', fullName='$fullName', hospitalId='$hospitalId,jmbg='$jmbg')"
     }
 
 

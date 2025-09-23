@@ -66,8 +66,8 @@ abstract class PatientServiceInterfaceTest {
      */
     @Test
     fun addPatient_test_vec_postoji(){
-        val patient1= Patient("1","1","Pera Peric","1")
-        val patient2= Patient("1","1","Pera Peric","1")
+        val patient1= Patient("1","1","Pera Peric","1","1007002790023")
+        val patient2= Patient("1","1","Pera Peric","1","1007002790023")
 
         runBlocking {
             patientService?.addPatient(patient1)
@@ -82,7 +82,7 @@ abstract class PatientServiceInterfaceTest {
      */
     @Test
     fun addPatient_ispravno(){
-        val patient1= Patient("1","1","Pera Peric","1")
+        val patient1= Patient("1","1","Pera Peric","1","1007002790023")
         runBlocking {
             val result = patientService!!.addPatient(patient1)
 
@@ -134,7 +134,7 @@ abstract class PatientServiceInterfaceTest {
      */
     @Test
     fun getPatientById_ispravno(){
-        val patient1= Patient("1","1","Pera Peric","1")
+        val patient1= Patient("1","1","Pera Peric","1","1007002790023")
         runBlocking {
             val result = patientService!!.addPatient(patient1)
 
@@ -181,8 +181,8 @@ abstract class PatientServiceInterfaceTest {
     @Test
     fun getAllPatientInHospital_test_vracaSeIspravno(){
         runBlocking {
-            val patient1= Patient("1","1","Pera Peric","1")
-            val patient2= Patient("2","2","Mika Mikic","1")
+            val patient1= Patient("1","1","Pera Peric","1","1007002790023")
+            val patient2= Patient("2","2","Mika Mikic","1","1007002790022")
             patientService?.addPatient(patient1)
             patientService?.addPatient(patient2)
             val patients=listOf<Patient>(patient1,patient2)

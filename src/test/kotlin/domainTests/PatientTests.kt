@@ -21,7 +21,7 @@ class PatientTests {
      */
     @BeforeEach
     fun setUp(){
-        patient= Patient("1","2","Pera Peric","1")
+        patient= Patient("1","2","Pera Peric","1","1007002790023")
     }
 
     /**
@@ -216,6 +216,54 @@ class PatientTests {
     }
 
     /**
+     * Funckija koja testira setJmbg kada je prosledjena null vrednost
+     * @throws NullPointerException Ako se baci izuzetak test prolazi
+     */
+    @Test
+    fun setJmbg_test_null(){
+        assertThrows<NullPointerException> {
+            patient?.setJmbg(null)
+        }
+
+    }
+    /**
+     * Funckija koja testira setJmbg kada je prosledjena prazan string
+     * @throws IllegalArgumentException Ako se baci izuzetak test prolazi
+     */
+    @Test
+    fun setJmbg_test_prazan(){
+        assertThrows<IllegalArgumentException> {
+            patient?.setJmbg("")
+        }
+
+    }
+
+    /**
+     * Funckija koja testira setJmbg kada je prosledjen string koji ili ne sadrzi samo brojeve
+     * ili nema tacno 13 cifara
+     * @throws NullPointerException Ako se baci izuzetak test prolazi
+     */
+    @ParameterizedTest
+    @CsvSource(
+        "bb111",
+        "123456",
+        )
+    fun setJmbg_test_nisuSamoCifreIliKraci(jmbg: String){
+        assertThrows<IllegalArgumentException> {
+            patient?.setJmbg(jmbg)
+        }
+    }
+
+    /**
+     * Funkcija koja testira setJmbg kad je prosledjen ispravan argument
+     */
+    @Test
+    fun setJmbg_ispravno(){
+        patient?.setJmbg("1007002790023")
+        assertEquals("1007002790023",patient?.getJmbg())
+    }
+
+    /**
      * Funkcija koja testira toString metodu i ako se sadrze svi stringovi, test prolazi
      */
     @Test
@@ -224,9 +272,7 @@ class PatientTests {
         assertTrue(string?.contains("1")!!)
         assertTrue(string?.contains("2")!!)
         assertTrue(string?.contains("1")!!)
-
-
-
+        assertTrue(string?.contains("1007002790023")!!)
 
         assertTrue(string?.contains("Pera Peric")!!)
     }
@@ -236,13 +282,14 @@ class PatientTests {
      */
     @ParameterizedTest
     @CsvSource(
-        ("1,2,Pera Peric,1,true"),
-        ("2,2,Pera Peric,1,true"),
-        ("1,1,Pera Peric,1,true"),
-        ("2,3,Pera Peric,1,false"),
+        ("1,2,Pera Peric,1,1007002790023,true"),
+        ("2,2,Pera Peric,1,1007002790022,true"),
+        ("1,1,Pera Peric,1,1007002790022,true"),
+        ("2,3,Pera Peric,1,1007002790023,true"),
+        ("2,3,Pera Peric,1,1007002790022,false"),
     )
-    fun equals_test(id: String, userId: String, fullName: String, hospitalId: String, expected: Boolean){
-        val patient2 = Patient(id,userId,fullName,hospitalId)
+    fun equals_test(id: String, userId: String, fullName: String, hospitalId: String,jmbg:String, expected: Boolean){
+        val patient2 = Patient(id,userId,fullName,hospitalId,jmbg)
 
         assertEquals(expected, patient?.equals(patient2))
     }
@@ -253,15 +300,15 @@ class PatientTests {
      */
     @ParameterizedTest
     @CsvSource(
-        ("1,2,Pera Peric,1,true"),
-        ("2,2,Pera Peric,1,false"),
-        ("1,1,Pera Peric,1,false"),
-        ("2,3,Pera Mitic,1,false"),
-        ("2,1,Pera Peric,2,false"),
+        ("1,2,Pera Peric,1,1007002790023,true"),
+        ("2,2,Pera Peric,1,1007002790023,false"),
+        ("1,1,Pera Peric,1,1007002790023,false"),
+        ("2,3,Pera Mitic,1,1007002790023,false"),
+        ("2,1,Pera Peric,2,1007002790023,false"),
     )
-    fun hashCodeTest(id: String, userId: String, fullName: String,hospitalId: String,expected: Boolean){
+    fun hashCodeTest(id: String, userId: String, fullName: String, hospitalId: String, jmbg: String, expected: Boolean){
 
-        val patient2 = Patient(id,userId,fullName,hospitalId)
+        val patient2 =Patient(id,userId,fullName,hospitalId,jmbg)
 
         assertEquals(expected,patient.hashCode().equals(patient2.hashCode()))
     }
