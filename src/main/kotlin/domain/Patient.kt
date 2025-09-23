@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  * @property userId Spoljni kljuc ka [User] tabeli
  * @property fullName Ime i prezime pacijenta
  * @property hospitalId Id bolnice u kojoj se pacijent leci
+ * @property jmbg Jedinstveni maticni broj pacijenta, sluzice najvise za pretragu
  * @see User
  */
 @Serializable
@@ -17,6 +18,7 @@ data class Patient(
     private var userId: String,
     private var fullName: String,
     private var hospitalId: String,
+    private var jmbg:String?
 ){
     companion object{
         /**
@@ -129,6 +131,40 @@ data class Patient(
     }
 
     /**
+     * Funkcija koja vraca jmbg pacijenta
+     */
+    fun getJmbg(): String?{
+        return this.jmbg
+    }
+
+    /**
+     * Funkcija koja postavlja jmbg pacijenta
+     * @throws NullPointerException Ako je prosledjeni argument null
+     * @throws IllegalArgumentException Ako je prosledjeni argument prazan
+     * @throws IllegalArgumentException Ako prosledjeni argument sadrzi manje od 13 cifara
+     * @throws IllegalArgumentException Ako prosledjeni argument sadrzi bilo sta sem brojeva
+     *
+     * */
+    fun setJmbg(jmbg:String?){
+        if(jmbg==null){
+            throw NullPointerException("Jmbg ne sme biti null")
+        }
+        if(jmbg.isEmpty())
+            throw IllegalArgumentException("Jmbg ne sme biti prazan")
+
+        if(!jmbg.all { it.isDigit() }){
+            throw IllegalArgumentException("Jmbg mora sadrzati  samo brojeve")
+
+        }
+        if(jmbg.length!=13) {
+            throw IllegalArgumentException("Jmbg mora imati tacno 13 cifara")
+
+        }
+        this.jmbg=jmbg
+    }
+
+
+    /**
      * Metoda koja proverava da li je neki objekat identican Doctor objektu
      *
      * @return [Boolean] Ukoliko se klasa razlikuje od [com.example.domain.Doctor] ili
@@ -143,7 +179,7 @@ data class Patient(
 
 
 
-        return id==other.id ||userId==other.userId    }
+        return id==other.id ||userId==other.userId  ||jmbg==other.jmbg  }
     /**
      * Generiše hash kod za [com.example.domain.Patient] objekat.
      *
@@ -155,6 +191,7 @@ data class Patient(
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + userId.hashCode()
+        result=31*result+jmbg.hashCode()
         return result
     }
 
