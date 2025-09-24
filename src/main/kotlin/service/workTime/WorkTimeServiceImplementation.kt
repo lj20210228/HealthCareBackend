@@ -33,7 +33,7 @@ class WorkTimeServiceImplementation: WorkTimeInterface {
             throw NullPointerException("Id lekara cije se radno vreme trazi ne moze biti null")
         if (doctorId.isEmpty())
             throw NullPointerException("Id lekara cije se radno vreme trazi ne moze biti prazan string")
-        val doctorIdExist=doctors.find { it.getId()==doctorId }
+        val doctorIdExist=list.find { it.getDoctorId()==doctorId }
         if (doctorIdExist==null){
             return null
         }
