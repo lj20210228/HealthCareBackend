@@ -48,5 +48,5 @@ interface WorkTimeInterface {
      * @return null Ako [workTime] ne postoji
      * @return [WorkTime] Ako je uspesno azuriranje
      */
-    suspend fun updateWorkingTime(workTime: WorkTime): WorkTime?
+    suspend fun updateWorkingTime(workTime: WorkTime?): WorkTime?
 }
