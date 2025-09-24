@@ -1,10 +1,9 @@
 package com.example.domain
 
-import io.ktor.util.reflect.instanceOf
+import com.example.date.StrictLocalTimeSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalTime
-import kotlin.reflect.KClass
 
 /**
  *Klasa koja sluzi za podatke o radnom vremenu lekara, cuva podatke za svaki dan posebno
@@ -18,9 +17,9 @@ import kotlin.reflect.KClass
 @Serializable
 data class WorkTime(
     private var id: String,
-    @Contextual
+    @Serializable(with = StrictLocalTimeSerializer::class)
     private var startTime: LocalTime?=null,
-    @Contextual
+    @Serializable(with = StrictLocalTimeSerializer::class)
     private var endTime: LocalTime?=null,
     private var doctorId: String,
     private var dayIn: DayInWeek
