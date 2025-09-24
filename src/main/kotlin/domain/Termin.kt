@@ -185,7 +185,7 @@ data class Termin(
     fun setEndTime(endTime: LocalTime?){
         if(endTime==null)
             throw NullPointerException("Kraj termina ne moze biti null")
-        if (endTime.isAfter(startTime))
+        if (endTime.isBefore(startTime))
             throw IllegalArgumentException("Kraj termina ne moze biti pre poetka")
         this.startTime=startTime
     }
