@@ -187,7 +187,7 @@ data class Termin(
             throw NullPointerException("Kraj termina ne moze biti null")
         if (endTime.isBefore(startTime))
             throw IllegalArgumentException("Kraj termina ne moze biti pre poetka")
-        this.startTime=startTime
+        this.endTime=endTime
     }
 
     /**
