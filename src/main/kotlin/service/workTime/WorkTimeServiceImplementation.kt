@@ -32,11 +32,12 @@ class WorkTimeServiceImplementation: WorkTimeInterface {
         if(doctorId==null)
             throw NullPointerException("Id lekara cije se radno vreme trazi ne moze biti null")
         if (doctorId.isEmpty())
-            throw NullPointerException("Id lekara cije se radno vreme trazi ne moze biti prazan string")
+            throw IllegalArgumentException("Id lekara cije se radno vreme trazi ne moze biti prazan string")
         val doctorIdExist=list.find { it.getDoctorId()==doctorId }
         if (doctorIdExist==null){
             return null
         }
+
         return list.filter{ it.getDoctorId()==doctorId }
     }
     /**
@@ -87,11 +88,7 @@ class WorkTimeServiceImplementation: WorkTimeInterface {
         if (!list.contains(workTime))
             throw IllegalArgumentException("Radno vreme sa ovim id ne postoji")
 
-        var idContains=list.find{ it.getId()==workTime.getId() }
-        println(idContains)
-
-        if (idContains==null)
-            return null
+        val idContains=list.find{ it.getId()==workTime.getId() }
 
         list.add(workTime)
 
