@@ -16,7 +16,7 @@ class DoctorServiceImplementation: DoctorServiceInterface {
 
 
     val file= File("doctors.json")
-    private var doctorList=getAllDoctors()
+    private var doctorList=getAllDoctors(file)
 
     /**
      * Dodaje novog lekara
@@ -166,7 +166,7 @@ class DoctorServiceImplementation: DoctorServiceInterface {
      * Funkcija koja ucitava listu svih lekara u JSON fajlu
      * @return [MutableList[Doctor]] Lista svih lekara
      */
-     fun getAllDoctors(): MutableList<Doctor>{
+     public fun getAllDoctors(file: File): MutableList<Doctor>{
         if(!file.exists()||file.readText().isBlank())return mutableListOf()
         val jsonString=file.readText()
         return Json.Default.decodeFromString<MutableList<Doctor>>(jsonString)
