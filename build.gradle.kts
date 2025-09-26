@@ -40,6 +40,14 @@ dependencies {
 
 
 
+    implementation("org.jetbrains.exposed:exposed-core:0.50.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.50.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.50.1")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.50.1")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1")
+
+    implementation("com.mysql:mysql-connector-j:8.4.0")
+
 
     implementation("at.favre.lib:bcrypt:0.10.2")
 
