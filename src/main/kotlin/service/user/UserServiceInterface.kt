@@ -14,9 +14,9 @@ interface UserServiceInterface {
      * @param user Korisnik kog treba dodati
      * @throws NullPointerException Ukoliko je prosledjeni argument null
      * @throws IllegalArgumentException Ukoliko prosledjeni argument vec postoji
-     * @return [User] Vracaju se podaci o useru
+     * @return [User] Vracaju se podaci o useru ako je uspesno dodat u suprotnom null
      */
-    suspend fun addUser(user: User?): User
+    suspend fun addUser(user: User?): User?
 
     /**
      * Funkcija koja sluzi za pretrazivanje usera po id

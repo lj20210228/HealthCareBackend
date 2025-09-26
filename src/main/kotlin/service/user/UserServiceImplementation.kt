@@ -1,38 +1,59 @@
 package com.example.service.user
 
+import com.example.database.DatabaseFactory
+import com.example.database.UserTable
 import com.example.domain.Doctor
 import com.example.domain.Role
 import com.example.domain.User
+import com.example.security.hashPassword
+import io.ktor.client.plugins.UserAgent
 import kotlinx.serialization.json.Json
 import org.checkerframework.checker.mustcall.qual.MustCallAlias
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.statements.Statement
 import java.io.File
+import java.util.UUID
 
 /**
  * Klasa koja implementira metode [UserServiceInterface]
  * @author Lazar Janković
  * @see User
  * @see UserServiceInterface
- * @property file Fajl koji sluzi za skladistenje json podataka za usera, simulira bazu
- * @property list Lista u koju se smestaju podaci o useru, koji se kasnije prevode u json ili iz jsona,
  * komunikacija sa bazom
  */
 class UserServiceImplementation: UserServiceInterface {
-    val file= File("users.json")
-    val list=getUsers()
+
 
     /**
      * Dodavanje usera
      */
-    override suspend fun addUser(user: User?): User {
+    override suspend fun addUser(user: User?): User? {
+        var insertStatement: Statement<Number>?=null
+        var userId: UUID?=null
         if (user==null)
             throw NullPointerException("Podaci o korisniku ne mogu biti null")
-        if (list.contains(user))
-            throw IllegalArgumentException("Korisnik vec postoji")
-        list.add(user)
-        val jsonString=Json { prettyPrint=true }.encodeToString(list)
-        file.writeText(jsonString)
-        return user
+         DatabaseFactory.dbQuery {
+            insertStatement=UserTable.insert{
+                it[email]=user.getEmail()
+                it[password]= hashPassword(user.getPassword())
+                it[role]=user.getRole()
+
+            }
+            userId=insertStatement.resultedValues?.get(0)?.get(UserTable.id)
+        }
+
+        val user= DatabaseFactory.dbQuery {
+            UserTable.selectAll().where( UserTable.id eq userId!!).firstOrNull()
+        }
+        return rowToUser(user)
+
+
     }
+
 
     /**
      * Pretrazivanje usera po id
@@ -42,9 +63,10 @@ class UserServiceImplementation: UserServiceInterface {
             throw NullPointerException("Id usera ne moze biti null")
         if(id.isEmpty())
             throw IllegalArgumentException("Id usera ne moze biti prazan string")
-        return list.find {
-            it.getId()==id
+        val user= DatabaseFactory.dbQuery {
+            UserTable.selectAll().where( UserTable.id eq UUID.fromString(id)).firstOrNull()
         }
+        return rowToUser(user)
 
     }
     /**
@@ -55,9 +77,10 @@ class UserServiceImplementation: UserServiceInterface {
             throw NullPointerException("Email usera ne moze biti null")
         if(email.isEmpty())
             throw IllegalArgumentException("Email usera ne moze biti prazan string")
-        return list.find {
-            it.getEmail()==email
+        val user= DatabaseFactory.dbQuery {
+            UserTable.selectAll().where( UserTable.email eq email).firstOrNull()
         }
+        return rowToUser(user)
     }
     /**
      * Pretrazivanje usera po ulozi
@@ -66,18 +89,25 @@ class UserServiceImplementation: UserServiceInterface {
         if(role==null)
             throw NullPointerException("Uloga usera ne moze biti null")
 
-        return list.filter {
-            it.getRole()==role
-        }
-    }
+        val users= DatabaseFactory
+            .dbQuery {
+                UserTable.selectAll().where(UserTable.role eq role)
+            }.mapNotNull {
+                rowToUser(it)
+            }
 
-    /**
-     * Funkcija koja cita podatke iz json fajla i pretvara ih u [MutableList[User]]
-     */
-    fun getUsers(): MutableList<User>{
-        if(!file.exists()||file.readText().isBlank())return mutableListOf()
-        val jsonString=file.readText()
-        return Json.Default.decodeFromString<MutableList<User>>(jsonString)
+        return users
 
     }
+    fun rowToUser(row: ResultRow?): User?{
+        if(row==null)
+            return null
+        else return User(
+            id=row[UserTable.id].toString(),
+            email = row[UserTable.email],
+            password = row[UserTable.password],
+            role=row[UserTable.role]
+        )
+    }
+
 }
