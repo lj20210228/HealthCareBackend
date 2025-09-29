@@ -1,5 +1,6 @@
 package com.example.database
 
+import com.example.domain.Patient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
@@ -22,8 +23,11 @@ object DatabaseFactory {
      * Inicijalizuje konekciju ka bazi i kreira sve potrebne tabele.
      *
      * Tabele koje se kreiraju:
-     * - UserTable
-     *
+     * -UserTable
+     * -DoctorTable
+     * -PatientTable
+     * -HospitalTable
+     * -SelectedDoctorTable
      *
      * Funkcija se poziva pri pokretanju aplikacije.
      */
@@ -36,6 +40,20 @@ object DatabaseFactory {
             SchemaUtils.create(UserTable)
             println("Kreirana baza")
         }
+        transaction {
+            SchemaUtils.create(HospitalTable)
+
+        }
+        transaction {
+            SchemaUtils.create(DoctorTable)
+        }
+        transaction {
+            SchemaUtils.create(PatientTable)
+        }
+        transaction {
+            SchemaUtils.create(SelectedDoctorTable)
+        }
+
     }
 
 
