@@ -51,4 +51,25 @@ interface PatientServiceInterface {
      */
     suspend fun getAllPatientInHospital(hospitalId: String?): List<Patient>
 
+    /**
+     * Funkcija za izmenu podataka o pacijentu
+     * @param patient Podaci o pacijentu koje treba izmeniti
+     * @return null Ako su podaci neuspesno azurirani
+     * @return [Patient] Ako su podaci uspesno azurirani
+     * @throws NullPointerException Ako je prosledjeni argument null
+     * @throws IllegalArgumentException Ako pacijent ne postoji
+     */
+    suspend fun editPatient(patient: Patient?): Patient?
+
+    /**
+     * Funkcija koja brise podatke o pacijentu sa odredjenih id
+     * @param patientId Id pacijenta kog treba obrisati
+     * @throws NullPointerException Ako je prosledjeni parametar null
+     * @throws IllegalArgumentException Ako je prosledjeni id prazan stirng
+     * @throws IllegalArgumentException Ako pacijent ne postoji
+     * @return [Boolean] Ako je pacijent uspesno obrisan true, u suprotnom false
+     */
+    suspend fun deletePatient(patientId: String?): Boolean
+
+
 }
