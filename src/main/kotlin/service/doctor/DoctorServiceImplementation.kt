@@ -1,37 +1,59 @@
 package com.example.service.doctor
 
+import com.example.database.DatabaseFactory
+import com.example.database.DoctorTable
 import com.example.domain.Doctor
 import com.example.service.DoctorServiceInterface
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.Expression
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insertReturning
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.updateReturning
 import java.io.File
+import java.util.UUID
 
 /**
  * Klasa koja sluzi za implementaciju [DoctorServiceInterface] interfejsa
- * @property file Fajl koji se koristi za lokalno testiranje, za Json fajlove
- * @property doctorList Lokalna lista koja zajedno sa fajlom simulira tabelu u bazi
+
  * @author Lazar Janković
  * @see DoctorServiceInterface
  */
 class DoctorServiceImplementation: DoctorServiceInterface {
 
 
-    val file= File("doctors.json")
-    private var doctorList=getAllDoctors(file)
+
+
 
     /**
      * Dodaje novog lekara
      * @see DoctorServiceInterface
-     * @see com.example.domain.Doctor
+     * @see Doctor
      */
     override suspend fun addDoctor(doctor: Doctor?): Doctor {
+        val doctorList=getAllDoctors()
         if (doctor==null)
             throw NullPointerException("Nisu ispravni prosledjeni podaci o lekaru")
         if (doctorList.contains(doctor))
             throw IllegalArgumentException("Lekar vec postoji")
 
-        doctorList.add(doctor)
-        val jsonString= Json { prettyPrint = true }.encodeToString(doctorList)
-        file.writeText(jsonString)
+        DatabaseFactory.dbQuery {
+            DoctorTable.insertReturning {
+                it[userId]= UUID.fromString(doctor.getUserId())
+                it[fullName]=doctor.getFullName()
+                it[isGeneral]=doctor.getIsGeneral()
+                it[specialization]=doctor.getSpecialization()
+                it[currentPatients]=doctor.getCurrentPatients()
+                it[maxPatients]=doctor.getMaxPatients()
+                it[hospitalId]= UUID.fromString(doctor.getHospitalId())
+            }.mapNotNull { rowToDoctor(it) }
+        }
+
 
 
         return doctor
@@ -50,7 +72,11 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
 
 
-        return doctorList.find { it.getId()==doctorId }
+        return rowToDoctor(DatabaseFactory.dbQuery {
+            DoctorTable.select(DoctorTable.id eq UUID.fromString(doctorId)).first()
+
+        })
+
 
     }
 
@@ -64,7 +90,15 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Id bolnice ne sme biti null")
         if(hospitalId.isEmpty())
             throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
-        return doctorList
+        return  DatabaseFactory.dbQuery {
+            DoctorTable.select (
+                DoctorTable.hospitalId eq UUID.fromString(hospitalId)
+            ).mapNotNull {
+                rowToDoctor(it)
+            }
+
+        }
+
     }
     /**
      * Pronalazi sve lekare opste prakse u jednoj bolnici koji imaju mesta da budu izabrani
@@ -76,7 +110,17 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Id bolnice ne sme biti null")
         if(hospitalId.isEmpty())
             throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
-        return doctorList.filter{doctor -> doctor.getIsGeneral()&&doctor.getCurrentPatients()<doctor.getMaxPatients()}
+
+        return DatabaseFactory
+            .dbQuery {
+                DoctorTable.selectAll().where {
+                    DoctorTable.hospitalId eq UUID.fromString(hospitalId) and
+                            ( DoctorTable.currentPatients less  DoctorTable.maxPatients)
+
+                }.mapNotNull {
+                    rowToDoctor(it)
+                }
+            }
     }
 
     /**
@@ -89,7 +133,14 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Id bolnice ne sme biti null")
         if(hospitalId.isEmpty())
             throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
-        return doctorList.filter{doctor -> doctor.getIsGeneral()}
+        return DatabaseFactory
+            .dbQuery {
+                DoctorTable.select(DoctorTable.hospitalId eq UUID.fromString(hospitalId)).where {
+                    DoctorTable.isGeneral eq true
+                }.mapNotNull {
+                    rowToDoctor(it)
+                }
+            }
     }
 
     /**
@@ -111,7 +162,16 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Specijalizacije lekara ne sme biti null")
         if(specialization.isEmpty())
             throw IllegalArgumentException("Specijalizacija lekara ne sme biti prazan string")
-        return doctorList.filter{doctor -> doctor.getSpecialization()==specialization&&doctor.getHospitalId()==hospitalId}
+
+        return DatabaseFactory
+            .dbQuery {
+                DoctorTable.select(DoctorTable.hospitalId eq UUID.fromString(hospitalId)).where {
+                    (DoctorTable.isGeneral eq true) and
+                            ( DoctorTable.specialization eq specialization)
+                }.mapNotNull {
+                    rowToDoctor(it)
+                }
+            }
     }
     /**
      *
@@ -129,7 +189,18 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Specijalizacije lekara ne sme biti null")
         if(specialization.isEmpty())
             throw IllegalArgumentException("Specijalizacija lekara ne sme biti prazan string")
-        return doctorList.filter{doctor -> doctor.getSpecialization()==specialization&&doctor.getHospitalId()==hospitalId&&doctor.getCurrentPatients()<doctor.getMaxPatients()}
+
+        return DatabaseFactory
+            .dbQuery {
+                DoctorTable.selectAll().where {
+                    DoctorTable.hospitalId eq UUID.fromString(hospitalId) and
+                            ( DoctorTable.currentPatients less  DoctorTable.maxPatients) and
+                            (DoctorTable.specialization eq specialization)
+
+                }.mapNotNull {
+                    rowToDoctor(it)
+                }
+            }
     }
 
     /**
@@ -141,24 +212,16 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Id lekara ne sme biti null")
         if(doctorId.isEmpty())
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
-        val index = doctorList.indexOfFirst { it.getId() == doctorId }
-        if (index == -1) return false
 
-        val doctor = doctorList[index]
 
-        if (doctor.getCurrentPatients() >= doctor.getMaxPatients()) return false
+        val editDoctors=DatabaseFactory.dbQuery {
+            DoctorTable
+                .update(where = {DoctorTable.id eq UUID.fromString(doctorId)}){
+                    it.update(DoctorTable.currentPatients, DoctorTable.currentPatients +1)
 
-        // Napravi novu instancu sa povećanim brojem pacijenata
-        val updatedDoctor = doctor.copy(currentPatients = doctor.getCurrentPatients() + 1)
-
-        // Zameni staru instancu u listi
-        doctorList[index] = updatedDoctor
-
-        // Upisi u fajl
-        val json = Json { prettyPrint = true }.encodeToString(doctorList)
-        file.writeText(json)
-
-        return true
+                }
+        }
+        return editDoctors>0
 
 
     }
@@ -166,9 +229,24 @@ class DoctorServiceImplementation: DoctorServiceInterface {
      * Funkcija koja ucitava listu svih lekara u JSON fajlu
      * @return [MutableList[Doctor]] Lista svih lekara
      */
-     public fun getAllDoctors(file: File): MutableList<Doctor>{
-        if(!file.exists()||file.readText().isBlank())return mutableListOf()
-        val jsonString=file.readText()
-        return Json.Default.decodeFromString<MutableList<Doctor>>(jsonString)
+     suspend fun getAllDoctors(): List<Doctor>{
+         return DatabaseFactory.dbQuery {
+             DoctorTable.selectAll()
+                 .mapNotNull { rowToDoctor(it) }
+         }
+    }
+     fun rowToDoctor(resultRow: ResultRow?): Doctor?{
+        if(resultRow==null)
+            throw NullPointerException("Red u tabeli ne moze biti null")
+        return Doctor(
+            id = resultRow[DoctorTable.id].toString(),
+            userId = resultRow[DoctorTable.userId].toString(),
+            fullName = resultRow[DoctorTable.fullName],
+            specialization = resultRow[DoctorTable.specialization],
+            maxPatients = resultRow[DoctorTable.maxPatients]!!,
+            currentPatients = resultRow[DoctorTable.currentPatients],
+            hospitalId = resultRow[DoctorTable.hospitalId].toString(),
+            isGeneral = resultRow[DoctorTable.isGeneral]
+        )
     }
 }
