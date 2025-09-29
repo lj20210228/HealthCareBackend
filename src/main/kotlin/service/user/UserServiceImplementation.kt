@@ -99,6 +99,12 @@ class UserServiceImplementation: UserServiceInterface {
         return users
 
     }
+
+    /**
+     * Funkcija koja transformise polje iz tabele users u [User] objekat
+     * @param row Polje u tabeli user
+     * @return [User] Ako je user pronadjen ili null ako nije
+     */
     fun rowToUser(row: ResultRow?): User?{
         if(row==null)
             return null

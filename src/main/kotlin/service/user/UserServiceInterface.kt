@@ -6,11 +6,11 @@ import com.example.domain.User
 /**
  * Interfejs koji sluzi za rukovanje podacima o [User]
  * @author Lazar Janković
- * @see UserServiceInterface
+ * @see User
  */
 interface UserServiceInterface {
     /**
-     * Funckija koja sluzi za dodavanje novog [User]
+     * Funckija koja sluzi za dodavanje novog [User] u tabelu
      * @param user Korisnik kog treba dodati
      * @throws NullPointerException Ukoliko je prosledjeni argument null
      * @throws IllegalArgumentException Ukoliko prosledjeni argument vec postoji
