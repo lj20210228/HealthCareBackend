@@ -12,6 +12,7 @@ import org.checkerframework.checker.mustcall.qual.MustCallAlias
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.Statement
@@ -32,24 +33,22 @@ class UserServiceImplementation: UserServiceInterface {
      * Dodavanje usera
      */
     override suspend fun addUser(user: User?): User? {
-        var insertStatement: Statement<Number>?=null
-        var userId: UUID?=null
+
         if (user==null)
             throw NullPointerException("Podaci o korisniku ne mogu biti null")
-         DatabaseFactory.dbQuery {
-            insertStatement=UserTable.insert{
+         return DatabaseFactory.dbQuery {
+            UserTable.insertReturning{
                 it[email]=user.getEmail()
                 it[password]= hashPassword(user.getPassword())
                 it[role]=user.getRole()
 
-            }
-            userId=insertStatement.resultedValues?.get(0)?.get(UserTable.id)
+            }.map{
+                rowToUser(it)
+            }.firstOrNull()
         }
 
-        val user= DatabaseFactory.dbQuery {
-            UserTable.selectAll().where( UserTable.id eq userId!!).firstOrNull()
-        }
-        return rowToUser(user)
+
+
 
 
     }

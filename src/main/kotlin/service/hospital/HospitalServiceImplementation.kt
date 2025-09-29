@@ -3,11 +3,14 @@ package com.example.service.hospital
 import com.example.database.DatabaseFactory
 import com.example.database.HospitalTable
 import com.example.domain.Hospital
+import com.example.request.HospitalRequest
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.statements.Statement
 import java.io.File
 import java.util.UUID
 
@@ -15,8 +18,6 @@ import java.util.UUID
  * Klasa koja implementira metode [HospitalServiceInterface]
  * @author Lazar Janković
  * @see HospitalServiceInterface
- * @property file Json fajl koji simulira kolonu u bazi
- * @property list Lista bolnica koja se ucitava iz i u json fajl
  *
  */
 class HospitalServiceImplementation: HospitalServiceInterface {
@@ -26,25 +27,24 @@ class HospitalServiceImplementation: HospitalServiceInterface {
     /**
      * Dodavanje nove bolnice
      */
-    override suspend fun addHospital(hospital: Hospital?): Hospital? {
-        val list=getAllHospitals()
+    override suspend fun addHospital(hospital: HospitalRequest?): Hospital? {
+
+        var insertStatement: Statement<Number>
+        var id: UUID?=null
         if (hospital==null)
             throw NullPointerException("Bolnica ne moze biti null")
-        if (list.contains(hospital))
-            throw IllegalArgumentException("Bolnica vec postoji")
 
-        val id=DatabaseFactory.dbQuery {
-            HospitalTable.insert {
-                it[name]=hospital.getName()
-                it[city]=hospital.getCity()
-                it[address]=hospital.getCity()
-            }[HospitalTable.id]
-        }
-        return DatabaseFactory.dbQuery {
-            HospitalTable.select(HospitalTable.id eq id).firstNotNullOfOrNull {
+         return DatabaseFactory.dbQuery {
+             HospitalTable.insertReturning {
+                it[name]=hospital.name
+                it[city]=hospital.city
+                it[address]=hospital.address
+            }.map {
                 rowToHospital(it)
-            }
+             }.firstOrNull()
+
         }
+
     }
 
     /**

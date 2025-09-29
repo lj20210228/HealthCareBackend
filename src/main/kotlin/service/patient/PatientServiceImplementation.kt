@@ -40,19 +40,18 @@ class PatientServiceImplementation: PatientServiceInterface {
         if (listOfPatients.contains(patient)){
             throw IllegalArgumentException("Pacijent vec postoji")
         }
-         id=DatabaseFactory.dbQuery {
-            PatientTable.insert{
+         return DatabaseFactory.dbQuery {
+            PatientTable.insertReturning{
                 it[fullName]=patient.getFullName()
                 it[userId]= UUID.fromString(patient.getUserId())
                 it[hospitalId]= UUID.fromString(patient.getHospitalId())
                 it[jmbg]=patient.getJmbg().toString()
-            }[PatientTable.id]
+            }.map {
+                rowToPatient(it)
+            }.first()
 
          }
-        return rowToPatient(DatabaseFactory.dbQuery {
-            PatientTable.select(PatientTable.id eq id)
-                .firstOrNull()
-        })
+
 
 
 

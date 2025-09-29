@@ -1,6 +1,7 @@
 package com.example.service.hospital
 
 import com.example.domain.Hospital
+import com.example.request.HospitalRequest
 
 /**
  * Intefejs koji sadrzi metode za rukovanje podacima o bolnici
@@ -15,7 +16,7 @@ interface HospitalServiceInterface {
      * @throws IllegalArgumentException Ukoliko bolnica vec postoji
      * @return [Hospital] Ukoliko je bolnica uspesno dodata vracaju se podaci o njoj
      */
-    suspend fun addHospital(hospital: Hospital?): Hospital?
+    suspend fun addHospital(hospital: HospitalRequest?): Hospital?
 
     /**
      * Metoda za pretrazivanje bolnice po njenom id
