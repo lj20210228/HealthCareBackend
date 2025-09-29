@@ -1,8 +1,15 @@
 package com.example.service.hospital
 
+import com.example.database.DatabaseFactory
+import com.example.database.HospitalTable
 import com.example.domain.Hospital
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import java.io.File
+import java.util.UUID
 
 /**
  * Klasa koja implementira metode [HospitalServiceInterface]
@@ -14,21 +21,30 @@ import java.io.File
  */
 class HospitalServiceImplementation: HospitalServiceInterface {
 
-    val file= File("hospitals.json")
-    val list=getHospitals()
+
 
     /**
      * Dodavanje nove bolnice
      */
-    override suspend fun addHospital(hospital: Hospital?): Hospital {
+    override suspend fun addHospital(hospital: Hospital?): Hospital? {
+        val list=getAllHospitals()
         if (hospital==null)
             throw NullPointerException("Bolnica ne moze biti null")
         if (list.contains(hospital))
             throw IllegalArgumentException("Bolnica vec postoji")
-        list.add(hospital)
-        val jsonString=Json { prettyPrint=true }.encodeToString(list)
-        file.writeText(jsonString)
-        return hospital
+
+        val id=DatabaseFactory.dbQuery {
+            HospitalTable.insert {
+                it[name]=hospital.getName()
+                it[city]=hospital.getCity()
+                it[address]=hospital.getCity()
+            }[HospitalTable.id]
+        }
+        return DatabaseFactory.dbQuery {
+            HospitalTable.select(HospitalTable.id eq id).firstNotNullOfOrNull {
+                rowToHospital(it)
+            }
+        }
     }
 
     /**
@@ -39,7 +55,12 @@ class HospitalServiceImplementation: HospitalServiceInterface {
             throw NullPointerException("Id bolnice ne moze biti null")
         if (hospitalId.isEmpty())
             throw IllegalArgumentException("Id bolnice ne moze biti prazan string")
-        return list.find { it.getId()==hospitalId }
+        return DatabaseFactory.dbQuery {
+            HospitalTable.select(HospitalTable.id eq UUID.fromString(hospitalId))
+                .firstNotNullOfOrNull {
+                    rowToHospital(it)
+                }
+        }
 
     }
     /**
@@ -50,7 +71,14 @@ class HospitalServiceImplementation: HospitalServiceInterface {
             throw NullPointerException("Ime bolnice ne moze biti null")
         if (name.isEmpty())
             throw IllegalArgumentException("Ime bolnice ne moze biti prazan string")
-        return list.find { it.getName()==name }
+        return DatabaseFactory.dbQuery {
+            HospitalTable.select(HospitalTable.name eq (name))
+                .firstNotNullOfOrNull {
+                    rowToHospital(it)
+                }
+        }
+
+
     }
     /**
      * Trazenje svih bolnica u gradu
@@ -60,7 +88,13 @@ class HospitalServiceImplementation: HospitalServiceInterface {
             throw NullPointerException("Ime grada ne moze biti null")
         if (city.isEmpty())
             throw IllegalArgumentException("Ime grada ne moze biti prazan string")
-        return list.filter { it.getCity()==city }
+        return DatabaseFactory
+            .dbQuery {
+                HospitalTable.select(HospitalTable.city eq city)
+                    .mapNotNull {
+                        rowToHospital(it)
+                    }
+            }
     }
 
     /**
@@ -71,11 +105,24 @@ class HospitalServiceImplementation: HospitalServiceInterface {
     }
 
     /**
-     * Metoda za dohvatanje svih podataka iz json fajla
+     * Metoda za dohvatanje svih podataka iz baze
      */
-    fun getHospitals(): MutableList<Hospital>{
-        if (!file.exists()||file.readText().isBlank())return mutableListOf()
-        val jsonString=file.readText()
-        return Json.Default.decodeFromString<MutableList<Hospital>>(jsonString)
+   suspend fun getHospitals(): List<Hospital>{
+        return DatabaseFactory.dbQuery {
+            HospitalTable.selectAll()
+                .mapNotNull {
+                    rowToHospital(it)
+                }
+        }
+    }
+    fun rowToHospital(resultRow: ResultRow?): Hospital?{
+        if(resultRow==null)
+            throw NullPointerException("Red iz tabele bolnica je null")
+        return Hospital(
+            id = resultRow[HospitalTable.id].toString(),
+            name = resultRow[HospitalTable.name],
+            city = resultRow[HospitalTable.city],
+            address = resultRow[HospitalTable.address]
+        )
     }
 }
