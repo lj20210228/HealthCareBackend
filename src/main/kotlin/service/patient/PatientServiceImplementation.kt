@@ -7,9 +7,11 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.Statement
+import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.updateReturning
 import java.io.File
 import java.util.UUID
@@ -30,6 +32,7 @@ class PatientServiceImplementation: PatientServiceInterface {
     override suspend fun addPatient(patient: Patient?): Patient {
 
 
+        var id: UUID?=null
         if (patient==null)
             throw NullPointerException("Prosledjeni podaci o pacijentu su jednaki null")
 
@@ -37,16 +40,20 @@ class PatientServiceImplementation: PatientServiceInterface {
         if (listOfPatients.contains(patient)){
             throw IllegalArgumentException("Pacijent vec postoji")
         }
-        return DatabaseFactory.dbQuery {
-            PatientTable.insertReturning {
+         id=DatabaseFactory.dbQuery {
+            PatientTable.insert{
                 it[fullName]=patient.getFullName()
                 it[userId]= UUID.fromString(patient.getUserId())
                 it[hospitalId]= UUID.fromString(patient.getHospitalId())
                 it[jmbg]=patient.getJmbg().toString()
-            }.map {
-                rowToPatient(it)
-            }.first()
-        }
+            }[PatientTable.id]
+
+         }
+        return rowToPatient(DatabaseFactory.dbQuery {
+            PatientTable.select(PatientTable.id eq id)
+                .firstOrNull()
+        })
+
 
 
 
@@ -116,21 +123,26 @@ class PatientServiceImplementation: PatientServiceInterface {
      * Funckija za izmenu podataka o pacijentu
      */
     override suspend fun editPatient(patient: Patient?): Patient? {
+
+
         if (patient==null)
             throw NullPointerException("Pacijent ne moze biti null")
         val list=getAllPatients()
         if (!list.contains(patient))
             throw IllegalArgumentException("Pacijent ne postoji")
 
-        return DatabaseFactory.dbQuery {
-            PatientTable.updateReturning {
+         DatabaseFactory.dbQuery {
+            PatientTable.update{
                 it[fullName]=patient.getFullName()
                 it[userId]= UUID.fromString(patient.getUserId())
                 it[jmbg]=patient.getJmbg().toString()
                 it[hospitalId]= UUID.fromString(patient.getHospitalId())
-            }.map {
-                rowToPatient(it)
-            }.firstOrNull()
+            }
+        }
+        return DatabaseFactory.dbQuery {
+            PatientTable.select(PatientTable.id eq UUID.fromString(patient.getId()))
+                .map { rowToPatient(it) }
+                .firstOrNull()
         }
 
     }

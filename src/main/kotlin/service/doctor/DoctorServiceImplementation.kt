@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
@@ -35,15 +36,15 @@ class DoctorServiceImplementation: DoctorServiceInterface {
      * @see DoctorServiceInterface
      * @see Doctor
      */
-    override suspend fun addDoctor(doctor: Doctor?): Doctor {
+    override suspend fun addDoctor(doctor: Doctor?): Doctor? {
         val doctorList=getAllDoctors()
         if (doctor==null)
             throw NullPointerException("Nisu ispravni prosledjeni podaci o lekaru")
         if (doctorList.contains(doctor))
             throw IllegalArgumentException("Lekar vec postoji")
 
-        DatabaseFactory.dbQuery {
-            DoctorTable.insertReturning {
+        val id=DatabaseFactory.dbQuery {
+            DoctorTable.insert {
                 it[userId]= UUID.fromString(doctor.getUserId())
                 it[fullName]=doctor.getFullName()
                 it[isGeneral]=doctor.getIsGeneral()
@@ -51,12 +52,16 @@ class DoctorServiceImplementation: DoctorServiceInterface {
                 it[currentPatients]=doctor.getCurrentPatients()
                 it[maxPatients]=doctor.getMaxPatients()
                 it[hospitalId]= UUID.fromString(doctor.getHospitalId())
-            }.mapNotNull { rowToDoctor(it) }
+            }[DoctorTable.id]
         }
+        return DatabaseFactory.dbQuery {
+            DoctorTable.select(DoctorTable.id eq id)
+        }.map {
+            rowToDoctor(it)
+        }.firstOrNull()
 
 
 
-        return doctor
 
     }
 
