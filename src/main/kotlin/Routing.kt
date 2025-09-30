@@ -39,14 +39,24 @@ fun Application.configureRouting() {
         }
         authRoutes(
             AuthRepositoryImplementation(
-                userService = UserServiceImplementation(),
-                doctorService = DoctorServiceImplementation(),
-                selectedDoctorService = SelectedDoctorServiceImplementation(
-                    doctorServiceInterface = DoctorServiceImplementation(),
-                    patientService = PatientServiceImplementation()
+                userService = UserRepositoryImplementation(
+                    service = UserServiceImplementation()
+                ),
+                doctorService = DoctorRepositoryImplementation(
+                    DoctorServiceImplementation(),
+                    HospitalServiceImplementation()
+                ),
+                selectedDoctorService = SelectedDoctorRepositoryImplementation(
+                     service = SelectedDoctorServiceImplementation(
+                         doctorServiceInterface = DoctorServiceImplementation(),
+                         patientService = PatientServiceImplementation()
+                     ),
                 ),
                 jwtConfig = JwtConfig.instance,
-                patientService = PatientServiceImplementation()
+                patientService = PatientRepositoryImplementation(
+                    service = PatientServiceImplementation(),
+                    hospitalService = HospitalServiceImplementation()
+                )
             )
         )
         userRoutes(repository = UserRepositoryImplementation(
