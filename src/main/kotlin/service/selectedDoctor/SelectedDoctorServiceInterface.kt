@@ -21,7 +21,7 @@ interface SelectedDoctorServiceInterface {
      * @throws IllegalArgumentException Ukoliko vec postoji polje sa istim podacima
      * @return [SelectedDoctor] Vracaju se podaci o uspesnom dodavanju, id lekara i pacijenta
      */
-    suspend fun addSelectedDoctorForPatient(selectedDoctor: SelectedDoctor?): SelectedDoctor
+    suspend fun addSelectedDoctorForPatient(selectedDoctor: SelectedDoctor?): SelectedDoctor?
 
     /**
      * Funkcija koja vraca sve izabrane lekare jednog pacijenta
