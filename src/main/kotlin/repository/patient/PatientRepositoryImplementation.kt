@@ -18,7 +18,7 @@ import com.example.service.patient.PatientServiceInterface
  */
 class PatientRepositoryImplementation(val service: PatientServiceInterface
 ,val hospitalService: HospitalServiceInterface): PatientRepository {
-    override suspend fun addPatient(patient: PatientRequest?): BaseResponse<Patient> {
+    override suspend fun addPatient(patient: Patient?): BaseResponse<Patient> {
         if (patient==null){
             return BaseResponse.ErrorResponse(message = "Pacijent koji se dodaje mora imati vrenost")
         }

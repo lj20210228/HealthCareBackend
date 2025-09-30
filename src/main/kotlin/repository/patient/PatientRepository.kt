@@ -21,7 +21,7 @@ interface PatientRepository {
      * @return Ako je pacijent uspesno dodat vracaju se podaci o njemu kao
      * [BaseResponse] objekat i poruka o upesnosti ili poruka o neuspesnosti
      */
-    suspend fun addPatient(patient: PatientRequest?): BaseResponse<Patient>
+    suspend fun addPatient(patient: Patient?): BaseResponse<Patient>
 
     /**
      * Funkcija za slanje zahteva servisnom sloju za pronalazak pacijenta po njegovom Id

@@ -18,7 +18,7 @@ interface PatientServiceInterface {
      * @throws NullPointerException Ako je [patient] null baca se izuzetak
      * @throws IllegalArgumentException Ako pacijent vec postoji
      */
-    suspend fun addPatient(patient: PatientRequest?): Patient?
+    suspend fun addPatient(patient: Patient?): Patient?
 
     /**
      * Funkcija za pronalazak pacijenta po njegovom Id
@@ -71,6 +71,11 @@ interface PatientServiceInterface {
      * @return [Boolean] Ako je pacijent uspesno obrisan true, u suprotnom false
      */
     suspend fun deletePatient(patientId: String?): Boolean
+
+    /**
+     * Funckija za vracanje svih pacijenata, koristice se za vec postoji slucaj
+     */
+    suspend fun getAllPatients(): List<Patient>
 
 
 }

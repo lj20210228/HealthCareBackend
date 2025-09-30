@@ -5,10 +5,12 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.example.repository.auth.AuthRepositoryImplementation
 import com.example.repository.doctor.DoctorRepositoryImplementation
 import com.example.repository.hospital.HospitalRepositoryImplementation
+import com.example.repository.patient.PatientRepositoryImplementation
 import com.example.repository.user.UserRepositoryImplementation
 import com.example.routes.authRoutes
 import com.example.routes.doctorRoutes
 import com.example.routes.hospitalRoutes
+import com.example.routes.patientRoutes
 import com.example.routes.userRoutes
 import com.example.security.JwtConfig
 import com.example.service.doctor.DoctorServiceImplementation
@@ -53,6 +55,10 @@ fun Application.configureRouting() {
         ))
         doctorRoutes(DoctorRepositoryImplementation(
             DoctorServiceImplementation(),
+            hospitalService = HospitalServiceImplementation()
+        ))
+        patientRoutes(PatientRepositoryImplementation(
+            service = PatientServiceImplementation(),
             hospitalService = HospitalServiceImplementation()
         ))
     }

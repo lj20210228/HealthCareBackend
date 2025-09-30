@@ -30,7 +30,7 @@ class PatientServiceImplementation: PatientServiceInterface {
     /**
      * Funkcija za dodavanje pacijenta u bazu
      */
-    override suspend fun addPatient(patient: PatientRequest?): Patient? {
+    override suspend fun addPatient(patient: Patient?): Patient? {
 
 
         if (patient==null)
@@ -38,10 +38,10 @@ class PatientServiceImplementation: PatientServiceInterface {
 
          return DatabaseFactory.dbQuery {
             PatientTable.insertReturning{
-                it[fullName]=patient.fullName
-                it[userId]= UUID.fromString(patient.userId)
-                it[hospitalId]= UUID.fromString(patient.hospitalId)
-                it[jmbg]=patient.jmbg
+                it[fullName]=patient.getFullName()
+                it[userId]= UUID.fromString(patient.getUserId())
+                it[hospitalId]= UUID.fromString(patient.getHospitalId())
+                it[jmbg]=patient.getJmbg()!!
             }.map {
                 rowToPatient(it)
             }.first()
@@ -61,7 +61,9 @@ class PatientServiceImplementation: PatientServiceInterface {
         }
         return rowToPatient(DatabaseFactory
             .dbQuery {
-                PatientTable.select(PatientTable.id eq UUID.fromString(patientId)).firstOrNull()
+                PatientTable.selectAll().where{
+                    PatientTable.id eq UUID.fromString(patientId)
+                }.firstOrNull()
             })
 
     }
@@ -86,7 +88,9 @@ class PatientServiceImplementation: PatientServiceInterface {
         }
         return rowToPatient(DatabaseFactory
             .dbQuery {
-                PatientTable.select(PatientTable.jmbg eq jmbg).firstOrNull()
+                PatientTable.selectAll().where{
+                    PatientTable.jmbg eq jmbg
+                }.firstOrNull()
             })
     }
 
@@ -157,7 +161,7 @@ class PatientServiceImplementation: PatientServiceInterface {
     /**
      * Funkcija za ucitavanje svih pacijenata iz json fajla
      */
-    suspend fun getAllPatients(): List<Patient>{
+    override suspend fun getAllPatients(): List<Patient>{
         return DatabaseFactory.dbQuery {
             PatientTable.selectAll().map {
                 rowToPatient(it)
