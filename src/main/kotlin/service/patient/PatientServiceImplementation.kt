@@ -30,7 +30,7 @@ class PatientServiceImplementation: PatientServiceInterface {
     /**
      * Funkcija za dodavanje pacijenta u bazu
      */
-    override suspend fun addPatient(patient: PatientRequest?): Patient {
+    override suspend fun addPatient(patient: PatientRequest?): Patient? {
 
 
         if (patient==null)
