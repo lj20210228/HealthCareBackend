@@ -18,10 +18,11 @@ import javax.print.Doc
  */
 class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
     val hospitalService: HospitalServiceInterface): DoctorRepository {
-    override suspend fun addDoctor(doctor: DoctorRequest?): BaseResponse<Doctor> {
+    override suspend fun addDoctor(doctor: Doctor?): BaseResponse<Doctor> {
         if (doctor==null){
             return BaseResponse.ErrorResponse(message = "Niste uneli ispravne podatke o lekaru")
         }
+
         val doctor=service.addDoctor(doctor)
         if (doctor==null){
             BaseResponse.ErrorResponse<Doctor>(message = "Lekar nije uspesno dodat u bazu")

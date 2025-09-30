@@ -37,8 +37,7 @@ class DoctorServiceImplementation: DoctorServiceInterface {
      * @see DoctorServiceInterface
      * @see Doctor
      */
-    override suspend fun addDoctor(doctor: DoctorRequest?): Doctor? {
-        val doctorList=getAllDoctors()
+    override suspend fun addDoctor(doctor: Doctor?): Doctor? {
         if (doctor==null)
             throw NullPointerException("Nisu ispravni prosledjeni podaci o lekaru")
 
@@ -46,13 +45,13 @@ class DoctorServiceImplementation: DoctorServiceInterface {
 
        return DatabaseFactory.dbQuery {
             DoctorTable.insertReturning {
-                it[userId]= UUID.fromString(doctor.userId)
-                it[fullName]=doctor.fullName
-                it[isGeneral]=doctor.isGeneral
-                it[specialization]=doctor.specialization
-                it[currentPatients]=doctor.currentPatients
-                it[maxPatients]=doctor.maxPatients
-                it[hospitalId]= UUID.fromString(doctor.hospitalId)
+                it[userId]= UUID.fromString(doctor.getUserId())
+                it[fullName]=doctor.getFullName()
+                it[isGeneral]=doctor.getIsGeneral()
+                it[specialization]=doctor.getSpecialization()
+                it[currentPatients]=doctor.getCurrentPatients()
+                it[maxPatients]=doctor.getMaxPatients()
+                it[hospitalId]= UUID.fromString(doctor.getHospitalId())
             }.map{
                 rowToDoctor(it)
             }.firstOrNull()
@@ -233,7 +232,7 @@ class DoctorServiceImplementation: DoctorServiceInterface {
      * Funkcija koja ucitava listu svih lekara u JSON fajlu
      * @return [MutableList[Doctor]] Lista svih lekara
      */
-     suspend fun getAllDoctors(): List<Doctor>{
+     override suspend fun getAllDoctors(): List<Doctor>{
          return DatabaseFactory.dbQuery {
              DoctorTable.selectAll()
                  .mapNotNull { rowToDoctor(it) }

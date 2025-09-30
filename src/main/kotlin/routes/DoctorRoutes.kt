@@ -1,5 +1,6 @@
 package com.example.routes
 
+import com.example.domain.Doctor
 import com.example.repository.doctor.DoctorRepository
 import com.example.request.DoctorRequest
 import io.ktor.http.HttpStatusCode
@@ -11,7 +12,7 @@ import io.ktor.server.routing.post
 
 fun Route.doctorRoutes( doctorRepository: DoctorRepository){
     post("/doctors/add") {
-        val params=call.receive<DoctorRequest>()
+        val params=call.receive<Doctor>()
         val doctor=doctorRepository.addDoctor(params)
         call.respond(status = HttpStatusCode.fromValue(doctor.statusCode),doctor)
 

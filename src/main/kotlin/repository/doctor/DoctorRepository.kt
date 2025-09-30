@@ -19,7 +19,7 @@ interface DoctorRepository {
      * @param doctor Podaci o lekaru kog treba dodati
      * @return  [BaseResponse<Doctor>]  ako je dodavanje uspesno kao odgovor vracaju se podaci o lekaru sa porukom da je uspesno ili poruka o gresci
      */
-    suspend fun addDoctor(doctor: DoctorRequest?): BaseResponse<Doctor>
+    suspend fun addDoctor(doctor: Doctor?): BaseResponse<Doctor>
 
     /**
      * Funkcija koja prosledjuje servisnom sloju zahtev za pronalazenje lekara

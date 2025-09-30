@@ -17,7 +17,7 @@ interface DoctorServiceInterface {
      * @throws NullPointerException Ako je prosledjeni argument null
      * @return [Doctor] ako je dodavanje uspesno kao odgovor vracaju se podaci o lekaru
      */
-    suspend fun addDoctor(doctor: DoctorRequest?): Doctor?
+    suspend fun addDoctor(doctor: Doctor?): Doctor?
 
     /**
      * Funkcija koja pronalazi podatke o lekaru na osnovu njegovog id
@@ -78,4 +78,10 @@ interface DoctorServiceInterface {
      * @return [Boolean] vrednost, ukoliko je uspesno azurirano true, u suprtonom false
      */
     suspend fun editCurrentPatients(doctorId: String?): Boolean
+
+
+    /**
+     * Funkcija za pronalazenje svih lekara, sluzice za vec postoji slucaj
+     */
+    suspend fun getAllDoctors(): List<Doctor>
 }
