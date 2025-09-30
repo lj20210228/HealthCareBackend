@@ -33,15 +33,15 @@ class UserServiceImplementation: UserServiceInterface {
     /**
      * Dodavanje usera
      */
-    override suspend fun addUser(user: UserRequest?): User? {
+    override suspend fun addUser(user: User?): User? {
 
         if (user==null)
             throw NullPointerException("Podaci o korisniku ne mogu biti null")
          return DatabaseFactory.dbQuery {
             UserTable.insertReturning{
-                it[email]=user.email
-                it[password]= hashPassword(user.password)
-                it[role]=user.role
+                it[email]=user.getEmail()
+                it[password]= hashPassword(user.getPassword())
+                it[role]=user.getRole()
 
             }.map{
                 rowToUser(it)
@@ -98,6 +98,13 @@ class UserServiceImplementation: UserServiceInterface {
 
         return users
 
+    }
+
+    override suspend fun getUsers(): List<User> {
+        return DatabaseFactory.dbQuery {
+            UserTable.selectAll()
+                .mapNotNull { rowToUser(it) }
+        }
     }
 
     /**

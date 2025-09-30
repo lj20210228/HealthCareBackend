@@ -17,7 +17,7 @@ interface UserServiceInterface {
      * @throws IllegalArgumentException Ukoliko prosledjeni argument vec postoji
      * @return [User] Vracaju se podaci o useru ako je uspesno dodat u suprotnom null
      */
-    suspend fun addUser(user: UserRequest?): User?
+    suspend fun addUser(user: User?): User?
 
     /**
      * Funkcija koja sluzi za pretrazivanje usera po id
@@ -45,4 +45,10 @@ interface UserServiceInterface {
      * ukoliko ne postoji vraca se prazna lista
      */
     suspend fun getUsersForRole(role: Role?): List<User>
+
+    /**
+     * Funkcija za pronalazenje svih usera,
+     * koristice se za vec postoji slucaj
+     */
+    suspend fun getUsers(): List<User>
 }

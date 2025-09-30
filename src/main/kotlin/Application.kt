@@ -1,6 +1,7 @@
 package com.example
 
 import com.example.database.DatabaseFactory
+import com.example.security.configureSecurity
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
