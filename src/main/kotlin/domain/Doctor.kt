@@ -24,8 +24,8 @@ import kotlin.math.max
 
 @Serializable
 data class Doctor(
-    private var id: String,
-    private var userId: String,
+    private var id: String?=null,
+    private var userId: String?=null,
     private var fullName:String,
     private var specialization: String,
     private var maxPatients:Int,
@@ -48,8 +48,6 @@ data class Doctor(
      * postavlja njegove vrednosti na prosledjene, i pri tome hvata greske ukoliko postoje
      */
     init {
-        setId(id)
-        setUserId(userId)
         setHospitalId(hospitalId)
         setCurrentPatients(currentPatients)
         setMaxPatients(maxPatients)
@@ -61,7 +59,7 @@ data class Doctor(
      * Metoda koja vraca id lekara
      * @return String koji vraca [id] lekara
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
 
@@ -85,7 +83,7 @@ data class Doctor(
      * @return [userId] UserId
      * @see [User]
      */
-    fun getUserId(): String{
+    fun getUserId(): String?{
         return this.userId
     }
 

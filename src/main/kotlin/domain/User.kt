@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class User(
-    private var id: String,
+    private var id: String?=null,
     private var email: String,
     private var password: String,
     private var role: Role
@@ -26,7 +26,6 @@ data class User(
      * postavlja njegove vrednosti na prosledjene, i pri tome hvata greske ukoliko postoje
      */
     init {
-        setId(id)
         setEmail(email)
         setPassword(password)
         setRole(role)
@@ -35,7 +34,7 @@ data class User(
      * Metoda koja vraca id korisnika
      * @return String koji vraca [id] korisnika
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
 

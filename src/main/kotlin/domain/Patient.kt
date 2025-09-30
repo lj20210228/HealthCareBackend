@@ -14,8 +14,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Patient(
-    private var id: String,
-    private var userId: String,
+    private var id: String?=null,
+    private var userId: String?=null,
     private var fullName: String,
     private var hospitalId: String,
     private var jmbg:String?
@@ -27,8 +27,6 @@ data class Patient(
         private val regex = Regex("^[a-zA-ZšđčćžŠĐČĆŽ\\s]*\$")
     }
     init {
-        setId(id)
-        setUserId(userId)
         setFullName(fullName)
         setHospitalId(hospitalId)
         setJmbg(jmbg)
@@ -37,7 +35,7 @@ data class Patient(
      * Metoda koja vraca id pacijenta
      * @return String koji vraca [id] pacijenta
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
 
@@ -61,7 +59,7 @@ data class Patient(
      * @return [userId] UserId
      * @see [User]
      */
-    fun getUserId(): String{
+    fun getUserId(): String?{
         return this.userId
     }
 
