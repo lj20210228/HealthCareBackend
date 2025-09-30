@@ -44,4 +44,10 @@ interface SelectedDoctorServiceInterface {
      */
     suspend fun getPatientsForSelectedDoctor(doctorId: String?): List<Patient>
 
+    /**
+     * Funckija koja vraca sve izabrane lekare, koja ce se koristiti za proveru da li lekar vec postoji
+     * @return [List[SelectedDoctor]]
+     */
+    suspend fun getAllSelectedDoctors():List<SelectedDoctor>
+
 }

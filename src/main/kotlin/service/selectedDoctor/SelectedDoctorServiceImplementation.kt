@@ -37,10 +37,7 @@ class SelectedDoctorServiceImplementation(val doctorServiceInterface: DoctorServ
     override suspend fun addSelectedDoctorForPatient(selectedDoctor: SelectedDoctor?): SelectedDoctor? {
         if (selectedDoctor==null)
             throw NullPointerException("Podaci o izabranom lekaru ne smeju biti null")
-        val listOfSelectedDoctors=getAllSelectedDoctors()
-        if (listOfSelectedDoctors.contains(selectedDoctor)){
-            throw IllegalArgumentException("Izabrani lekar za ovog pacijenta vec postoji.")
-        }
+
         return DatabaseFactory
             .dbQuery {
                 SelectedDoctorTable.insertReturning {
@@ -113,7 +110,7 @@ class SelectedDoctorServiceImplementation(val doctorServiceInterface: DoctorServ
     /**
      * Dohvatanje json stringa i pretvaranje u [MutableList[SelectedDoctor]]
      */
-    suspend fun getAllSelectedDoctors(): List<SelectedDoctor>{
+    override suspend fun getAllSelectedDoctors(): List<SelectedDoctor>{
 
         return DatabaseFactory.dbQuery {
             SelectedDoctorTable.selectAll()

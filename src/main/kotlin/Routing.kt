@@ -6,11 +6,13 @@ import com.example.repository.auth.AuthRepositoryImplementation
 import com.example.repository.doctor.DoctorRepositoryImplementation
 import com.example.repository.hospital.HospitalRepositoryImplementation
 import com.example.repository.patient.PatientRepositoryImplementation
+import com.example.repository.selectedDoctor.SelectedDoctorRepositoryImplementation
 import com.example.repository.user.UserRepositoryImplementation
 import com.example.routes.authRoutes
 import com.example.routes.doctorRoutes
 import com.example.routes.hospitalRoutes
 import com.example.routes.patientRoutes
+import com.example.routes.selectedDoctorRoutes
 import com.example.routes.userRoutes
 import com.example.security.JwtConfig
 import com.example.service.doctor.DoctorServiceImplementation
@@ -61,5 +63,13 @@ fun Application.configureRouting() {
             service = PatientServiceImplementation(),
             hospitalService = HospitalServiceImplementation()
         ))
+        selectedDoctorRoutes(
+            repository = SelectedDoctorRepositoryImplementation(
+                service = SelectedDoctorServiceImplementation(
+                    doctorServiceInterface = DoctorServiceImplementation(),
+                    patientService = PatientServiceImplementation()
+                )
+            )
+        )
     }
 }
