@@ -3,6 +3,7 @@ package com.example.service.doctor
 import com.example.database.DatabaseFactory
 import com.example.database.DoctorTable
 import com.example.domain.Doctor
+import com.example.request.DoctorRequest
 import com.example.service.DoctorServiceInterface
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Expression
@@ -36,29 +37,27 @@ class DoctorServiceImplementation: DoctorServiceInterface {
      * @see DoctorServiceInterface
      * @see Doctor
      */
-    override suspend fun addDoctor(doctor: Doctor?): Doctor? {
+    override suspend fun addDoctor(doctor: DoctorRequest?): Doctor? {
         val doctorList=getAllDoctors()
         if (doctor==null)
             throw NullPointerException("Nisu ispravni prosledjeni podaci o lekaru")
-        if (doctorList.contains(doctor))
-            throw IllegalArgumentException("Lekar vec postoji")
 
-        val id=DatabaseFactory.dbQuery {
-            DoctorTable.insert {
-                it[userId]= UUID.fromString(doctor.getUserId())
-                it[fullName]=doctor.getFullName()
-                it[isGeneral]=doctor.getIsGeneral()
-                it[specialization]=doctor.getSpecialization()
-                it[currentPatients]=doctor.getCurrentPatients()
-                it[maxPatients]=doctor.getMaxPatients()
-                it[hospitalId]= UUID.fromString(doctor.getHospitalId())
-            }[DoctorTable.id]
+
+
+       return DatabaseFactory.dbQuery {
+            DoctorTable.insertReturning {
+                it[userId]= UUID.fromString(doctor.userId)
+                it[fullName]=doctor.fullName
+                it[isGeneral]=doctor.isGeneral
+                it[specialization]=doctor.specialization
+                it[currentPatients]=doctor.currentPatients
+                it[maxPatients]=doctor.maxPatients
+                it[hospitalId]= UUID.fromString(doctor.hospitalId)
+            }.map{
+                rowToDoctor(it)
+            }.firstOrNull()
         }
-        return DatabaseFactory.dbQuery {
-            DoctorTable.select(DoctorTable.id eq id)
-        }.map {
-            rowToDoctor(it)
-        }.firstOrNull()
+
 
 
 

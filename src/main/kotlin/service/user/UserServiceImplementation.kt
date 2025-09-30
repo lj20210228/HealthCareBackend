@@ -5,6 +5,7 @@ import com.example.database.UserTable
 import com.example.domain.Doctor
 import com.example.domain.Role
 import com.example.domain.User
+import com.example.request.UserRequest
 import com.example.security.hashPassword
 import io.ktor.client.plugins.UserAgent
 import kotlinx.serialization.json.Json
@@ -32,15 +33,15 @@ class UserServiceImplementation: UserServiceInterface {
     /**
      * Dodavanje usera
      */
-    override suspend fun addUser(user: User?): User? {
+    override suspend fun addUser(user: UserRequest?): User? {
 
         if (user==null)
             throw NullPointerException("Podaci o korisniku ne mogu biti null")
          return DatabaseFactory.dbQuery {
             UserTable.insertReturning{
-                it[email]=user.getEmail()
-                it[password]= hashPassword(user.getPassword())
-                it[role]=user.getRole()
+                it[email]=user.email
+                it[password]= hashPassword(user.password)
+                it[role]=user.role
 
             }.map{
                 rowToUser(it)

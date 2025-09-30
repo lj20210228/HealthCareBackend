@@ -1,6 +1,7 @@
 package com.example.service.patient
 
 import com.example.domain.Patient
+import com.example.request.PatientRequest
 
 /**
  * Interfejs koji sluzi za rukovanje podacima o pacijentima
@@ -17,7 +18,7 @@ interface PatientServiceInterface {
      * @throws NullPointerException Ako je [patient] null baca se izuzetak
      * @throws IllegalArgumentException Ako pacijent vec postoji
      */
-    suspend fun addPatient(patient: Patient?): Patient
+    suspend fun addPatient(patient: PatientRequest?): Patient
 
     /**
      * Funkcija za pronalazak pacijenta po njegovom Id

@@ -3,6 +3,7 @@ package com.example.service.patient
 import com.example.database.DatabaseFactory
 import com.example.database.PatientTable
 import com.example.domain.Patient
+import com.example.request.PatientRequest
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -29,34 +30,23 @@ class PatientServiceImplementation: PatientServiceInterface {
     /**
      * Funkcija za dodavanje pacijenta u bazu
      */
-    override suspend fun addPatient(patient: Patient?): Patient {
+    override suspend fun addPatient(patient: PatientRequest?): Patient {
 
 
-        var id: UUID?=null
         if (patient==null)
             throw NullPointerException("Prosledjeni podaci o pacijentu su jednaki null")
 
-        val listOfPatients=getAllPatients()
-        if (listOfPatients.contains(patient)){
-            throw IllegalArgumentException("Pacijent vec postoji")
-        }
          return DatabaseFactory.dbQuery {
             PatientTable.insertReturning{
-                it[fullName]=patient.getFullName()
-                it[userId]= UUID.fromString(patient.getUserId())
-                it[hospitalId]= UUID.fromString(patient.getHospitalId())
-                it[jmbg]=patient.getJmbg().toString()
+                it[fullName]=patient.fullName
+                it[userId]= UUID.fromString(patient.userId)
+                it[hospitalId]= UUID.fromString(patient.hospitalId)
+                it[jmbg]=patient.jmbg
             }.map {
                 rowToPatient(it)
             }.first()
 
          }
-
-
-
-
-
-
     }
 
     /**

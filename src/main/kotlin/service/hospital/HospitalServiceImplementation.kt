@@ -29,8 +29,7 @@ class HospitalServiceImplementation: HospitalServiceInterface {
      */
     override suspend fun addHospital(hospital: HospitalRequest?): Hospital? {
 
-        var insertStatement: Statement<Number>
-        var id: UUID?=null
+
         if (hospital==null)
             throw NullPointerException("Bolnica ne moze biti null")
 

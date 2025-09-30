@@ -2,6 +2,7 @@ package com.example.service.user
 
 import com.example.domain.Role
 import com.example.domain.User
+import com.example.request.UserRequest
 
 /**
  * Interfejs koji sluzi za rukovanje podacima o [User]
@@ -16,7 +17,7 @@ interface UserServiceInterface {
      * @throws IllegalArgumentException Ukoliko prosledjeni argument vec postoji
      * @return [User] Vracaju se podaci o useru ako je uspesno dodat u suprotnom null
      */
-    suspend fun addUser(user: User?): User?
+    suspend fun addUser(user: UserRequest?): User?
 
     /**
      * Funkcija koja sluzi za pretrazivanje usera po id

@@ -1,6 +1,7 @@
 package com.example.service
 
 import com.example.domain.Doctor
+import com.example.request.DoctorRequest
 
 
 /**
@@ -16,7 +17,7 @@ interface DoctorServiceInterface {
      * @throws NullPointerException Ako je prosledjeni argument null
      * @return [Doctor] ako je dodavanje uspesno kao odgovor vracaju se podaci o lekaru
      */
-    suspend fun addDoctor(doctor: Doctor?): Doctor?
+    suspend fun addDoctor(doctor: DoctorRequest?): Doctor?
 
     /**
      * Funkcija koja pronalazi podatke o lekaru na osnovu njegovog id
