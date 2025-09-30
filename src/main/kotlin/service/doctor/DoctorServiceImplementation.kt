@@ -75,10 +75,11 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
 
 
-        return rowToDoctor(DatabaseFactory.dbQuery {
-            DoctorTable.select(DoctorTable.id eq UUID.fromString(doctorId)).first()
+        return DatabaseFactory.dbQuery {
+            DoctorTable.selectAll().where(DoctorTable.id eq UUID.fromString(doctorId))
+                .mapNotNull { rowToDoctor(it) }.firstOrNull()
 
-        })
+        }
 
 
     }
@@ -93,14 +94,12 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw NullPointerException("Id bolnice ne sme biti null")
         if(hospitalId.isEmpty())
             throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
-        return  DatabaseFactory.dbQuery {
-            DoctorTable.select (
-                DoctorTable.hospitalId eq UUID.fromString(hospitalId)
-            ).mapNotNull {
-                rowToDoctor(it)
-            }
+        return DatabaseFactory.dbQuery {
+            DoctorTable.selectAll().where(DoctorTable.hospitalId eq UUID.fromString(hospitalId))
+                .mapNotNull { rowToDoctor(it) }
 
         }
+
 
     }
     /**
@@ -138,8 +137,10 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw IllegalArgumentException("Id bolnice ne sme biti prazan string")
         return DatabaseFactory
             .dbQuery {
-                DoctorTable.select(DoctorTable.hospitalId eq UUID.fromString(hospitalId)).where {
-                    DoctorTable.isGeneral eq true
+                DoctorTable.selectAll().where {
+                    DoctorTable.hospitalId eq UUID.fromString(hospitalId) and
+                            ( DoctorTable.isGeneral eq true)
+
                 }.mapNotNull {
                     rowToDoctor(it)
                 }
@@ -168,7 +169,8 @@ class DoctorServiceImplementation: DoctorServiceInterface {
 
         return DatabaseFactory
             .dbQuery {
-                DoctorTable.select(DoctorTable.hospitalId eq UUID.fromString(hospitalId)).where {
+                DoctorTable.selectAll().where {
+                    DoctorTable.hospitalId eq UUID.fromString(hospitalId) and
                     (DoctorTable.isGeneral eq true) and
                             ( DoctorTable.specialization eq specialization)
                 }.mapNotNull {
