@@ -27,7 +27,7 @@ class HospitalServiceImplementation: HospitalServiceInterface {
     /**
      * Dodavanje nove bolnice
      */
-    override suspend fun addHospital(hospital: HospitalRequest?): Hospital? {
+    override suspend fun addHospital(hospital: Hospital?): Hospital? {
 
 
         if (hospital==null)
@@ -35,9 +35,9 @@ class HospitalServiceImplementation: HospitalServiceInterface {
 
          return DatabaseFactory.dbQuery {
              HospitalTable.insertReturning {
-                it[name]=hospital.name
-                it[city]=hospital.city
-                it[address]=hospital.address
+                it[name]=hospital.getName()
+                it[city]=hospital.getCity()
+                it[address]=hospital.getAddress()
             }.map {
                 rowToHospital(it)
              }.firstOrNull()
@@ -55,10 +55,9 @@ class HospitalServiceImplementation: HospitalServiceInterface {
         if (hospitalId.isEmpty())
             throw IllegalArgumentException("Id bolnice ne moze biti prazan string")
         return DatabaseFactory.dbQuery {
-            HospitalTable.select(HospitalTable.id eq UUID.fromString(hospitalId))
-                .firstNotNullOfOrNull {
-                    rowToHospital(it)
-                }
+            HospitalTable.selectAll().where(
+                HospitalTable.id eq UUID.fromString(hospitalId)
+            ).map { rowToHospital(it) }.firstOrNull()
         }
 
     }
@@ -71,10 +70,9 @@ class HospitalServiceImplementation: HospitalServiceInterface {
         if (name.isEmpty())
             throw IllegalArgumentException("Ime bolnice ne moze biti prazan string")
         return DatabaseFactory.dbQuery {
-            HospitalTable.select(HospitalTable.name eq (name))
-                .firstNotNullOfOrNull {
-                    rowToHospital(it)
-                }
+            HospitalTable.selectAll().where(
+                HospitalTable.name eq name
+            ).map { rowToHospital(it) }.firstOrNull()
         }
 
 
@@ -89,10 +87,9 @@ class HospitalServiceImplementation: HospitalServiceInterface {
             throw IllegalArgumentException("Ime grada ne moze biti prazan string")
         return DatabaseFactory
             .dbQuery {
-                HospitalTable.select(HospitalTable.city eq city)
-                    .mapNotNull {
-                        rowToHospital(it)
-                    }
+                HospitalTable.selectAll().where(
+                    HospitalTable.city eq city
+                ).mapNotNull { rowToHospital(it) }
             }
     }
 

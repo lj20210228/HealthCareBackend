@@ -16,7 +16,7 @@ interface HospitalServiceInterface {
      * @throws IllegalArgumentException Ukoliko bolnica vec postoji
      * @return [Hospital] Ukoliko je bolnica uspesno dodata vracaju se podaci o njoj
      */
-    suspend fun addHospital(hospital: HospitalRequest?): Hospital?
+    suspend fun addHospital(hospital: Hospital?): Hospital?
 
     /**
      * Metoda za pretrazivanje bolnice po njenom id

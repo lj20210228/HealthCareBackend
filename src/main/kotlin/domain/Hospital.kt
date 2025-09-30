@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Hospital(
-    private var id: String,
+    private var id: String?=null,
     private var name: String,
     private var city: String,
     private var address: String
@@ -36,7 +36,6 @@ data class Hospital(
      * postavlja njegove vrednosti na prosledjene, i pri tome hvata greske ukoliko postoje
      */
     init {
-        setId(id)
         setCity(city)
         setName(name)
         setAddress(address)
@@ -47,7 +46,7 @@ data class Hospital(
      * Funckija koja vraca id bolnice
      * @return [id] String koji sadrzi id bolnice
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
 
