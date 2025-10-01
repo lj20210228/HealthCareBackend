@@ -41,7 +41,7 @@ class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
         }
         val doctor=service.getDoctorForId(doctorId)
         if (doctor==null){
-            BaseResponse.ErrorResponse<Doctor>(message = "Lekar sa tim id ne postoji")
+            return BaseResponse.ErrorResponse(message = "Lekar sa tim id ne postoji")
         }
         return BaseResponse.SuccessResponse(data = doctor,"Lekar je uspesno pronadjen")
     }
@@ -71,7 +71,7 @@ class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
         }
         val doctors=service.getAllGeneralDoctorsInHospitalWithoutMaxPatients(hospitalId)
         if(doctors.isEmpty()){
-            return ListResponse.ErrorResponse(message = "Nema lekara opste prakse koji mogu da budu izabrani u ovoj bolnci")
+            return ListResponse.ErrorResponse(message = "Nema lekara opste prakse koji mogu da budu izabrani u ovoj bolnici")
         }
         return ListResponse.SuccessResponse(data = doctors,"Lekari opste prakse koji mogu da budu izabrani su uspesno pronadjeni")
     }
@@ -124,7 +124,7 @@ class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
         if(doctors.isEmpty()){
             return ListResponse.ErrorResponse(message = "Nema lekara ove specijalizacije koji mogu da budu izabrani u ovoj bolnci")
         }
-        return ListResponse.SuccessResponse(data = doctors,"Lekari specijalizacije $specialization koji mogu da budu izabrani su uspesno pronadjeni")
+        return ListResponse.SuccessResponse(data = doctors,"Lekari ove specijalizacije koji mogu da budu izabrani su uspesno pronadjeni")
     }
 
     override suspend fun editCurrentPatients(doctorId: String?): BaseResponse<Boolean> {
@@ -134,6 +134,7 @@ class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
 
         val doctor=service.editCurrentPatients(doctorId)
 
+        print(doctor)
         if (!doctor)
             return BaseResponse.ErrorResponse(message = "Nisu uspesno azuzirani podaci o trenutnom broju pacijenata")
         return BaseResponse.SuccessResponse(data = doctor,"Broj pacijenata je uspesno azuriran")

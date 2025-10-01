@@ -217,15 +217,31 @@ class DoctorServiceImplementation: DoctorServiceInterface {
         if(doctorId.isEmpty())
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
 
-
-        val editDoctors=DatabaseFactory.dbQuery {
-            DoctorTable
-                .update(where = {DoctorTable.id eq UUID.fromString(doctorId)}){
-                    it.update(DoctorTable.currentPatients, DoctorTable.currentPatients +1)
-
+        return DatabaseFactory.dbQuery {
+            // prvo dohvatimo lekara
+            val doctor = DoctorTable
+                .selectAll()
+                .where{
+                    DoctorTable.id eq UUID.fromString(doctorId)
                 }
+                .singleOrNull()
+
+            // ako ne postoji lekar
+            if (doctor == null) return@dbQuery false
+
+            val current = doctor[DoctorTable.currentPatients]
+            val max = doctor[DoctorTable.maxPatients]
+
+            // ako je dostigao max broj pacijenata
+            if (current >= max!!) return@dbQuery false
+
+            // ako može da primi još pacijenata → update
+            val updated = DoctorTable.update({ DoctorTable.id eq UUID.fromString(doctorId) }) {
+                it[DoctorTable.currentPatients] = current + 1
+            }
+
+            updated > 0
         }
-        return editDoctors>0
 
 
     }
