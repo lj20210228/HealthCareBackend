@@ -90,9 +90,9 @@ class UserServiceImplementation: UserServiceInterface {
 
         val users= DatabaseFactory
             .dbQuery {
-                UserTable.selectAll().where(UserTable.role eq role)
-            }.mapNotNull {
-                rowToUser(it)
+                UserTable.selectAll().where{UserTable.role eq role}.mapNotNull {
+                    rowToUser(it)
+                }
             }
 
         return users
