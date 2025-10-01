@@ -5,7 +5,6 @@ import com.example.database.UserTable
 import com.example.domain.Doctor
 import com.example.domain.Role
 import com.example.domain.User
-import com.example.request.UserRequest
 import com.example.security.hashPassword
 import io.ktor.client.plugins.UserAgent
 import kotlinx.serialization.json.Json

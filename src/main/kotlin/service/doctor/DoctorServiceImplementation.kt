@@ -3,7 +3,6 @@ package com.example.service.doctor
 import com.example.database.DatabaseFactory
 import com.example.database.DoctorTable
 import com.example.domain.Doctor
-import com.example.request.DoctorRequest
 import com.example.service.DoctorServiceInterface
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Expression

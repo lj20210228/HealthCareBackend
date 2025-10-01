@@ -3,7 +3,6 @@ package com.example.service.patient
 import com.example.database.DatabaseFactory
 import com.example.database.PatientTable
 import com.example.domain.Patient
-import com.example.request.PatientRequest
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

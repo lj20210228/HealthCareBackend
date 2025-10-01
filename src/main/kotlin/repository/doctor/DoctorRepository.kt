@@ -1,7 +1,6 @@
 package com.example.repository.doctor
 
 import com.example.domain.Doctor
-import com.example.request.DoctorRequest
 import com.example.response.BaseResponse
 import com.example.response.ListResponse
 

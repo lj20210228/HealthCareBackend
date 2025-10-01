@@ -2,7 +2,6 @@ package com.example.service.user
 
 import com.example.domain.Role
 import com.example.domain.User
-import com.example.request.UserRequest
 
 /**
  * Interfejs koji sluzi za rukovanje podacima o [User]

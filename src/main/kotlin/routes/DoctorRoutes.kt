@@ -2,7 +2,6 @@ package com.example.routes
 
 import com.example.domain.Doctor
 import com.example.repository.doctor.DoctorRepository
-import com.example.request.DoctorRequest
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond

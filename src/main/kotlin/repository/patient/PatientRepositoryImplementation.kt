@@ -1,7 +1,6 @@
 package com.example.repository.patient
 
 import com.example.domain.Patient
-import com.example.request.PatientRequest
 import com.example.response.BaseResponse
 import com.example.response.ListResponse
 import com.example.service.hospital.HospitalServiceInterface

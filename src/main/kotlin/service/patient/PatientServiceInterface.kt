@@ -1,7 +1,6 @@
 package com.example.service.patient
 
 import com.example.domain.Patient
-import com.example.request.PatientRequest
 
 /**
  * Interfejs koji sluzi za rukovanje podacima o pacijentima

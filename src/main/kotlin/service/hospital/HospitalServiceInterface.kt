@@ -1,7 +1,6 @@
 package com.example.service.hospital
 
 import com.example.domain.Hospital
-import com.example.request.HospitalRequest
 
 /**
  * Intefejs koji sadrzi metode za rukovanje podacima o bolnici

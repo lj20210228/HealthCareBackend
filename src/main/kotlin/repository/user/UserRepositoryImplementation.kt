@@ -10,13 +10,13 @@ import org.jetbrains.exposed.sql.javatime.dateParam
 class UserRepositoryImplementation(val service: UserServiceInterface): UserRepository {
     override suspend fun addUser(user: User?): BaseResponse<User> {
         if (user==null)
-            return BaseResponse.ErrorResponse("Niste prosledili podatke o korisniku")
+            return BaseResponse.ErrorResponse(message = "Niste prosledili podatke o korisniku")
         val list=service.getUsers()
         if (list.contains(user))
-            return BaseResponse.ErrorResponse("Korisnik vec postoji")
+            return BaseResponse.ErrorResponse(message = "Korisnik vec postoji")
         val userAdded=service.addUser(user)
         if (userAdded==null)
-            return BaseResponse.ErrorResponse("Korisnik nije uspesno dodat")
+            return BaseResponse.ErrorResponse(message = "Korisnik nije uspesno dodat")
 
         return BaseResponse.SuccessResponse(message = "Korisnik uspesno dodat", data=userAdded)
     }
