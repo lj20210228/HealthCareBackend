@@ -25,7 +25,7 @@ class RecipeTests {
      */
     @BeforeEach
     fun setUp(){
-        recipe= Recipe("1","1","1","Eftil 400mg",2,"1 tableta ujutru i 1 uvece", LocalDate.of(2025,9,24))
+        recipe= Recipe("1","1","1","Eftil 400mg",2,"1 tableta ujutru i 1 uvece", LocalDate.of(2026,9,24))
 
     }
 
@@ -262,7 +262,7 @@ class RecipeTests {
      */
     @Test
     fun getExpiredDate_test(){
-        assertEquals(LocalDate.of(2025,9,24),recipe?.getExpiredDate())
+        assertEquals(LocalDate.of(2026,9,24),recipe?.getExpiredDate())
     }
     /**
      * Funkcija koja testira setExpiredDateTest metodu sa prodledjenim null argumentom,
@@ -303,13 +303,13 @@ class RecipeTests {
     @ParameterizedTest
     @CsvSource(
         "1,99,88,Neki drugi lek,5,Neko drugo uputstvo,2025-12-12,true",
-        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,true",
-        "2,2,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "2,1,2,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "2,1,1,Eftil 200mg,2,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "2,1,1,Eftil 400mg,1,1 tableta ujutru i 1 uvece,2025-09-24,false",
-        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 2 uvece,2025-09-24,false",
-        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2025-09-25,false"
+        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2026-09-24,true",
+        "2,2,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2026-09-24,false",
+        "2,1,2,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2026-09-24,false",
+        "2,1,1,Eftil 200mg,2,1 tableta ujutru i 1 uvece,2026-09-24,false",
+        "2,1,1,Eftil 400mg,1,1 tableta ujutru i 1 uvece,2026-09-24,false",
+        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 2 uvece,2026-09-24,false",
+        "2,1,1,Eftil 400mg,2,1 tableta ujutru i 1 uvece,2026-09-25,false"
     )
     fun equals_Test(id: String,patientId: String,doctorId: String,medication: String,
                                quantity: Int,instructions: String,date: LocalDate,boolean: Boolean  ){
@@ -323,7 +323,7 @@ class RecipeTests {
      */
     @Test
     fun hashCode_test(){
-        val recipe2= Recipe("1","1","1","Eftil 400mg",2,"1 tableta ujutru i 1 uvece", LocalDate.of(2025,9,24))
+        val recipe2= Recipe("1","1","1","Eftil 400mg",2,"1 tableta ujutru i 1 uvece", LocalDate.of(2026,9,24))
 
         assertEquals(recipe2.hashCode(),recipe?.hashCode())
     }
@@ -342,7 +342,7 @@ class RecipeTests {
 
         assertTrue(string.contains("2"))
         assertTrue(string.contains("1 tableta ujutru i 1 uvece"))
-        assertTrue(string.contains("2025-09-24"))
+        assertTrue(string.contains("2026-09-24"))
         assertTrue(string.contains("Eftil 400mg"))
     }
 

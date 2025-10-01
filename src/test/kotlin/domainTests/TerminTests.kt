@@ -17,7 +17,7 @@ class TerminTests {
     private var termin: Termin?=null
     @BeforeEach
     fun setUp(){
-        termin= Termin("1","1","1", LocalDate.of(2025,9,30), startTime = LocalTime.of(8,0) , hospitalId = "1")
+        termin= Termin("1","1","1", LocalDate.of(2026,9,30), startTime = LocalTime.of(8,0) , hospitalId = "1")
 
     }
     @AfterEach
@@ -183,7 +183,7 @@ class TerminTests {
      */
     @Test
     fun getDateTest(){
-        assertEquals(LocalDate.of(2025,9,30),termin?.getDate())
+        assertEquals(LocalDate.of(2026,9,30),termin?.getDate())
 
     }
 
@@ -204,7 +204,7 @@ class TerminTests {
     @Test
     fun setDate_preTrenutnog(){
         assertThrows<IllegalArgumentException> {
-            termin?.setDate(LocalDate.of(2025,8,30))
+            termin?.setDate(LocalDate.of(2024,8,30))
         }
     }
     /**
@@ -213,8 +213,8 @@ class TerminTests {
      */
     @Test
     fun setDate_ispravno(){
-        termin?.setDate(LocalDate.of(2025,10,1))
-        assertEquals(LocalDate.of(2025,10,1),termin?.getDate())
+        termin?.setDate(LocalDate.of(2026,10,1))
+        assertEquals(LocalDate.of(2026,10,1),termin?.getDate())
     }
 
     /**
@@ -324,9 +324,9 @@ class TerminTests {
     @ParameterizedTest
     @CsvSource
         (
-                "1,1,1,1,2025-09-30,08:00,09:00,ON_HOLD,1,1,1,1,2025-09-30,08:00,09:00,ON_HOLD,true",
-        "1,1,1,1,2025-09-30,08:00,09:00,ON_HOLD,1,1,1,1,2025-09-30,08:00,09:00,PENDING,true",
-        "2,1,1,1,2025-09-30,08:00,09:00,ON_HOLD,1,1,1,1,2025-09-30,08:00,09:00,PENDING,false"
+                "1,1,1,1,2026-09-30,08:00,09:00,ON_HOLD,1,1,1,1,2026-09-30,08:00,09:00,ON_HOLD,true",
+        "1,1,1,1,2026-09-30,08:00,09:00,ON_HOLD,1,1,1,1,2026-09-30,08:00,09:00,PENDING,true",
+        "2,1,1,1,2026-09-30,08:00,09:00,ON_HOLD,1,1,1,1,2026-09-30,08:00,09:00,PENDING,false"
                 )
     fun equals_test(
         id1:String,hospitalId1: String,doctorId1: String,patientId1: String,date1: LocalDate,start1: LocalTime,end1: LocalTime,status1: TerminStatus,
@@ -363,7 +363,7 @@ class TerminTests {
 
         assertTrue(string?.contains("1")!!)
 
-        assertTrue(string?.contains("2025-09-30")!!)
+        assertTrue(string?.contains("2026-09-30")!!)
         assertTrue(string?.contains("08:00")!!)
         assertTrue(string?.contains("09:00")!!)
     }
@@ -372,7 +372,7 @@ class TerminTests {
      */
     @Test
     fun hashCode_test(){
-        val termin1= Termin("1","1","1", LocalDate.of(2025,9,30), startTime = LocalTime.of(8,0) , hospitalId = "1")
+        val termin1= Termin("1","1","1", LocalDate.of(2026,9,30), startTime = LocalTime.of(8,0) , hospitalId = "1")
         assertEquals(termin1.hashCode(),termin.hashCode())
     }
 
