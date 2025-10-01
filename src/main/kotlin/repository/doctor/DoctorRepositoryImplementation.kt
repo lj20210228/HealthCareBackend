@@ -21,6 +21,11 @@ class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
         if (doctor==null){
             return BaseResponse.ErrorResponse(message = "Niste uneli ispravne podatke o lekaru")
         }
+        val list=service.getAllDoctors()
+        if (list.contains(doctor)){
+            return BaseResponse.ErrorResponse(message = "Lekar vec postoji")
+
+        }
 
         val doctor=service.addDoctor(doctor)
         if (doctor==null){

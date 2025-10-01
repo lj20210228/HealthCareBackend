@@ -6,6 +6,13 @@ import com.example.response.ListResponse
 import com.example.service.hospital.HospitalServiceInterface
 import io.ktor.server.http.content.resourceClasspathResource
 
+/**
+ * Klasa koja implementira [HospitalRepository]
+ * @author Lazar Janković
+ * @see Hospital
+ * @see HospitalRepository
+ * @see HospitalServiceInterface
+ */
 class HospitalRepositoryImplementation(val service: HospitalServiceInterface): HospitalRepository {
     override suspend fun addHospital(hospital: Hospital?): BaseResponse<Hospital> {
         if (hospital==null)
