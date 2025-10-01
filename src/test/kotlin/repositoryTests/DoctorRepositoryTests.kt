@@ -25,6 +25,19 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Test klasa za repozitorijum [DoctorRepository]
+ * @author Lazar Jankovic
+ * @see Doctor
+ * @see BaseResponse
+ * @see ListResponse
+ * @see HospitalServiceInterface
+ * @see DoctorRepository
+ * @property service Servisni sloj za podatke o lekarima
+ * @property userService Servisni sloj za podatke o userima
+ * @property hospitalService Servisni sloj za podatke o bolnicama
+ * @property repository Repozitorijum cije ce se metode testirati
+ */
 class DoctorRepositoryTests {
 
     private lateinit var service: DoctorServiceInterface
@@ -38,6 +51,12 @@ class DoctorRepositoryTests {
     private lateinit var doctor2: Doctor
     private lateinit var doctor3: Doctor
 
+    /**
+     * Pre svakog testa se setuju vrednosti
+     * servisa, povezuje se sa bazom preko init, zatim se brisu podaci iz tabele doctor,
+     * zatim dodaje bolnicu jer ce nam njen id trebati, kao i user, jer njihove id kreira baza
+     * ,prave se i 3 objekta [Doctor] koji ce se koristiti u testovima
+     */
 
     @BeforeEach
     fun setUp(){
@@ -99,17 +118,27 @@ class DoctorRepositoryTests {
 
 
     }
+
+    /**
+     * Prazni se tabela doctor nakon svakog testa
+     */
     @AfterEach
     fun tearDown(){
         DatabaseFactory.clearTable("doctor")
     }
 
+    /**
+     * Test za addDoctor kad je prosledjen null
+     */
     @Test
     fun addDoctor_nullTest()= runBlocking {
         val doctor=repository.addDoctor(null)
         assertTrue(doctor is BaseResponse.ErrorResponse)
         assertEquals("Niste uneli ispravne podatke o lekaru", doctor.message)
     }
+    /**
+     * Test za addDoctor kad lekar vec postoji
+     */
     @Test
     fun addDoctor_vecPostoji()= runBlocking {
         service.addDoctor(doctor)
@@ -117,6 +146,9 @@ class DoctorRepositoryTests {
         assertTrue(doctor is BaseResponse.ErrorResponse)
         assertEquals("Lekar vec postoji", doctor.message)
     }
+    /**
+     * Test za addDoctor kad lekar ne postoji
+     */
     @Test
     fun addDoctor_uspesno()= runBlocking {
 
@@ -124,18 +156,28 @@ class DoctorRepositoryTests {
         assertTrue(doctorAdded is BaseResponse.SuccessResponse)
         assertEquals(doctor, doctorAdded.data)
     }
+
+    /**
+     * Test za pretragu po id kada je prolsledjen null
+     */
     @Test
     fun getDoctorForId_testNull()=runBlocking {
         val test=repository.getDoctorForId(null)
         assertTrue(test is BaseResponse.ErrorResponse)
         assertEquals("Niste uneli ispravne podatke o lekaru",test.message)
     }
+    /**
+     * Test za pretragu po id kada ne postoji
+     */
     @Test
     fun getDoctorForId_testNePostoji()=runBlocking {
         val test=repository.getDoctorForId("9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9")
         assertTrue(test is BaseResponse.ErrorResponse)
         assertEquals("Lekar sa tim id ne postoji",test.message)
     }
+    /**
+     * Test za pretragu po id kada postoji
+     */
     @Test
     fun getDoctorForId_testPostoji()=runBlocking {
         val doctorAdded=service.addDoctor(doctor)
@@ -143,6 +185,9 @@ class DoctorRepositoryTests {
         assertTrue(test is BaseResponse.SuccessResponse)
         assertEquals(doctor,test.data)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare opste prakse koji mogu da budu izabrani kada postoje
+     */
     @Test
     fun getAllGeneralDoctorsInHospitalWithoutMaxPatients_Ispravnotest()=runBlocking {
         service.addDoctor(doctor)
@@ -155,6 +200,9 @@ class DoctorRepositoryTests {
         assertTrue(doctors is ListResponse.SuccessResponse)
         assertEquals(1,doctors.data?.size)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare opste prakse koji mogu da budu izabrani kada ne postoje
+     */
     @Test
     fun getAllGeneralDoctorsInHospitalWithoutMaxPatients_Neispravnotest()=runBlocking {
         service.addDoctor(doctor)
@@ -165,6 +213,9 @@ class DoctorRepositoryTests {
         assertTrue(doctors is ListResponse.ErrorResponse)
         assertEquals("Nema lekara opste prakse koji mogu da budu izabrani u ovoj bolnici",doctors.message)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare opste prakse kada postoje
+     */
     @Test
     fun getAllGeneralDoctorsInHospital_Ispravnotest()=runBlocking {
         service.addDoctor(doctor)
@@ -176,6 +227,9 @@ class DoctorRepositoryTests {
         assertTrue(doctors is ListResponse.SuccessResponse)
         assertEquals(2,doctors.data?.size)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare opste prakse kada ne postoje
+     */
     @Test
     fun getAllGeneralDoctorsInHospital_Neispravnotest()=runBlocking {
         service.addDoctor(doctor2)
@@ -185,6 +239,9 @@ class DoctorRepositoryTests {
         assertTrue(doctors is ListResponse.ErrorResponse)
         assertEquals("Nema lekara opste prakse u ovoj bolnci",doctors.message)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare jedne specijalizacije kada postoje
+     */
     @Test
     fun getAllDoctorsInHospitalForSpecialization_Ispravnotest()=runBlocking {
         service.addDoctor(doctor)
@@ -197,6 +254,9 @@ class DoctorRepositoryTests {
         assertTrue(doctors is ListResponse.SuccessResponse)
         assertEquals(1,doctors.data?.size)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare jedne specijalizacije kada postoje
+     */
     @Test
     fun getAllDoctorsInHospitalForSpecialization_Neispravnotest()=runBlocking {
         service.addDoctor(doctor2)
@@ -208,6 +268,9 @@ class DoctorRepositoryTests {
         assertTrue(doctors is ListResponse.ErrorResponse)
         assertEquals("Nema lekara ove specijalizacije u ovoj bolnci",doctors.message)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare jedne specijalizacije koji mogu da budu izabrani kada postoje
+     */
     @Test
     fun getAllDoctorsInHospitalForSpecializationWithoutMaxPatients_Ispravnotest()=runBlocking {
         service.addDoctor(doctor)
@@ -220,6 +283,9 @@ class DoctorRepositoryTests {
         assertTrue(doctors is ListResponse.SuccessResponse)
         assertEquals(1,doctors.data?.size)
     }
+    /**
+     * Test za pretragu po hospitalId za lekare jedne specijalizacije koji mogu da budu izabrani kada  ne postoje
+     */
     @Test
     fun getAllDoctorsInHospitalForSpecializationWithoutMaxPatients_Neispravnotest()=runBlocking {
         service.addDoctor(doctor2)
@@ -231,6 +297,9 @@ class DoctorRepositoryTests {
         assertEquals("Nema lekara ove specijalizacije koji mogu da budu izabrani u ovoj bolnci",doctors.message)
     }
 
+    /**
+     * Test za metodu editCurrentPatients kada je moguce povecati broj pacijenata kojima je lekar izabran
+     */
     @Test
     fun editCurrentPatients_ispravno()=runBlocking {
         val added=service.addDoctor(doctor3)
@@ -239,6 +308,9 @@ class DoctorRepositoryTests {
         assertTrue(result.data==true)
 
     }
+    /**
+     * Test za metodu editCurrentPatients kada nije moguce povecati broj pacijenata kojima je lekar izabran
+     */
     @Test
     fun editCurrentPatients_imaMaksPacijenata()=runBlocking {
         val added=service.addDoctor(doctor)
