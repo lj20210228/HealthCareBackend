@@ -79,6 +79,16 @@ object DatabaseFactory {
         )
     }
     /**
+     *Univerzalna f-ja za brisanje svih podataka iz tabele
+     * koristice se u testovima
+     *
+     */
+    fun clearTable(tableName: String) {
+        transaction {
+            exec("TRUNCATE TABLE $tableName RESTART IDENTITY CASCADE")
+        }
+    }
+    /**
      *
      *Pokreće Exposed transakciju u okviru IO dispatcher-a
      *
