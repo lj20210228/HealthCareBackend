@@ -10,14 +10,14 @@ import com.example.service.selectedDoctor.SelectedDoctorServiceInterface
 class SelectedDoctorRepositoryImplementation(val service: SelectedDoctorServiceInterface): SelectedDoctorRepository {
     override suspend fun addSelectedDoctorForPatient(selectedDoctor: SelectedDoctor?): BaseResponse<SelectedDoctor> {
         if (selectedDoctor==null)
-            return BaseResponse.ErrorResponse("Niste uneli ispravne podatke za izabranog lekara")
+            return BaseResponse.ErrorResponse(message = "Niste uneli ispravne podatke za izabranog lekara")
         val listOfSelectedDoctors=service.getAllSelectedDoctors()
         if (listOfSelectedDoctors.contains(selectedDoctor)){
             return BaseResponse.ErrorResponse(message = "Izabrani lekar za ovog pacijenta vec postoji.")
         }
         val selectedDoctorAdded=service.addSelectedDoctorForPatient(selectedDoctor)
         if (selectedDoctorAdded==null){
-            return BaseResponse.ErrorResponse("Izabrani lekar nije dodat")
+            return BaseResponse.ErrorResponse(message = "Izabrani lekar nije dodat")
         }
         return BaseResponse.SuccessResponse(data = selectedDoctorAdded, message = "Izabrani lekar uspesno dodat")
     }

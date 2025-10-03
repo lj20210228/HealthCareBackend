@@ -95,11 +95,11 @@ class SelectedDoctorServiceImplementation(val doctorServiceInterface: DoctorServ
                     rowToSelDoctor(it)
                 }
             }
-        val list= sel.map { sel->
+        val list= sel.map { it->
             DatabaseFactory.dbQuery {
-                DoctorTable.selectAll()
+                PatientTable.selectAll()
                     .where{
-                        PatientTable.id eq UUID.fromString(sel.getPatientId())
+                        PatientTable.id eq UUID.fromString(it.getPatientId())
                     }.mapNotNull { rowToPatient(it) }.first()
             }
         }
