@@ -11,8 +11,12 @@ import com.example.service.DoctorServiceInterface
 import com.example.service.patient.PatientServiceInterface
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.updateReturning
 import java.io.File
 import java.util.UUID
 
@@ -108,7 +112,36 @@ class SelectedDoctorServiceImplementation(val doctorServiceInterface: DoctorServ
     }
 
     /**
-     * Dohvatanje json stringa i pretvaranje u [MutableList[SelectedDoctor]]
+     * Azuriranje izabranog lekara
+     */
+    override suspend fun editSelectedDoctor(selectedDoctor: SelectedDoctor?): SelectedDoctor? {
+        if (selectedDoctor==null)
+            throw NullPointerException("Ne mozete menjati prazne podatke")
+        return DatabaseFactory.dbQuery {
+            SelectedDoctorTable.updateReturning(where = { SelectedDoctorTable.patientId eq UUID.fromString(selectedDoctor.getPatientId())}){
+                it[doctorId]= UUID.fromString(selectedDoctor.getDoctorId())
+            }.map{
+                rowToSelDoctor(it)
+            }.firstOrNull()
+        }
+    }
+
+    /**
+     * Brisanje podataka iz baze
+     */
+    override suspend fun deleteSelectedDoctor(selectedDoctor: SelectedDoctor?): Boolean {
+
+        val deleted=DatabaseFactory.dbQuery {
+            SelectedDoctorTable.deleteWhere {
+                SelectedDoctorTable.patientId eq UUID.fromString(selectedDoctor?.getPatientId()) and
+                        (SelectedDoctorTable.doctorId eq UUID.fromString(selectedDoctor?.getDoctorId()))
+            }
+        }
+        return deleted>0
+    }
+
+    /**
+     * Dohvatanje svih podataka iz tabele selected_doctor
      */
     override suspend fun getAllSelectedDoctors(): List<SelectedDoctor>{
 
