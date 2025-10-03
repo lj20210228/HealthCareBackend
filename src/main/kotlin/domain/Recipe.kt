@@ -21,7 +21,7 @@ import java.time.LocalDate
  */
 @Serializable
 data class Recipe(
-    private var id: String,
+    private var id: String?=null,
     private var patientId: String,
     private var doctorId:String,
     private var medication: String,
@@ -35,7 +35,6 @@ data class Recipe(
      * Blok za inicijalizaciju klase [com.example.domain.Recipe]
      */
     init {
-        setId(id)
         setPatientId(patientId)
         setDoctorId(doctorId)
         setMedication(medication)
@@ -48,7 +47,7 @@ data class Recipe(
      * Metoda koja vraca id recepta
      * @return id recepta
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
 
@@ -156,7 +155,7 @@ data class Recipe(
      * Metoda koja vraca instrukcije dodeljene za neki lek, to jest kako se koristi
      * @return Instrukcije za odredjeni lek
      */
-    fun getInstructions(): String?{
+    fun getInstructions(): String{
         return this.instructions
     }
 
