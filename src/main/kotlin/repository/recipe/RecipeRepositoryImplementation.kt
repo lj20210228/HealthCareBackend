@@ -18,10 +18,18 @@ class RecipeRepositoryImplementation(val patientService: PatientServiceInterface
     override suspend fun addRecipe(recipe: Recipe?): BaseResponse<Recipe> {
         if (recipe==null)
             return BaseResponse.ErrorResponse(message = "Ne mozete dodati recept bez podataka")
-        val added=serviceInterface.addRecipe(recipe)
-        if (added==null)
-            return BaseResponse.ErrorResponse(message = "Recept nije uspesno dodat")
-        return BaseResponse.SuccessResponse(data = added,"Recept uspesno dodat")
+
+        return try {
+            val added = serviceInterface.addRecipe(recipe)
+
+            if (added == null) {
+                BaseResponse.ErrorResponse(message = "Recept nije uspesno dodat")
+            } else {
+                BaseResponse.SuccessResponse(data = added, message = "Recept uspesno dodat")
+            }
+        } catch (e: IllegalArgumentException) {
+            BaseResponse.ErrorResponse(message = e.message)
+        }
     }
 
     override suspend fun getAllRecipesForDoctor(doctorId: String?): ListResponse<Recipe> {
