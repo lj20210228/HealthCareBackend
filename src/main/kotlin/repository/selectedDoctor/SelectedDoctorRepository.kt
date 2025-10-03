@@ -40,4 +40,25 @@ interface SelectedDoctorRepository {
      */
     suspend fun getPatientsForSelectedDoctor(doctorId: String?): ListResponse<Patient>
 
+
+    /**
+     * Funkcija koja salje zahtev za izmenu izabranog lekara za odredjenog pacijenta
+     * @param selectedDoctor Novi podaci o izabranom lekaru za pacijenta
+     * @see SelectedDoctor
+     * @see Patient
+     * @see Doctor
+     * @return ErrorResponse Ako nije pronadjen, ako jeste vracaju se izmenjeni podaci
+     */
+    suspend fun editSelectedDoctor(selectedDoctor: SelectedDoctor?): BaseResponse<SelectedDoctor>
+
+
+    /**
+     * Funkcija koja brise podatke o izabranom lekaru za odrenjenog pacijenta
+     * @param selectedDoctor Podaci koje treba obrisati
+     * @return Ukoliko je uspesno obrisan vracaju se response sa true i porukom, ukoliko ne false i poruka o gresci
+     */
+    suspend fun deleteSelectedDoctor(selectedDoctor: SelectedDoctor?): BaseResponse<Boolean>
+
+
+
 }

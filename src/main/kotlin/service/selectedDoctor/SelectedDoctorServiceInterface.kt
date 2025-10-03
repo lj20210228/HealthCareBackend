@@ -45,6 +45,27 @@ interface SelectedDoctorServiceInterface {
     suspend fun getPatientsForSelectedDoctor(doctorId: String?): List<Patient>
 
     /**
+     * Funkcija koja menja izabranog lekara za odredjenog pacijenta
+     * @param selectedDoctor Novi podaci o izabranom lekaru za pacijenta
+     * @see SelectedDoctor
+     * @see Patient
+     * @see Doctor
+     * @throws NullPointerException Ukoliko je prosledjeni parametar null
+     * @return null Ako nije pronadjen, ako jeste vracaju se izmenjeni podaci
+     */
+    suspend fun editSelectedDoctor(selectedDoctor: SelectedDoctor?): SelectedDoctor?
+
+
+    /**
+     * Funkcija koja brise podatke o izabranom lekaru za odrenjenog pacijenta
+     * @param selectedDoctor Podaci koje treba obrisati
+     * @return Ukoliko je uspesno obrisan vraca se true o njemu, ukoliko ne false
+     */
+    suspend fun deleteSelectedDoctor(selectedDoctor: SelectedDoctor?): Boolean
+
+
+
+    /**
      * Funckija koja vraca sve izabrane lekare, koja ce se koristiti za proveru da li lekar vec postoji
      * @return [List[SelectedDoctor]]
      */
