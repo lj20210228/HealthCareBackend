@@ -53,6 +53,9 @@ object DatabaseFactory {
         transaction {
             SchemaUtils.create(SelectedDoctorTable)
         }
+        transaction {
+            SchemaUtils.create(RecipeTable)
+        }
 
     }
 

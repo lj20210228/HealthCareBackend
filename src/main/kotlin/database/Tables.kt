@@ -3,6 +3,7 @@ package com.example.database
 import com.example.domain.Role
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.javatime.date
 
 object UserTable: Table("users")
 {
@@ -88,4 +89,26 @@ object SelectedDoctorTable: Table("selected_doctor"){
     val doctorId=reference("doctor_id", DoctorTable.id, onDelete = ReferenceOption.CASCADE)
     val patientId=reference("patient_id", PatientTable.id, onDelete = ReferenceOption.CASCADE)
 
+}
+/**
+ * Tabela u kojoj se cuvaju podacima o receptima
+ *
+ * @property id Id recepta
+ * @property doctorId Spoljni kljuc ka tabeli [DoctorTable], ko ga je prepisao
+ * @property patientId Spoljni kljuc ka tabeli [PatientTable], kome je prepisan
+ * @property medication Naziv leka
+ * @property quantity Kolicina u kutijama ili tabletama
+ * @property instructions Uputstvo za koriscenje leka
+ * @property dateExpired Datum isteka recepta
+ */
+object RecipeTable: Table("recipes")
+{
+    val id=uuid("id").autoGenerate()
+    override val primaryKey=PrimaryKey(id)
+    val doctorId=reference("doctor_id", DoctorTable.id, onDelete = ReferenceOption.CASCADE)
+    val patientId=reference("patient_id", PatientTable.id, onDelete = ReferenceOption.CASCADE)
+    val medication=text("medication")
+    val quantity=integer("quantity")
+    val instructions=text("instructions")
+    val dateExpired=date("date_expired")
 }
