@@ -14,61 +14,66 @@ import com.example.security.JwtConfig
 import io.ktor.network.selector.SelectorManager
 
 class AuthRepositoryImplementation(val userService: UserRepository,val doctorService: DoctorRepository,
-    val selectedDoctorService: SelectedDoctorRepository,val jwtConfig: JwtConfig,val patientService: PatientRepository): AuthRepository {
+   val jwtConfig: JwtConfig,val patientService: PatientRepository): AuthRepository {
     override suspend fun registerUser(registerParams: RegisterRequest?): BaseResponse<RegisterResponse> {
-        if (registerParams==null){
+
+        if (registerParams == null) {
             return BaseResponse.ErrorResponse(message = "Niste uneli podatke za registraciju")
-        }else{
+        } else {
 
-            val user=userService.addUser(registerParams.user)
-            val userAdded=(user as BaseResponse.SuccessResponse).data
-            if (user== BaseResponse.SuccessResponse){
-                val token=jwtConfig.createAccessToken(userAdded?.getId()!!)
-                if(registerParams.user.getRole()== Role.ROLE_PATIENT){
-                    if (registerParams.patient==null){
-                        return BaseResponse.ErrorResponse(message = "Niste uneli podatke o pacijentu")
-                    }
-                    val patient=patientService.addPatient(registerParams.patient)
-                    val patientAdded=(patient as BaseResponse.SuccessResponse).data?.copy(userId = userAdded?.getId())
 
-                    val selectedDoctor= registerParams.selectedDoctor?.copy(patientId = patientAdded?.getId()!!)
-                    val selectedDoctorAdded=selectedDoctorService.addSelectedDoctorForPatient(selectedDoctor)
+            if (registerParams.user.getRole() == Role.ROLE_PATIENT) {
+                val user = userService.addUser(registerParams.user)
+                if (user is BaseResponse.ErrorResponse)
+                    return BaseResponse.ErrorResponse(user.message)
+                val userAdded = (user as BaseResponse.SuccessResponse).data
 
-                    return BaseResponse.SuccessResponse(data = RegisterResponse(
-                        user=userAdded!!,
-                        token=token,
+                val token = jwtConfig.createAccessToken(userAdded?.getId()!!)
+                if (registerParams.patient == null) {
+                    return BaseResponse.ErrorResponse(message = "Niste uneli podatke o pacijentu")
+                }
+                val patient = patientService.addPatient(registerParams.patient)
+                val patientAdded =
+                    (patient as BaseResponse.SuccessResponse).data?.copy(userId = userAdded.getId())
+
+
+
+                return BaseResponse.SuccessResponse(
+                    data = RegisterResponse(
+                        user = userAdded,
+                        token = token,
                         patient = patientAdded,
-                        selectedDoctor = (selectedDoctorAdded as BaseResponse.SuccessResponse).data
-                    ))
-
-                }
-                if (registerParams.user.getRole() == Role.ROLE_DOCTOR){
-                    if (registerParams.doctor==null){
-                        return BaseResponse.ErrorResponse(message = "Niste uneli podatke o lekaru")
-                    }
-                    val doctor=registerParams.doctor.copy(userId = userAdded?.getId())
-                    val doctorAdded=doctorService.addDoctor(doctor)
-                    if (doctorAdded is BaseResponse.SuccessResponse){
-                        return BaseResponse.SuccessResponse(
-                            data = RegisterResponse(
-                                token=token,
-                                user=userAdded!!,
-                                doctor = doctorAdded.data
-                            ),
-                            message = "Uspesno ste se registrovali"
-                        )
-                    }
-
-                }
-            }
-            else{
-                return BaseResponse.ErrorResponse("Ne mozete da se registrujete jer niste ni lekar ni pacijent")
+                    )
+                )
 
             }
-            return BaseResponse.ErrorResponse("Ne mozete da se registrujete jer niste ni lekar ni pacijent")
+            if (registerParams.user.getRole() == Role.ROLE_DOCTOR) {
 
+                if (registerParams.doctor == null) {
+                    return BaseResponse.ErrorResponse(message = "Niste uneli podatke o lekaru")
+                }
+                val user = userService.addUser(registerParams.user)
+                if (user is BaseResponse.ErrorResponse)
+                    return BaseResponse.ErrorResponse(user.message)
+                val userAdded = (user as BaseResponse.SuccessResponse).data
 
+                val token = jwtConfig.createAccessToken(userAdded?.getId()!!)
+                val doctor = registerParams.doctor.copy(userId = userAdded.getId())
+                val doctorAdded = doctorService.addDoctor(doctor)
+                if (doctorAdded is BaseResponse.SuccessResponse) {
+                    return BaseResponse.SuccessResponse(
+                        data = RegisterResponse(
+                            token = token,
+                            user = userAdded,
+                            doctor = doctorAdded.data
+                        ),
+                        message = "Uspesno ste se registrovali"
+                    )
+                }
+
+            }
         }
+        return BaseResponse.ErrorResponse("Ne mozete da se registrujete jer niste ni lekar ni pacijent")
     }
 
     override suspend fun loginUser(
