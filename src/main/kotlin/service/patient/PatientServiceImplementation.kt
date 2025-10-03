@@ -105,7 +105,7 @@ class PatientServiceImplementation: PatientServiceInterface {
         }
         return DatabaseFactory.dbQuery {
             PatientTable.selectAll().where(PatientTable.hospitalId eq UUID.fromString(hospitalId))
-                .map {
+                .mapNotNull {
                     rowToPatient(it)
                 }
         }
@@ -123,19 +123,17 @@ class PatientServiceImplementation: PatientServiceInterface {
         if (!list.contains(patient))
             throw IllegalArgumentException("Pacijent ne postoji")
 
-         DatabaseFactory.dbQuery {
-            PatientTable.update{
+         return DatabaseFactory.dbQuery {
+            PatientTable.updateReturning(where = { PatientTable.id eq UUID.fromString(patient.getId())}){
                 it[fullName]=patient.getFullName()
                 it[userId]= UUID.fromString(patient.getUserId())
                 it[jmbg]=patient.getJmbg().toString()
                 it[hospitalId]= UUID.fromString(patient.getHospitalId())
-            }
+            }.map {
+                rowToPatient(it)
+            }.firstOrNull()
         }
-        return DatabaseFactory.dbQuery {
-            PatientTable.select(PatientTable.id eq UUID.fromString(patient.getId()))
-                .map { rowToPatient(it) }
-                .firstOrNull()
-        }
+
 
     }
     /**
@@ -162,15 +160,15 @@ class PatientServiceImplementation: PatientServiceInterface {
      */
     override suspend fun getAllPatients(): List<Patient>{
         return DatabaseFactory.dbQuery {
-            PatientTable.selectAll().map {
+            PatientTable.selectAll().mapNotNull {
                 rowToPatient(it)
             }
         }
 
     }
-    fun rowToPatient(resultRow: ResultRow?): Patient{
+    fun rowToPatient(resultRow: ResultRow?): Patient?{
         if(resultRow==null)
-            throw NullPointerException("Vraceno je null polje iz baze")
+            return null
         else return Patient(
             id = resultRow[PatientTable.id].toString(),
             userId = resultRow[PatientTable.userId].toString(),

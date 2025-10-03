@@ -43,6 +43,10 @@ class DoctorRepositoryTests {
     private lateinit var service: DoctorServiceInterface
     private lateinit var userService: UserServiceInterface
     private lateinit var user: User
+    private lateinit var user2: User
+    private lateinit var user3: User
+
+
     private lateinit var hospitalService: HospitalServiceInterface
     private lateinit var hospital: Hospital
     private lateinit var hospitalAdded: Hospital
@@ -83,9 +87,28 @@ class DoctorRepositoryTests {
             role = Role.ROLE_DOCTOR,
 
         )
+        user2= User(
+
+            email = "mika@peric.com",
+            password = "Password123!",
+            role = Role.ROLE_DOCTOR,
+
+            )
+        user3= User(
+
+            email = "jova@peric.com",
+            password = "Password123!",
+            role = Role.ROLE_DOCTOR,
+
+            )
         var userReturned: User
+        var userReturned2: User
+        var userReturned3: User
         runBlocking {
             userReturned=userService.addUser(user)!!
+            userReturned2=userService.addUser(user2)!!
+            userReturned3=userService.addUser(user3)!!
+
         }
         doctor= Doctor(
             userId = userReturned.getId(),
@@ -97,7 +120,7 @@ class DoctorRepositoryTests {
             isGeneral = true
         )
         doctor2= Doctor(
-            userId = userReturned.getId(),
+            userId = userReturned2.getId(),
             fullName = "Pera Peric",
             specialization = "Neurolog",
             maxPatients = 30,
@@ -106,7 +129,7 @@ class DoctorRepositoryTests {
             isGeneral = false
         )
         doctor3= Doctor(
-            userId = userReturned.getId(),
+            userId = userReturned3.getId(),
             fullName = "Pera Peric",
             specialization = "Neurolog",
             maxPatients = 30,

@@ -70,7 +70,8 @@ class PatientRepositoryImplementation(val service: PatientServiceInterface
             return BaseResponse.ErrorResponse(message = "Ne mozete izmeniti pacijenta koji nema vrednost")
         }
         val patientEdited=service.editPatient(patient)
-        if (patientEdited==null||patientEdited.equals(patient)){
+        println(patientEdited)
+        if (patientEdited==null){
             return BaseResponse.ErrorResponse(message = "Pacijent nije uspesno izmenjen")
         }
         return BaseResponse.SuccessResponse(data = patientEdited, message = "Pacijent uspesno izmenjen")
