@@ -369,18 +369,26 @@ class DoctorTests{
      */
     @ParameterizedTest
     @CsvSource(
-
-        ("1,2,true"),
-        ("99,2,true"),
-        ("1,3,true"),
-        ("3,4,false")
-
+        ("1,2,Pera Peric,Neurolog,30,0,3,false,true"),
+        ("99,2,Pera Peric,Neurolog,30,0,3,false,true"),
+        ("5,6,Pera Peric,Neurolog,30,0,3,false,true"),
+        ("7,8,Mika Mikic,Kardiolog,40,1,9,true,false")
     )
-    fun equals_test(id: String, userId: String,expected: Boolean){
-        val doctor1 = Doctor("1","2","Pera Peric","Neurolog",30,0,"3",false)
-        val doctor2 = Doctor(id,userId,"Pera Peric","Neurolog",30,0,"3",false)
+    fun equals_test(
+        id: String,
+        userId: String,
+        fullName: String,
+        specialization: String,
+        experience: Int,
+        rating: Int,
+        hospitalId: String,
+        isVerified: Boolean,
+        expected: Boolean
+    ) {
+        val doctor1 = Doctor("1", "2", "Pera Peric", "Neurolog", 30, 0, "3", false)
+        val doctor2 = Doctor(id, userId, fullName, specialization, experience, rating, hospitalId, isVerified)
 
-        assertEquals(expected, doctor1.equals(doctor2))
+        assertEquals(expected, doctor1 == doctor2)
     }
 
     /**

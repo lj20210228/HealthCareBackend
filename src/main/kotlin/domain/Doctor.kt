@@ -262,7 +262,7 @@ data class Doctor(
      * Metoda koja proverava da li je neki objekat identican Doctor objektu
      *
      * @return [Boolean] Ukoliko se klasa razlikuje od [com.example.domain.Doctor] ili
-     * ukoliko je [id],[userId] razlicit kod 2 objekta, u suportnom
+     * ukoliko je [id],[userId] razlicit kod 2 objekta, ili da su im svi ostali parametri isti, u suportnom
      * vraca true
      */
     override fun equals(other: Any?): Boolean {
@@ -271,7 +271,8 @@ data class Doctor(
 
         other as Doctor
 
-        return id==other.id ||userId==other.userId
+        return id==other.id ||userId==other.userId||(specialization==other.specialization&&maxPatients==other.maxPatients
+                &&hospitalId==other.hospitalId||fullName==other.fullName||isGeneral==other.isGeneral)
     }
     /**
      * Generiše hash kod za [Doctor] objekat.
