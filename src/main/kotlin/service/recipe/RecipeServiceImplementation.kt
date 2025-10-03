@@ -1,34 +1,50 @@
 package com.example.service.recipe
 
+import com.example.database.DatabaseFactory
+import com.example.database.RecipeTable
 import com.example.domain.Recipe
+import com.example.service.patient.PatientServiceInterface
 import kotlinx.serialization.json.Json
+import org.h2.api.H2Type.row
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insertReturning
+import org.jetbrains.exposed.sql.selectAll
 import java.io.File
 import java.time.LocalDate
+import java.util.Collections.list
+import java.util.UUID
 
 /**
  * Klasa koja implementira metode interfejsa [RecipeServiceInterface]
  * @author Lazar Janković
- * @property file Fajl koji simulira kolonu u bazi
- * @property list Lista u koju se smestaju podaci o lekovima
  * @see RecipeServiceInterface
  * @see Recipe
  */
-class RecipeServiceImplementation: RecipeServiceInterface {
-    val file= File("recipes.json")
-    val list=getAllRecipes()
+class RecipeServiceImplementation(val patientService: PatientServiceInterface): RecipeServiceInterface {
+
 
     /**
      * Metoda za dodavanje recepta
      */
-    override suspend fun addRecipe(recipe: Recipe?): Recipe {
+    override suspend fun addRecipe(recipe: Recipe?): Recipe? {
         if (recipe==null)
             throw NullPointerException("Recept ne sme biti null")
+        val list=getAllRecipes()
         if (list.contains(recipe))
             throw IllegalArgumentException("Recept za ove podatke i ovaj datum vec postoji")
-        list.add(recipe)
-        val jsonString=Json { prettyPrint=true }.encodeToString(list)
-        file.writeText(jsonString)
-        return recipe
+        return DatabaseFactory.dbQuery {
+            RecipeTable.insertReturning {
+                it[doctorId]= UUID.fromString(recipe.getDoctorId())
+                it[patientId]= UUID.fromString(recipe.getPatientId())
+                it[medication]=recipe.getMedication()
+                it[quantity]=recipe.getQuantity()
+                it[instructions]=recipe.getInstructions()
+                it[dateExpired]=recipe.getExpiredDate()
+            }.map {
+                rowToRecipe(it)
+            }.first()
+        }
 
     }
 
@@ -40,7 +56,15 @@ class RecipeServiceImplementation: RecipeServiceInterface {
             throw NullPointerException("Id lekara ne sme biti null")
         if (doctorId.isEmpty())
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
-        return list.filter { it.getDoctorId()==doctorId }
+
+        return DatabaseFactory
+            .dbQuery {
+                RecipeTable.selectAll().where{
+                    RecipeTable.doctorId eq UUID.fromString(doctorId)
+                }.mapNotNull {
+                    rowToRecipe(it)
+                }
+            }
     }
 
     /**
@@ -51,7 +75,14 @@ class RecipeServiceImplementation: RecipeServiceInterface {
             throw NullPointerException("Id pacijenta ne sme biti null")
         if (patientId.isEmpty())
             throw IllegalArgumentException("Id pacijenta ne sme biti prazan string")
-        return list.filter { it.getPatientId()==patientId }
+        return DatabaseFactory
+            .dbQuery {
+                RecipeTable.selectAll().where{
+                    RecipeTable.patientId eq UUID.fromString(patientId)
+                }.mapNotNull {
+                    rowToRecipe(it)
+                }
+            }
     }
 
     /**
@@ -62,7 +93,14 @@ class RecipeServiceImplementation: RecipeServiceInterface {
             throw NullPointerException("Id recepta ne sme biti null")
         if (recipeId.isEmpty())
             throw IllegalArgumentException("Id recepta ne sme biti prazan string")
-        return list.find { it.getId()==recipeId }
+        return DatabaseFactory
+            .dbQuery {
+                RecipeTable.selectAll().where{
+                    RecipeTable.id eq UUID.fromString(recipeId)
+                }.map {
+                    rowToRecipe(it)
+                }.first()
+            }
     }
 
     /**
@@ -74,7 +112,14 @@ class RecipeServiceImplementation: RecipeServiceInterface {
             throw NullPointerException("Ime leka ne sme biti null")
         if (medication.isEmpty())
             throw IllegalArgumentException("Ime leka ne sme biti prazan string")
-        return list.filter { it.getMedication().contains(medication, ignoreCase = true) }
+        return DatabaseFactory
+            .dbQuery {
+                RecipeTable.selectAll().where{
+                    RecipeTable.medication eq medication
+                }.mapNotNull {
+                    rowToRecipe(it)
+                }
+            }
     }
     /**
      * Metoda za pronalazenje recepta koji je prepisao neki lekar, koji nisu istekli
@@ -84,7 +129,15 @@ class RecipeServiceImplementation: RecipeServiceInterface {
             throw NullPointerException("Id lekara ne sme biti null")
         if (doctorId.isEmpty())
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
-        return list.filter { it.getDoctorId()==doctorId&&it.getExpiredDate().isAfter(LocalDate.now()) }
+        return DatabaseFactory
+            .dbQuery {
+                RecipeTable.selectAll().where{
+                    RecipeTable.doctorId eq UUID.fromString(doctorId) and
+                            (RecipeTable.dateExpired greater LocalDate.now())
+                }.mapNotNull {
+                    rowToRecipe(it)
+                }
+            }
     }
 
     /**
@@ -95,33 +148,48 @@ class RecipeServiceImplementation: RecipeServiceInterface {
             throw NullPointerException("Id pacijenta ne sme biti null")
         if (patientId.isEmpty())
             throw IllegalArgumentException("Id pacijenta ne sme biti prazan string")
-        return list.filter { it.getPatientId()==patientId &&it.getExpiredDate().isAfter(LocalDate.now())}
-    }
-    /**
-     * Metoda kojima se vracaju recepti koji su prepisanu pacijentu, po pacijentovom jmbg, koji nisu istekli
-     */
-    override suspend fun getAllValidRecipesForPatientForJmbg(jmbg: String?): List<Recipe> {
-        if (jmbg==null)
-            throw NullPointerException("Id pacijenta ne sme biti null")
-        if (jmbg.isEmpty())
-            throw IllegalArgumentException("Id pacijenta ne sme biti prazan string")
-        if(!jmbg.all { it.isDigit() }){
-            throw IllegalArgumentException("Jmbg mora sadrzati samo brojeve")
 
-        }
-        if(jmbg.length!=13){
-            throw IllegalArgumentException("Duzina jmbg-a mora biti 13 cifara")
-
-        }
-        return list.filter { it.getPatientId()==jmbg &&it.getExpiredDate().isAfter(LocalDate.now())}
+        return DatabaseFactory
+            .dbQuery {
+                RecipeTable.selectAll().where{
+                    RecipeTable.patientId eq UUID.fromString(patientId) and
+                            (RecipeTable.dateExpired greater LocalDate.now())
+                }.mapNotNull {
+                    rowToRecipe(it)
+                }
+            }
     }
 
     /**
-     * Funkcija za pretvaranje json fajla u listu recepata
+     * Funkcija koja pretvara red tabele u [Recipe] objekat
+     * @param resultRow Red u tabeli recipes
+     * @return null ako je prosledjeni red null, ako ne [Recipe] objekat
      */
-    fun getAllRecipes(): MutableList<Recipe>{
-        if(!file.exists()||file.readText().isBlank()) return mutableListOf()
-        val jsonString=file.readText()
-        return Json.Default.decodeFromString(jsonString)
+    fun rowToRecipe(resultRow: ResultRow?): Recipe?{
+        if (resultRow==null)
+            return  null
+        else return Recipe(
+            id = resultRow[RecipeTable.id].toString(),
+            patientId =resultRow[RecipeTable.patientId].toString(),
+            doctorId =resultRow[RecipeTable.doctorId].toString(),
+            medication = resultRow[RecipeTable.medication],
+            quantity = resultRow[RecipeTable.quantity],
+            instructions = resultRow[RecipeTable.instructions],
+            dateExpired =resultRow[RecipeTable.dateExpired]
+        )
+    }
+
+    /**
+     * Funkcija za vracanje svih recepata iz baze
+     * @return [List[Recipe]]
+     */
+    suspend fun getAllRecipes(): List<Recipe>{
+
+        return DatabaseFactory.dbQuery {
+            RecipeTable.selectAll().mapNotNull {
+                rowToRecipe(it)
+            }
+        }
+
     }
 }
