@@ -31,5 +31,4 @@ data class RegisterRequest(
     val user: User,
     val doctor: Doctor?=null,
     val patient: Patient?=null,
-    val selectedDoctor: SelectedDoctor?=null
 )
