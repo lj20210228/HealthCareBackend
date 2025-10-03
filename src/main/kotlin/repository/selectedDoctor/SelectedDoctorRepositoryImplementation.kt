@@ -67,7 +67,7 @@ class SelectedDoctorRepositoryImplementation(val service: SelectedDoctorServiceI
         val result=service.editSelectedDoctor(selectedDoctor)
         if (result==null)
             return BaseResponse.ErrorResponse(message = "Izabrani lekar izmenjen neuspesno")
-        return BaseResponse.SuccessResponse(message = "Izabrani lekar izmenjen uspesno")
+        return BaseResponse.SuccessResponse(message = "Izabrani lekar izmenjen uspesno", data = result)
     }
 
     override suspend fun deleteSelectedDoctor(selectedDoctor: SelectedDoctor?): BaseResponse<Boolean> {
@@ -76,6 +76,6 @@ class SelectedDoctorRepositoryImplementation(val service: SelectedDoctorServiceI
         val result=service.deleteSelectedDoctor(selectedDoctor)
         if (result==false)
             return BaseResponse.ErrorResponse(message = "Izabrani lekar nije uspesno obrisan")
-        return BaseResponse.SuccessResponse(message = "Izabrani lekar uspesno obrisan")
+        return BaseResponse.SuccessResponse(message = "Izabrani lekar uspesno obrisan",data=result)
     }
 }

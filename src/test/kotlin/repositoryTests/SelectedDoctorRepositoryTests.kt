@@ -50,8 +50,12 @@ class SelectedDoctorRepositoryTests {
     private lateinit var patientService: PatientServiceInterface
     private lateinit var user: User
     private lateinit var user2: User
+    private lateinit var user3: User
+
 
     private lateinit var doctor: Doctor
+    private lateinit var doctor2: Doctor
+
     private lateinit var patient: Patient
 
     private lateinit var hospital: Hospital
@@ -78,6 +82,8 @@ class SelectedDoctorRepositoryTests {
         )
         repository= SelectedDoctorRepositoryImplementation(
             service = service,
+            patientService,
+            doctorService
         )
 
 
@@ -100,9 +106,15 @@ class SelectedDoctorRepositoryTests {
             password = "Password123!",
             role = Role.ROLE_DOCTOR,
         )
+        user3= User(
+            email = "joka@peric.com",
+            password = "Password123!",
+            role = Role.ROLE_DOCTOR,
+        )
         runBlocking {
             user=userService.addUser(user)!!
             user2=userService.addUser(user2)!!
+            user3=userService.addUser(user3)!!
 
         }
 
@@ -111,6 +123,15 @@ class SelectedDoctorRepositoryTests {
         doctor= Doctor(
             userId = user.getId(),
             fullName = "Pera Peric",
+            specialization = "Ortoped",
+            maxPatients = 30,
+            currentPatients = 30,
+            hospitalId = hospital.getId()!!,
+            isGeneral = true
+        )
+        doctor2= Doctor(
+            userId = user3.getId(),
+            fullName = "Pera Jovanovic",
             specialization = "Ortoped",
             maxPatients = 30,
             currentPatients = 30,
@@ -126,6 +147,7 @@ class SelectedDoctorRepositoryTests {
         )
         runBlocking {
             doctor=doctorService.addDoctor(doctor)!!
+            doctor2=doctorService.addDoctor(doctor2)!!
 
         }
         runBlocking {
@@ -206,6 +228,91 @@ class SelectedDoctorRepositoryTests {
         val result=repository.getPatientsForSelectedDoctor(doctor.getId())
         assertTrue(result is ListResponse.SuccessResponse)
         assertEquals(1,result.data?.size)
+    }
+    /**
+     * Izmena izabranih lekara kada je prosledjena null vrednost
+     */
+    @Test
+    fun editSelectedDoctor_nullTest()=runBlocking {
+        val result=repository.addSelectedDoctorForPatient(null)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Niste uneli ispravne podatke za izabranog lekara",result.message)
+
+    }
+
+    /**
+     * Izmena izabranih lekara kada je prosledjena vrednost za pacijenta koji ne postoji
+     */
+    @Test
+    fun editSelectedDoctor_pacijentNePostoji()=runBlocking {
+        val selDoctor= SelectedDoctor(
+            patientId = "9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9",
+            doctorId = doctor?.getId()!!
+        )
+        val result=repository.editSelectedDoctor(selDoctor)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Pacijent ne postoji",result.message)
+    }
+    /**
+     * Izmena izabranih lekara kada je prosledjena vrednost za lekara koji ne postoji
+     */
+    @Test
+    fun editSelectedDoctor_LekarNePostoji()=runBlocking {
+        val selDoctor= SelectedDoctor(
+            doctorId = "9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9",
+            patientId = patient?.getId()!!
+        )
+        val result=repository.editSelectedDoctor(selDoctor)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Lekar ne postoji",result.message)
+    }
+
+    /**
+     * Izmena izabranih lekara kada je prosledjena ispravna vrednost
+     */
+    @Test
+    fun editSelectedDoctorIspravno()=runBlocking {
+        service.addSelectedDoctorForPatient(selectedDoctor)
+
+
+        val edited=selectedDoctor.copy(doctorId = doctor2.getId()!!)
+        val result=repository.editSelectedDoctor(edited)
+        assertTrue(result is BaseResponse.SuccessResponse)
+
+    }
+
+    /**
+     * Brisanje izabranog lekara kada je prosledjena null vrednost
+     */
+    @Test
+    fun deleteSelectedDoctor_null()=runBlocking {
+        val result=repository.deleteSelectedDoctor(null)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Prosledili ste neispravne podatke za brisanje",result.message)
+    }
+    /**
+     * Brisanje izabranog lekara kada je prosledjena vrednost koja ne postoji
+     */
+    @Test
+    fun deleteSelectedDoctor_neispravno()=runBlocking {
+        val selDoctor= SelectedDoctor(
+            doctorId = "9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9",
+            patientId = "9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9"
+        )
+        val result=repository.deleteSelectedDoctor(selDoctor)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Izabrani lekar nije uspesno obrisan",result.message)
+    }
+    /**
+     * Brisanje izabranog lekara kada je prosledjena ispravna vrednost
+     */
+    @Test
+    fun deleteSelectedDoctor_ispravno()=runBlocking {
+        service.addSelectedDoctorForPatient(selectedDoctor)
+        val result=repository.deleteSelectedDoctor(selectedDoctor)
+        assertTrue(result is BaseResponse.SuccessResponse)
+        assertEquals(true,result.data)
+        assertEquals("Izabrani lekar uspesno obrisan",result.message)
     }
 
 
