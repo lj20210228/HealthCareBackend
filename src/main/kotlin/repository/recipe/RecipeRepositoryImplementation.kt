@@ -5,6 +5,7 @@ import com.example.response.BaseResponse
 import com.example.response.ListResponse
 import com.example.service.patient.PatientServiceInterface
 import com.example.service.recipe.RecipeServiceInterface
+import com.fasterxml.jackson.databind.ser.Serializers
 
 /**
  * Klasa koja implementira metode [RecipeRepository]
@@ -96,5 +97,29 @@ class RecipeRepositoryImplementation(val patientService: PatientServiceInterface
         if (recipes.isEmpty())
             return ListResponse.ErrorResponse(message = "Ne postoje vazeci recepti za ovog pacijenta")
         return ListResponse.SuccessResponse(data = recipes, message = "Recepti uspesno pronadjeni")
+    }
+
+    override suspend fun editRecipe(recipe: Recipe?): BaseResponse<Recipe> {
+        if (recipe==null)
+            return BaseResponse.ErrorResponse(message = "Niste prosledili podatke za azuriranje")
+        val exist=serviceInterface.getRecipeForId(recipe.getId())
+        if (exist==null)
+            return BaseResponse.ErrorResponse(message = "Recept ne postoji")
+        val recipe=serviceInterface.editRecipe(recipe)
+        if (recipe==null)
+            return BaseResponse.ErrorResponse(message = "Recept nije uspesno azuziran")
+        return BaseResponse.SuccessResponse(data = recipe, message = "Recept uspesno azuriran")
+    }
+
+    override suspend fun deleteRecipe(recipeId: String?): BaseResponse<Recipe> {
+        if (recipeId==null)
+            return BaseResponse.ErrorResponse(message = "Niste prosledili ispravne podatke za brisanje")
+        val exist=serviceInterface.getRecipeForId(recipeId)
+        if (exist==null)
+            return BaseResponse.ErrorResponse(message = "Recept ne postoji")
+        val recipe=serviceInterface.deleteRecipe(recipeId)
+        if (recipe==false)
+            return BaseResponse.ErrorResponse(message = "Recept nije obrisan")
+        return BaseResponse.SuccessResponse( message = "Recept je obrisan ")
     }
 }

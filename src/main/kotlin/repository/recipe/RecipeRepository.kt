@@ -68,4 +68,22 @@ interface RecipeRepository {
      * @return Ukoliko se pronadju vraca se lista recepata, u suprotnom poruka o gresci
      */
     suspend fun getAllValidRecipesForPatientForJmbg(jmbg: String?): ListResponse<Recipe>
+
+    /**
+     * Funkcija koja salje zahtev za azuriranje recepta
+     * @param recipe Recept koji treba azurirati
+     * @return [BaseResponse] Ukoliko je recept uspesno azuriran vracaju se azurirani podaci i ispisuje se poruka o uspesnosti,
+     * a ukoliko su prosledjeni losi podaci ili recept ne postoji ili nije uspesno azuriran poruka o gresci
+     */
+    suspend fun editRecipe(recipe: Recipe?): BaseResponse<Recipe>
+
+    /**
+     * Funkcija koja salje zahtev za brisanje recepta
+     * @param recipeId Id recepta kojeg treba obrisati
+     * @return [BaseResponse] Ukoliko je prosledjen los id recepta ili taj recept ne postoji vraca se poruka o gresci,
+     * a ukoliko postoji vraca se poruka o uspesnom brisanju
+     */
+    suspend fun deleteRecipe(recipeId: String?): BaseResponse<Recipe>
+
+
 }

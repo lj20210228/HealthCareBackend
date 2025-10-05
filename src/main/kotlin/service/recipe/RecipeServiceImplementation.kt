@@ -7,9 +7,12 @@ import com.example.service.patient.PatientServiceInterface
 import kotlinx.serialization.json.Json
 import org.h2.api.H2Type.row
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertReturning
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.updateReturning
 import java.io.File
 import java.time.LocalDate
 import java.util.Collections.list
@@ -158,6 +161,38 @@ class RecipeServiceImplementation(val patientService: PatientServiceInterface): 
                     rowToRecipe(it)
                 }
             }
+    }
+
+    override suspend fun editRecipe(recipe: Recipe?): Recipe? {
+        if (recipe==null){
+            throw NullPointerException("Podaci za azuriranje moraju imati vrednost")
+        }
+        return DatabaseFactory
+            .dbQuery {
+                RecipeTable.updateReturning(where = {RecipeTable.id eq UUID.fromString(recipe.getId())} ) {
+                    it[medication]=recipe.getMedication()
+                    it[quantity]=recipe.getQuantity()
+                    it[instructions]=recipe.getInstructions()
+                    it[dateExpired]=recipe.getExpiredDate()
+                }.map {
+                    rowToRecipe(it)
+                }.firstOrNull()
+            }
+
+    }
+
+    override suspend fun deleteRecipe(recipeId: String?): Boolean {
+        if (recipeId==null)
+            throw NullPointerException("Id recepta koji je potrebno obrisati ne sme biti null")
+        if(recipeId.isEmpty()){
+            throw IllegalArgumentException("Id recepta koji je potrebno obrisati ne sme biti prazan")
+        }
+        val deletedRows= DatabaseFactory.dbQuery {
+            RecipeTable.deleteWhere{
+                RecipeTable.id eq UUID.fromString(recipeId)
+            }
+        }
+        return deletedRows>0
     }
 
     /**

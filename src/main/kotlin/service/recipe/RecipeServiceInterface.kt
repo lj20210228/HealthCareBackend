@@ -1,5 +1,6 @@
 package com.example.service.recipe
 
+import com.example.domain.Patient
 import com.example.domain.Recipe
 
 /**
@@ -67,5 +68,21 @@ interface RecipeServiceInterface {
      * @return Ukoliko se pronadju vraca se lista recepata, u suprotnom prazna lista
      */
     suspend fun getAllValidRecipesForPatient(patientId: String?): List<Recipe>
+
+    /**
+     * Funckija koja azurira recept
+     * @param  recipe Novi podaci o receptu koje treba azurirati
+     * @throws NullPointerException Ako je [recipe] null
+     * @return Vracaju se podaci o receptu ako postoje ako ne null
+     */
+    suspend fun editRecipe(recipe: Recipe?): Recipe?
+    /**
+     * Funckija koja brise recept
+     * @param  recipeId Id recepta koji treba obrisati
+     * @throws NullPointerException Ako je [recipeId] null
+     * @throws IllegalArgumentException Ako je [recipeId] prazan
+     * @return Vraca se true ili false ako je recept obrisan odnosno ako nije
+     */
+    suspend fun deleteRecipe(recipeId: String?): Boolean
 
 }
