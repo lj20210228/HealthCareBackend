@@ -120,6 +120,6 @@ class RecipeRepositoryImplementation(val patientService: PatientServiceInterface
         val recipe=serviceInterface.deleteRecipe(recipeId)
         if (recipe==false)
             return BaseResponse.ErrorResponse(message = "Recept nije obrisan")
-        return BaseResponse.SuccessResponse( message = "Recept je obrisan ")
+        return BaseResponse.SuccessResponse( message = "Recept je obrisan")
     }
 }

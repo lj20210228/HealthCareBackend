@@ -19,6 +19,7 @@ import com.example.service.hospital.HospitalServiceInterface
 import com.example.service.patient.PatientServiceImplementation
 import com.example.service.patient.PatientServiceInterface
 import com.example.service.recipe.RecipeServiceImplementation
+import com.example.service.recipe.RecipeServiceInterface
 import com.example.service.user.UserServiceImplementation
 import com.example.service.user.UserServiceInterface
 import kotlinx.coroutines.runBlocking
@@ -42,6 +43,7 @@ import kotlin.test.assertTrue
 class RecipeRepositoryTest {
 
     private lateinit var recipeRepository: RecipeRepository
+    private lateinit var recipeService: RecipeServiceInterface
     private lateinit var recipe1: Recipe
     private lateinit var recipe2: Recipe
     private lateinit var patient: Patient
@@ -73,6 +75,8 @@ class RecipeRepositoryTest {
         userService= UserServiceImplementation()
         doctorService= DoctorServiceImplementation()
         patientServiceInterface= PatientServiceImplementation()
+        recipeService= RecipeServiceImplementation(patientServiceInterface)
+
         hospitalService= HospitalServiceImplementation()
         hospital= Hospital(
             name = "Opsta bolnica",
@@ -386,6 +390,76 @@ class RecipeRepositoryTest {
         println(patient.getJmbg())
         assertTrue(result is ListResponse.SuccessResponse)
         assertEquals(2,result.data?.size)
+    }
+
+    /**
+     * Test za azuriranje recepta kada je prosledjen null argument
+     */
+    @Test
+    fun editRecipe_testNull()=runBlocking {
+        val result=recipeRepository.editRecipe(null)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Niste prosledili podatke za azuriranje",result.message)
+
+    }
+    /**
+     * Test za azuriranje recepta kada je prosledjen recept ne postoji
+     */
+    @Test
+    fun editRecipe_testNePostoji()=runBlocking {
+        val recipe= Recipe(
+            id ="9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9" ,
+            patientId = patient.getId()!!,
+            doctorId =doctor.getId()!!,
+            medication = "Eftil 200mg",
+            quantity = 2,
+            instructions = "1 ujutru i 1 uvece",
+            dateExpired = LocalDate.of(2027,6,12)
+        )
+        val result=recipeRepository.editRecipe(recipe)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Recept ne postoji",result.message)
+    }
+    /**
+     * Test za azuriranje recepta kada je prosledjen recept postoji
+     */
+    @Test
+    fun editRecipe_testPostoji()=runBlocking {
+       recipe1= recipeService.addRecipe(recipe1)!!
+        val recipe=recipe1.copy(medication = "Brufen 600mg")
+        val result=recipeRepository.editRecipe(recipe)
+        assertTrue(result is BaseResponse.SuccessResponse)
+        assertEquals(recipe,result.data)
+    }
+    /**
+     * Test za brisanje recepta kada je prosledjen null argument
+     */
+    @Test
+    fun deleteRecipe_testNull()=runBlocking {
+        val result=recipeRepository.deleteRecipe(null)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Niste prosledili ispravne podatke za brisanje",result.message)
+
+    }
+    /**
+     * Test za brisanje recepta kada je prosledjen recept ne postoji
+     */
+    @Test
+    fun deleteRecipe_testNePostoji()=runBlocking {
+
+        val result=recipeRepository.deleteRecipe("9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9")
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Recept ne postoji",result.message)
+    }
+    /**
+     * Test za brisanje recepta kada je prosledjen recept postoji
+     */
+    @Test
+    fun deleteRecipe_testPostoji()=runBlocking {
+        recipe1=recipeService.addRecipe(recipe1)!!
+        val result=recipeRepository.deleteRecipe(recipe1.getId())
+        assertTrue(result is BaseResponse.SuccessResponse)
+        assertEquals("Recept je obrisan",result.message)
     }
 
 

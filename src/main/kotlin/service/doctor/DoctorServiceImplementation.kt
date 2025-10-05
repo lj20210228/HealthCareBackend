@@ -218,7 +218,6 @@ class DoctorServiceImplementation: DoctorServiceInterface {
             throw IllegalArgumentException("Id lekara ne sme biti prazan string")
 
         return DatabaseFactory.dbQuery {
-            // prvo dohvatimo lekara
             val doctor = DoctorTable
                 .selectAll()
                 .where{
@@ -226,16 +225,11 @@ class DoctorServiceImplementation: DoctorServiceInterface {
                 }
                 .singleOrNull()
 
-            // ako ne postoji lekar
             if (doctor == null) return@dbQuery false
 
             val current = doctor[DoctorTable.currentPatients]
             val max = doctor[DoctorTable.maxPatients]
-
-            // ako je dostigao max broj pacijenata
             if (current >= max!!) return@dbQuery false
-
-            // ako može da primi još pacijenata → update
             val updated = DoctorTable.update({ DoctorTable.id eq UUID.fromString(doctorId) }) {
                 it[DoctorTable.currentPatients] = current + 1
             }
