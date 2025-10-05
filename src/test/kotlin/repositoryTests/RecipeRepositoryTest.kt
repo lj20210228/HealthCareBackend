@@ -11,6 +11,7 @@ import com.example.domain.User
 import com.example.repository.recipe.RecipeRepository
 import com.example.repository.recipe.RecipeRepositoryImplementation
 import com.example.response.BaseResponse
+import com.example.response.ListResponse
 import com.example.service.DoctorServiceInterface
 import com.example.service.doctor.DoctorServiceImplementation
 import com.example.service.hospital.HospitalServiceImplementation
@@ -21,12 +22,23 @@ import com.example.service.recipe.RecipeServiceImplementation
 import com.example.service.user.UserServiceImplementation
 import com.example.service.user.UserServiceInterface
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/**
+ * Testovi za metode [RecipeRepository]
+ * @author Lazar Jankovic
+ * @see RecipeRepository
+ * @see RecipeRepositoryImplementation
+ * @see Recipe
+ * @see UserServiceInterface
+ * @see DoctorServiceInterface
+ * @see PatientServiceInterface
+ */
 class RecipeRepositoryTest {
 
     private lateinit var recipeRepository: RecipeRepository
@@ -43,10 +55,17 @@ class RecipeRepositoryTest {
     private lateinit var hospitalService: HospitalServiceInterface
 
 
+    /**
+     * Pre svakog testa se brisu kolone iz baze,
+     * dodaju se useri i lekar i pacijent i bolnica koji ce se koristiti u testovima
+     */
     @BeforeEach
     fun setUp(){
         DatabaseFactory.init()
         DatabaseFactory.clearTable("recipes")
+        DatabaseFactory.clearTable("users")
+        DatabaseFactory.clearTable("doctor")
+        DatabaseFactory.clearTable("patient")
         recipeRepository= RecipeRepositoryImplementation(
             patientService = PatientServiceImplementation(),
             serviceInterface = RecipeServiceImplementation(patientService = PatientServiceImplementation())
@@ -99,7 +118,7 @@ class RecipeRepositoryTest {
         recipe1= Recipe(
             patientId = patient.getId()!!,
             doctorId =doctor.getId()!!,
-            medication = "Eftil 400mg",
+            medication = "Eftil 200mg",
             quantity = 2,
             instructions = "1 ujutru i 1 uvece",
             dateExpired = LocalDate.of(2027,6,12)
@@ -113,12 +132,19 @@ class RecipeRepositoryTest {
             dateExpired = LocalDate.of(2026,6,12)
         )
     }
+
+    /**
+     * Dodavanje recepta kada je prosledjen null argument
+     */
     @Test
     fun addRecipe_testNull()= runBlocking{
         val result=recipeRepository.addRecipe(null)
         assertTrue(result is BaseResponse.ErrorResponse)
         assertEquals("Ne mozete dodati recept bez podataka",result.message)
     }
+    /**
+     * Dodavanje recepta kada recept vec postoji
+     */
     @Test
     fun addRecipe_alreadyExistTest()=runBlocking {
         recipeRepository.addRecipe(recipe1)
@@ -126,6 +152,9 @@ class RecipeRepositoryTest {
         assertTrue(result is BaseResponse.ErrorResponse)
         assertEquals("Recept za ove podatke i ovaj datum vec postoji",result.message)
     }
+    /**
+     * Dodavanje recepta kada recept ne postoji
+     */
     @Test
     fun addRecipe_ispravno()=runBlocking {
 
@@ -134,4 +163,235 @@ class RecipeRepositoryTest {
         assertEquals(recipe1,result.data)
 
     }
+
+    /**
+     * Test za trazenje svih recepata za lekara kada je prosledjen null argument
+     */
+    @Test
+    fun getAllRecipesForDoctor_testNull()=runBlocking {
+
+        val result=recipeRepository.getAllRecipesForDoctor(null)
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Niste prosledili ispravne podatke o lekaru",result.message)
+    }
+    /**
+     * Test za trazenje svih recepata za lekara kada nema recepata
+     */
+    @Test
+    fun getAllRecipesForDoctor_testNemaRecepata()=runBlocking {
+
+        val result=recipeRepository.getAllRecipesForDoctor(doctor.getId())
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Nije prepisan ni jedan recept",result.message)
+    }
+    /**
+     * Test za trazenje svih recepata za lekara kada ima recepata
+     */
+    @Test
+    fun getAllRecipesForDoctor_testIspravno()=runBlocking {
+        recipeRepository.addRecipe(recipe1)
+        recipeRepository.addRecipe(recipe2)
+        val result=recipeRepository.getAllRecipesForDoctor(doctor?.getId())
+        assertTrue(result is ListResponse.SuccessResponse)
+        assertEquals(2,result.data?.size)
+    }
+    /**
+     * Test za trazenje svih recepata za pacijenta kada je prosledjen null argument
+     */
+    @Test
+    fun getAllRecipesForPatient_testNull()=runBlocking {
+
+        val result=recipeRepository.getAllRecipesForPatient(null)
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Niste prosledili ispravne podatke o pacijentu",result.message)
+    }
+    /**
+     * Test za trazenje svih recepata za pacijenta kada nema recepata
+     */
+    @Test
+    fun getAllRecipesForPatient_testNemaRecepata()=runBlocking {
+
+        val result=recipeRepository.getAllRecipesForPatient(patient.getId())
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Nije prepisan ni jedan recept",result.message)
+    }
+    /**
+     * Test za trazenje svih recepata za lekara kada ima recepata
+     */
+    @Test
+    fun getAllRecipesForPatient_testIspravno()=runBlocking {
+        recipeRepository.addRecipe(recipe1)
+        recipeRepository.addRecipe(recipe2)
+        val result=recipeRepository.getAllRecipesForPatient(patient?.getId())
+        assertTrue(result is ListResponse.SuccessResponse)
+        assertEquals(2,result.data?.size)
+    }
+
+    /**
+     * Test za trazenje recepta po id kada je prosledjen null argument
+     */
+    @Test
+    fun getRecipeForId_testNull()=runBlocking {
+
+        val result=recipeRepository.getRecipeForId(null)
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Niste prosledili ispravne podatke o receptu",result.message)
+    }
+    /**
+     * Test za trazenje recepta po id kada recept ne postoji
+     */
+    @Test
+    fun getRecipeForId_testNemaRecepta()=runBlocking {
+
+
+        val result=recipeRepository.getRecipeForId("9d2f5c36-ff62-4c0c-87cf-8a25c5d7b7a9")
+        assertTrue(result is BaseResponse.ErrorResponse)
+        assertEquals("Recept nije pronadjen",result.message)
+    }
+    /**
+     * Test za trazenje recepta po id kada recept postoji
+     */
+    @Test
+    fun getRecipeForId_testIspravno()=runBlocking {
+        val recipe=(recipeRepository.addRecipe(recipe1) as BaseResponse.SuccessResponse).data
+        val result=recipeRepository.getRecipeForId(recipe?.getId())
+        assertTrue(result is BaseResponse.SuccessResponse)
+        assertEquals(recipe1,result.data)
+    }
+
+    /**
+     * Test za trazenje recepata po imenu kada je prosledjen null argument
+     */
+    @Test
+    fun getRecipesForMedication_testNull()=runBlocking {
+
+        val result=recipeRepository.getRecipesForMedication(null)
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Niste prosledili ispravne podatke o leku",result.message)
+    }
+    /**
+     * Test za trazenje recepata po imenu kada nema recepata
+     */
+    @Test
+    fun getRecipesForMedication_testNemaRecepata()=runBlocking {
+
+        val result=recipeRepository.getRecipesForMedication(recipe1.getMedication())
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Nema recepata sa ovim lekom",result.message)
+    }
+    /**
+     * Test za trazenje recepata po imenu kada ima recepata
+     */
+    @Test
+    fun getRecipesForMedication_testIspravno()=runBlocking {
+        recipeRepository.addRecipe(recipe1)
+        recipeRepository.addRecipe(recipe2)
+        val result=recipeRepository.getRecipesForMedication("Eftil")
+        println(result)
+        assertTrue(result is ListResponse.SuccessResponse)
+        assertEquals(2,result.data?.size)
+    }
+
+    /**
+     * Test za trazenje recepata za lekara koji su validni kada je prosledjen null argument
+     */
+    @Test
+    fun getAllValidRecipesForDoctor_testNull()=runBlocking {
+
+        val result=recipeRepository.getAllValidRecipesForDoctor(null)
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Niste prosledili ispravne podatke o lekaru",result.message)
+    }
+    /**
+     * Test za trazenje recepata za lekara koji su validni kada nema recepata
+     */
+    @Test
+    fun getAllValidRecipesForDoctor_testNemaRecepata()=runBlocking {
+
+        val result=recipeRepository.getAllValidRecipesForDoctor(doctor.getId())
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Nije prepisan ni jedan recept koji i dalje vazi",result.message)
+    }
+    /**
+     * Test za trazenje recepata za lekara koji su validni kada ima recepata
+     */
+    @Test
+    fun getAllValidRecipesForDoctor_testIspravno()=runBlocking {
+        recipeRepository.addRecipe(recipe1)
+        recipeRepository.addRecipe(recipe2)
+        val result=recipeRepository.getAllValidRecipesForDoctor(doctor?.getId())
+        assertTrue(result is ListResponse.SuccessResponse)
+        assertEquals(2,result.data?.size)
+    }
+    /**
+     * Test za trazenje recepata za pacijenta koji su validni kada je prosledjen null argument
+     */
+    @Test
+    fun getAllValidRecipesForPatient_testNull()=runBlocking {
+
+        val result=recipeRepository.getAllRecipesForPatient(null)
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Niste prosledili ispravne podatke o pacijentu",result.message)
+    }
+    /**
+     * Test za trazenje recepata za pacijenta koji su validni kada nema recepata
+     */
+    @Test
+    fun getAllValidRecipesForPatient_testNemaRecepata()=runBlocking {
+
+        val result=recipeRepository.getAllValidRecipesForPatient(patient.getId())
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Nije prepisan ni jedan recept koji i dalje vazi",result.message)
+    }
+    /**
+     * Test za trazenje recepata za pacijenta koji su validni kada ima recepata
+     */
+    @Test
+    fun getAllValidRecipesForPatient_testIspravno()=runBlocking {
+        recipeRepository.addRecipe(recipe1)
+        recipeRepository.addRecipe(recipe2)
+        val result=recipeRepository.getAllValidRecipesForPatient(patient.getId())
+        assertTrue(result is ListResponse.SuccessResponse)
+        assertEquals(2,result.data?.size)
+    }
+    /**
+     * Test za trazenje recepata za pacijenta po jmbg koji su validni kada je prosledjen null argument
+     */
+    @Test
+    fun getAllValidRecipesForPatientJmbg_testNull()=runBlocking {
+
+        val result=recipeRepository.getAllValidRecipesForPatientForJmbg(null)
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Niste uneli ispravan jmbg",result.message)
+    }
+    /**
+     * Test za trazenje recepata za pacijenta po jmbg koji su validni kada recepti nisu pronadjeni
+     */
+    @Test
+    fun getAllValidRecipesForPatientJmbg_testNemaRecepata()=runBlocking {
+
+        val result=recipeRepository.getAllValidRecipesForPatientForJmbg(patient.getJmbg())
+        assertTrue(result is ListResponse.ErrorResponse)
+        assertEquals("Ne postoje vazeci recepti za ovog pacijenta",result.message)
+    }
+    /**
+     * Test za trazenje recepata za pacijenta po jmbg koji su validni kada su recepti  pronadjeni
+     */
+    @Test
+    fun getAllValidRecipesForPatientJmbg_testIspravno()=runBlocking {
+        recipeRepository.addRecipe(recipe1)
+        recipeRepository.addRecipe(recipe2)
+        println(patient.getId())
+        val result=recipeRepository.getAllValidRecipesForPatientForJmbg(patient.getJmbg())
+        println(patient.getJmbg())
+        assertTrue(result is ListResponse.SuccessResponse)
+        assertEquals(2,result.data?.size)
+    }
+
+
+
+
+
+
+
 }

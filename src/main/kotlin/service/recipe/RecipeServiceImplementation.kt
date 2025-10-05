@@ -99,7 +99,7 @@ class RecipeServiceImplementation(val patientService: PatientServiceInterface): 
                     RecipeTable.id eq UUID.fromString(recipeId)
                 }.map {
                     rowToRecipe(it)
-                }.first()
+                }.firstOrNull()
             }
     }
 
@@ -115,7 +115,7 @@ class RecipeServiceImplementation(val patientService: PatientServiceInterface): 
         return DatabaseFactory
             .dbQuery {
                 RecipeTable.selectAll().where{
-                    RecipeTable.medication eq medication
+                    RecipeTable.medication regexp ("^${medication}\\y")
                 }.mapNotNull {
                     rowToRecipe(it)
                 }
