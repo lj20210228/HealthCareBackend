@@ -1,81 +1,89 @@
 package com.example.service.workTime
 
+import com.example.database.DatabaseFactory
+import com.example.database.WorkTimeTable
 import com.example.domain.WorkTime
 import com.example.service.doctor.DoctorServiceImplementation
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insertReturning
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.updateReturning
 import java.io.File
+import java.util.UUID
 
 /**
  * Klasa koja implementira [WorkTimeInterface]
  * @author Lazar Janković
  * @see WorkTimeInterface
- * @property file Json fajl koji simulira kolonu work_time u bazi
- * @property file2 Json fajl koji simulira kolonu doctors u bazi
- * @property list Lista u koju se citaju podaci iz [file]
- * @property doctors Lista u koju se citaju podaci iz [file2]
  */
 class WorkTimeServiceImplementation: WorkTimeInterface {
-    val file= File("workTime.json")
-    val file2= File("doctors.json")
-    private  var list: MutableList<WorkTime>
-    init {
-         list=getAllWorkTimes()
 
-    }
-    val doctors= DoctorServiceImplementation().getAllDoctors(file2)
+
+
+
 
     /**
      * Implementacija funkcije getWorkTimeForDoctor
      */
-    override suspend fun getWorkTimeForDoctor(doctorId: String?): List<WorkTime>? {
+    override suspend fun getWorkTimeForDoctor(doctorId: String?): List<WorkTime> {
         if(doctorId==null)
             throw NullPointerException("Id lekara cije se radno vreme trazi ne moze biti null")
         if (doctorId.isEmpty())
             throw IllegalArgumentException("Id lekara cije se radno vreme trazi ne moze biti prazan string")
-        val doctorIdExist=list.find { it.getDoctorId()==doctorId }
-        if (doctorIdExist==null){
-            return null
-        }
 
-        return list.filter{ it.getDoctorId()==doctorId }
+        return DatabaseFactory
+            .dbQuery {
+                WorkTimeTable.selectAll().where {
+                    WorkTimeTable.doctorId eq UUID.fromString(doctorId)
+                }.mapNotNull {
+                    rowToWorkTime(it)
+                }
+            }
     }
     /**
      * Implementacija funkcije addWorkTime
      */
-    override suspend fun addWorkTime(workTime: WorkTime?): WorkTime {
+    override suspend fun addWorkTime(workTime: WorkTime?): WorkTime? {
         if (workTime==null)
             throw NullPointerException("Work time ne sme biti null")
-        if (list.contains(workTime))
-            throw IllegalArgumentException("Radno vreme sa ovim id vec postoji")
-        list.add(workTime)
-        val jsonString=Json { prettyPrint=true}.encodeToString(list)
-        file.writeText(jsonString)
-        return workTime
+
+
+        return DatabaseFactory.dbQuery {
+            WorkTimeTable.insertReturning {
+                it[startTime]=workTime.getStartTime()
+                it[endTime]=workTime.getEndTime()
+                it[doctorId]= UUID.fromString(workTime.getDoctorId())
+                it[dayInWeek]=workTime.getDayIn()
+            }.map {
+                rowToWorkTime(it)
+            }.first()
+        }
 
     }
     /**
      * Implementacija funkcije deleteWorkTime
      */
     override suspend fun deleteWorkingTime(id: String?): Boolean {
-        println(id)
-        println(list)
+
 
         if(id==null)
             throw NullPointerException("Id radnog vremena ne sme biti null")
         if(id.isEmpty())
             throw IllegalArgumentException("Id radnog vremena ne sme biti prazan")
 
-        val idContains=list.find{ it.getId()==id }
-        println(idContains)
 
-        if (idContains==null)
-            return false
+        val deletedRows= DatabaseFactory
+            .dbQuery {
+                WorkTimeTable.deleteWhere {
+                    WorkTimeTable.id eq UUID.fromString(id)
+                }
+            }
 
-        list.remove(idContains)
-        file.writeText(Json { prettyPrint = true }.encodeToString(list))
-        return true
-
+        return deletedRows>0
 
     }
 
@@ -85,27 +93,50 @@ class WorkTimeServiceImplementation: WorkTimeInterface {
     override suspend fun updateWorkingTime(workTime: WorkTime?): WorkTime? {
         if (workTime==null)
             throw NullPointerException("Work time ne sme biti null")
-        if (!list.contains(workTime))
-            throw IllegalArgumentException("Radno vreme sa ovim id ne postoji")
-
-        val idContains=list.find{ it.getId()==workTime.getId() }
-
-        list.add(workTime)
-
-        list.remove(idContains)
-
-        file.writeText(Json { prettyPrint = true }.encodeToString(list))
-        return workTime
+        return DatabaseFactory
+            .dbQuery {
+                WorkTimeTable.updateReturning(where = {WorkTimeTable.id eq UUID.fromString(workTime.getId())})
+                {
+                    it[startTime]=workTime.getStartTime()
+                    it[endTime]=workTime.getEndTime()
+                }.map {
+                    rowToWorkTime(it)
+                }.firstOrNull()
+            }
 
     }
 
-    /**
-     * Funkcija koja ucitava podatke iz json fajla i prevodu u listu radnih vremena
-     */
-    fun getAllWorkTimes(): MutableList<WorkTime>{
-        if (!file.exists()||file.readText().isBlank())return mutableListOf()
-        val jsonString=file.readText()
-        return Json.Default.decodeFromString<MutableList<WorkTime>>(jsonString)
+     fun rowToWorkTime(resultRow: ResultRow?): WorkTime?{
+        return if (resultRow==null)
+            null
+        else WorkTime(
+            id = resultRow[WorkTimeTable.id].toString(),
+            startTime = resultRow[WorkTimeTable.startTime],
+            endTime = resultRow[WorkTimeTable.endTime],
+            doctorId = resultRow[WorkTimeTable.doctorId].toString(),
+            dayIn = resultRow[WorkTimeTable.dayInWeek]
+        )
     }
+    override suspend fun getAllWorkingTimes(): List<WorkTime> {
+        return DatabaseFactory.dbQuery {
+            WorkTimeTable.selectAll().mapNotNull {
+                rowToWorkTime(it)
+            }
+        }
+    }
+
+    override suspend fun getWorkingTimeForId(id: String?): WorkTime? {
+        if (id==null)
+            throw NullPointerException("Id radnog vremena ne moze biti null")
+        if (id.isEmpty())
+            throw IllegalArgumentException("Id radnog vremena ne moze biti prazan")
+        return DatabaseFactory.dbQuery {
+            WorkTimeTable.selectAll()
+                .where{
+                    WorkTimeTable.id eq UUID.fromString(id)
+                }.map { rowToWorkTime(it) }.firstOrNull()
+        }
+    }
+
 
 }

@@ -22,17 +22,16 @@ interface WorkTimeInterface {
      * @return null Ako lekar nije pronadjen
      * @return emptyList() Ako lekar ne radi
      */
-    suspend fun getWorkTimeForDoctor(doctorId: String?): List<WorkTime>?
+    suspend fun getWorkTimeForDoctor(doctorId: String?): List<WorkTime>
 
 
     /**
      * Funckija koja dodaje radno vreme lekara
      * @param workTime Radno vreme koje treba da se doda
      * @throws NullPointerException Ako je [workTime] null
-     * @throws IllegalArgumentException Ako workTime vec postoji
      * @return [WorkTime] Ako je uspesno dodavanje
      */
-    suspend fun addWorkTime(workTime: WorkTime?): WorkTime
+    suspend fun addWorkTime(workTime: WorkTime?): WorkTime?
     /**
      * Funckija koja brise radno vreme lekara
      * @param id Id [WorkTime] kog treba obrisati
@@ -49,4 +48,22 @@ interface WorkTimeInterface {
      * @return [WorkTime] Ako je uspesno azuriranje
      */
     suspend fun updateWorkingTime(workTime: WorkTime?): WorkTime?
+
+    /**
+     * Metoda koja vraca listu svih radnih vremena kako bi se proverilo prilikom brisanja i dodavanja da li postoji
+     * vec radno vreme
+     * @return [List[WorkTime]]
+     */
+    suspend fun getAllWorkingTimes(): List<WorkTime>
+
+    /**
+     * Metoda koja vraca radno vreme po id
+     * @param id Id radnog vremena
+     * @throws NullPointerException Ako je [id] null
+     * @throws IllegalArgumentException Ako je id prazan string
+     * @return [WorkTime] Podaci o radnom vremenu ili null ako nisu pronadjeni
+     */
+    suspend fun getWorkingTimeForId(id: String?): WorkTime?
+
+
 }

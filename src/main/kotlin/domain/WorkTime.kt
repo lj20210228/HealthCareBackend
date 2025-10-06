@@ -16,11 +16,11 @@ import java.time.LocalTime
  */
 @Serializable
 data class WorkTime(
-    private var id: String,
+    private var id: String?=null,
     @Serializable(with = StrictLocalTimeSerializer::class)
-    private var startTime: LocalTime?=null,
+    private var startTime: LocalTime,
     @Serializable(with = StrictLocalTimeSerializer::class)
-    private var endTime: LocalTime?=null,
+    private var endTime: LocalTime,
     private var doctorId: String,
     private var dayIn: DayInWeek
 
@@ -29,9 +29,8 @@ data class WorkTime(
      * Blok za inicijalizaciju
      */
     init {
-
-        setId(id)
-
+        setStartTime(startTime)
+        setEndTime(endTime)
         setDoctorId(doctorId)
         setDayIn(dayIn)
     }
@@ -40,7 +39,7 @@ data class WorkTime(
      * Funkcija koja vraca id radnog vremena
      * @return [String] id  radnog vremena
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
     /**
@@ -82,7 +81,7 @@ data class WorkTime(
      * Funkcija koja vraca pocetak radnog vremena
      * @return [LocalTime] vraca vreme pocetka smene
      */
-    fun getStartTime(): LocalTime?{
+    fun getStartTime(): LocalTime{
         return this.startTime
     }
 
@@ -93,7 +92,7 @@ data class WorkTime(
      */
     fun setStartTime(startTime: LocalTime?){
         val notNullStart=requireNotNull(startTime){"Pocetak radnog vremena ne moze biti null"}
-        if (endTime != null && notNullStart.isAfter(endTime)) {
+        if (notNullStart.isAfter(endTime)) {
             throw IllegalArgumentException("Pocetak radnog vremena ne moze biti posle kraja radnog vremena")
         }
         this.startTime = notNullStart
@@ -102,7 +101,7 @@ data class WorkTime(
      * Funkcija koja vraca kraj radnog vremena
      * @return [LocalTime] vraca vreme kraja smene
      */
-    fun getEndTime(): LocalTime?{
+    fun getEndTime(): LocalTime{
         return this.endTime
     }
     /**
@@ -112,7 +111,7 @@ data class WorkTime(
      */
     fun setEndTime(endTime: LocalTime?){
         val notNullEnd=requireNotNull(endTime){"Kraj radnog vremena ne moze biti null"}
-        if (startTime != null && notNullEnd.isBefore(startTime)) {
+        if (notNullEnd.isBefore(startTime)) {
             throw IllegalArgumentException("Kraj radnog vremena ne moze biti pre pocetka radnog vremena")
         }
         this.endTime = notNullEnd
@@ -155,7 +154,8 @@ data class WorkTime(
 
         other as WorkTime
 
-        return id == other.id
+        return id == other.id||(startTime==other.startTime&&endTime==other.endTime&&other.doctorId==doctorId
+                &&other.dayIn==dayIn)
     }
 
     /**

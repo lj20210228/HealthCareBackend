@@ -253,10 +253,11 @@ class WorkingTimeTests {
     @ParameterizedTest
     @CsvSource(
         "1,09:00,17:00,doc1,MONDAY,1,09:00,17:00,doc1,MONDAY,true",
-        "1,09:00,17:00,doc1,MONDAY,2,09:00,17:00,doc1,MONDAY,false",
+        "1,09:00,17:00,doc1,MONDAY,2,09:00,17:00,doc1,MONDAY,true",
         "1,09:00,17:00,doc1,MONDAY,1,10:00,18:00,doc1,MONDAY,true",
         "1,09:00,17:00,doc1,MONDAY,1,09:00,17:00,doc2,MONDAY,true",
-        "1,09:00,17:00,doc1,MONDAY,1,09:00,17:00,doc1,TUESDAY,true"
+        "1,09:00,17:00,doc1,MONDAY,1,09:00,17:00,doc1,TUESDAY,true",
+        "1,09:00,17:00,doc1,MONDAY,2,09:00,17:00,doc1,TUESDAY,false",
     )
     fun equals_test(
         id1: String, start1: String, end1: String, doctorId1: String, day1: String,
