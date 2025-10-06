@@ -46,12 +46,7 @@ fun Application.configureRouting() {
                     DoctorServiceImplementation(),
                     HospitalServiceImplementation()
                 ),
-                selectedDoctorService = SelectedDoctorRepositoryImplementation(
-                     service = SelectedDoctorServiceImplementation(
-                         doctorServiceInterface = DoctorServiceImplementation(),
-                         patientService = PatientServiceImplementation()
-                     ),
-                ),
+
                 jwtConfig = JwtConfig.instance,
                 patientService = PatientRepositoryImplementation(
                     service = PatientServiceImplementation(),
@@ -78,7 +73,9 @@ fun Application.configureRouting() {
                 service = SelectedDoctorServiceImplementation(
                     doctorServiceInterface = DoctorServiceImplementation(),
                     patientService = PatientServiceImplementation()
-                )
+                ),
+                patientServiceInterface = PatientServiceImplementation(),
+                doctorServiceInterface = DoctorServiceImplementation()
             )
         )
     }
