@@ -1,9 +1,12 @@
 package com.example.database
 
+import com.example.domain.DayInWeek
+import com.example.domain.Patient
 import com.example.domain.Role
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
+import org.jetbrains.exposed.sql.javatime.time
 
 object UserTable: Table("users")
 {
@@ -111,4 +114,22 @@ object RecipeTable: Table("recipes")
     val quantity=integer("quantity")
     val instructions=text("instructions")
     val dateExpired=date("date_expired")
+}
+
+/**
+ * Tabela u kojoj se cuvaju podaci o [com.example.domain.WorkTime]
+ *
+ * @property id Id radnog vremena, primarni kljuc
+ * @property doctorId Spoljni kljuc ka tabeli [DoctorTable]
+ * @property startTime Pocetak radnog vremena za taj dan
+ * @property endTime Kraj radnog vremena za taj dan
+ * @property dayInWeek Dan u nedelji na koji se radno vreme odnosi
+ */
+object WorkTimeTable: Table("work_time"){
+    val id=uuid("id").autoGenerate()
+    override val primaryKey=PrimaryKey(id)
+    val doctorId=reference("doctor_id", DoctorTable.id, onDelete = ReferenceOption.CASCADE)
+    val startTime=time("start_time")
+    val endTime=time("end_time")
+    val dayInWeek=enumeration<DayInWeek>("day")
 }
