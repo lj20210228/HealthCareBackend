@@ -6,12 +6,14 @@ import com.example.repository.auth.AuthRepositoryImplementation
 import com.example.repository.doctor.DoctorRepositoryImplementation
 import com.example.repository.hospital.HospitalRepositoryImplementation
 import com.example.repository.patient.PatientRepositoryImplementation
+import com.example.repository.recipe.RecipeRepositoryImplementation
 import com.example.repository.selectedDoctor.SelectedDoctorRepositoryImplementation
 import com.example.repository.user.UserRepositoryImplementation
 import com.example.routes.authRoutes
 import com.example.routes.doctorRoutes
 import com.example.routes.hospitalRoutes
 import com.example.routes.patientRoutes
+import com.example.routes.recipeRoutes
 import com.example.routes.selectedDoctorRoutes
 import com.example.routes.userRoutes
 import com.example.security.JwtConfig
@@ -19,6 +21,7 @@ import com.example.service.doctor.DoctorServiceImplementation
 import com.example.service.hospital.HospitalServiceImplementation
 import com.example.service.hospital.HospitalServiceInterface
 import com.example.service.patient.PatientServiceImplementation
+import com.example.service.recipe.RecipeServiceImplementation
 import com.example.service.selectedDoctor.SelectedDoctorServiceImplementation
 import com.example.service.user.UserServiceImplementation
 import io.ktor.http.*
@@ -76,6 +79,14 @@ fun Application.configureRouting() {
                 ),
                 patientServiceInterface = PatientServiceImplementation(),
                 doctorServiceInterface = DoctorServiceImplementation()
+            )
+        )
+        recipeRoutes(
+            repository = RecipeRepositoryImplementation(
+                patientService = PatientServiceImplementation(),
+                serviceInterface = RecipeServiceImplementation(
+                    patientService = PatientServiceImplementation()
+                )
             )
         )
     }
