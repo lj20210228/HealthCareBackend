@@ -55,4 +55,15 @@ interface WorkTimeInterface {
      * @return [List[WorkTime]]
      */
     suspend fun getAllWorkingTimes(): List<WorkTime>
+
+    /**
+     * Metoda koja vraca radno vreme po id
+     * @param id Id radnog vremena
+     * @throws NullPointerException Ako je [id] null
+     * @throws IllegalArgumentException Ako je id prazan string
+     * @return [WorkTime] Podaci o radnom vremenu ili null ako nisu pronadjeni
+     */
+    suspend fun getWorkingTimeForId(id: String?): WorkTime?
+
+
 }

@@ -125,5 +125,18 @@ class WorkTimeServiceImplementation: WorkTimeInterface {
         }
     }
 
+    override suspend fun getWorkingTimeForId(id: String?): WorkTime? {
+        if (id==null)
+            throw NullPointerException("Id radnog vremena ne moze biti null")
+        if (id.isEmpty())
+            throw IllegalArgumentException("Id radnog vremena ne moze biti prazan")
+        return DatabaseFactory.dbQuery {
+            WorkTimeTable.selectAll()
+                .where{
+                    WorkTimeTable.id eq UUID.fromString(id)
+                }.map { rowToWorkTime(it) }.firstOrNull()
+        }
+    }
+
 
 }
