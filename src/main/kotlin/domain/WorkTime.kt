@@ -16,7 +16,7 @@ import java.time.LocalTime
  */
 @Serializable
 data class WorkTime(
-    private var id: String,
+    private var id: String?=null,
     @Serializable(with = StrictLocalTimeSerializer::class)
     private var startTime: LocalTime,
     @Serializable(with = StrictLocalTimeSerializer::class)
@@ -29,9 +29,8 @@ data class WorkTime(
      * Blok za inicijalizaciju
      */
     init {
-
-        setId(id)
-
+        setStartTime(startTime)
+        setEndTime(endTime)
         setDoctorId(doctorId)
         setDayIn(dayIn)
     }
@@ -40,7 +39,7 @@ data class WorkTime(
      * Funkcija koja vraca id radnog vremena
      * @return [String] id  radnog vremena
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
     /**
@@ -155,7 +154,8 @@ data class WorkTime(
 
         other as WorkTime
 
-        return id == other.id
+        return id == other.id||(startTime==other.startTime&&endTime==other.endTime&&other.doctorId==doctorId
+                &&other.dayIn==dayIn)
     }
 
     /**
