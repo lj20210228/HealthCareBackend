@@ -16,7 +16,7 @@ import java.time.LocalTime
  */
 @Serializable
 data class Termin(
-    private var id: String,
+    private var id: String?=null,
     private var doctorId: String,
     private var patientId: String,
     @Serializable(with = StrictLocalDateSerializer::class)
@@ -32,7 +32,6 @@ data class Termin(
 
     init {
 
-        setId(id)
         setDoctorId(doctorId)
         setPatientId(patientId)
         setHospitalId(hospitalId)
@@ -44,7 +43,7 @@ data class Termin(
      * Funkcija koja vraca id termina
      * @return [String] Id termina
      */
-    fun getId(): String{
+    fun getId(): String?{
         return this.id
     }
     /**

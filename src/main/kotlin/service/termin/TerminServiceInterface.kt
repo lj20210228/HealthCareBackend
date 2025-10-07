@@ -16,15 +16,15 @@ interface TerminServiceInterface {
      * @return [Termin] ako je uspesno dodat
      * @return null Ako nije uspesno dodat
      */
-    fun addTermin(termin: Termin?): Termin?
+    suspend fun addTermin(termin: Termin?): Termin?
     /**
      * Metoda za izmenu termina
      * @param termin Termin koji treba izmeniti
      * @throws NullPointerException Ako je prosledjeni parametar null
-     * @return [Termin] ako je uspesno dodat
+     * @return [Termin] ako je uspesno izmenjen
      * @return null Ako nije uspesno izmenjen
      */
-    fun editTermin(termin: Termin?): Termin?
+    suspend fun editTermin(termin: Termin?): Termin?
     /**
      * Metoda za brisanje termina
      * @param terminId Termin koji treba obrisati
@@ -32,7 +32,7 @@ interface TerminServiceInterface {
      * @throws IllegalArgumentException Ako je prosledjeni parametar prazan string
      * @return [Boolean] ako je uspesno obrisan true u suprotnom false
      */
-    fun deleteTermin(terminId: String?): Boolean
+    suspend fun deleteTermin(terminId: String?): Boolean
 
     /**
      * Metoda za pronalazenje termina po id
@@ -41,7 +41,7 @@ interface TerminServiceInterface {
      * @param terminId Id termina koji treba pronaci
      * @return Null ako je pronadjen ako ne [Termin] sa tim id
      */
-    fun getTerminForId(terminId: String?): Termin?
+    suspend fun getTerminForId(terminId: String?): Termin?
     /**
      * Metoda za pronalazenje termina za jednog lekara
      * @throws NullPointerException ako je prosledjeni argument null
@@ -49,7 +49,7 @@ interface TerminServiceInterface {
      * @param doctorId Id lekara cije termine treba pronaci
      * @return [List[Termin]] Lista termina za tog lekara
      */
-    fun getTerminsForDoctor(doctorId:String?): List<Termin>
+    suspend fun getTerminsForDoctor(doctorId:String?): List<Termin>
     /**
      * Metoda za pronalazenje termina za jednog pacijenta
      * @throws NullPointerException ako je prosledjeni argument null
@@ -57,7 +57,7 @@ interface TerminServiceInterface {
      * @param patientId Id pacijenta cije termine treba pronaci
      * @return [List[Termin]] Lista termina za tog pacijenta
      */
-    fun getTerminsForPatient(patientId: String?): List<Termin>
+   suspend fun getTerminsForPatient(patientId: String?): List<Termin>
     /**
      * Metoda za pronalazenje termina za jednog lekara, za odredjeni datum
      * @throws NullPointerException ako je prosledjeni argument null
@@ -66,7 +66,7 @@ interface TerminServiceInterface {
      * @param date Datum za koji lekar zeli da sazna termine
      * @return [List[Termin]] Lista termina za tog lekara za odredjeni datum
      */
-    fun getTerminsForDoctorForDate(doctorId:String?,date: LocalDate): List<Termin>
+    suspend fun getTerminsForDoctorForDate(doctorId:String?,date: LocalDate): List<Termin>
     /**
      * Metoda za pronalazenje termina za jednog pacijenta za odredjeni datum
      * @throws NullPointerException ako je prosledjeni argument null
@@ -75,12 +75,12 @@ interface TerminServiceInterface {
      * @param date Datum za koji se traze termini
      * @return [List[Termin]] Lista termina za tog pacijenta za odredjeni datum
      */
-    fun getTerminsForPatientForDate(patientId: String?,date: LocalDate): List<Termin>
+    suspend fun getTerminsForPatientForDate(patientId: String?,date: LocalDate): List<Termin>
 
     /**
      * Metoda za pronalazenje svih termina, koristice se u logickom sloju za proveru
      * pri dodavanju novog termina
      * @return List[Termin]
      */
-    fun getAllTermins(): List<Termin>
+    suspend fun getAllTermins(): List<Termin>
 }

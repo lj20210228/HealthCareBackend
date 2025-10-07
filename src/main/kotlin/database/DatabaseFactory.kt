@@ -28,6 +28,8 @@ object DatabaseFactory {
      * -PatientTable
      * -HospitalTable
      * -SelectedDoctor
+     * -RecipeTable
+     * -TerminTable
      *
      * Funkcija se poziva pri pokretanju aplikacije.
      */
@@ -55,6 +57,9 @@ object DatabaseFactory {
         }
         transaction {
             SchemaUtils.create(RecipeTable)
+        }
+        transaction {
+            SchemaUtils.create(TerminTable)
         }
 
     }
