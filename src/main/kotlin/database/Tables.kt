@@ -1,9 +1,11 @@
 package com.example.database
 
 import com.example.domain.Role
+import com.example.domain.TerminStatus
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
+import org.jetbrains.exposed.sql.javatime.time
 
 object UserTable: Table("users")
 {
@@ -111,4 +113,27 @@ object RecipeTable: Table("recipes")
     val quantity=integer("quantity")
     val instructions=text("instructions")
     val dateExpired=date("date_expired")
+}
+/**
+ * Tabela koja sluzi za cuvanje podataka o terminima za pacijente kod lekara
+ * @property id Id termina
+ * @property doctorId Id lekara, spoljni kljuc ka [DoctorTable]
+ * @property patientId Id pacijenta, spoljni kljuc ka [PatientTable]
+ * @property hospitalId Id bolnice, spoljni kljuc ka [HospitalTable]
+ * @property startTime Pocetak termina u satima i minutima
+ * @property endTime Kraj termina u satima i minutima
+ * @property date Datum termina
+ */
+object TerminTable: Table("termins"){
+    val id=uuid("id").autoGenerate()
+    override val primaryKey=PrimaryKey(id)
+    val doctorId=reference("doctor_id", DoctorTable.id, onDelete = ReferenceOption.CASCADE)
+    val patientId=reference("patient_id", PatientTable.id, onDelete = ReferenceOption.CASCADE)
+    val hospitalId=reference("hospital_id", HospitalTable.id, onDelete = ReferenceOption.CASCADE)
+    val startTime=time("start_time")
+    val endTime=time("end_time")
+    val date=date("date")
+    val status=enumeration<TerminStatus>("status")
+
+
 }
