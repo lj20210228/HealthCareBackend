@@ -156,3 +156,15 @@ object TerminTable: Table("termins"){
 
 
 }
+/**
+ * Tabela koja sluzi za cuvanje podataka o razmeni poruka izmedju lekara i pacijenata
+ * @property id Id ceta
+ * @property doctorId Id lekara u cetu
+ * @property patientId Id pacijenta u cetu
+ */
+object ChatTable: Table("chat"){
+    val id=uuid("id").autoGenerate()
+    override val primaryKey= PrimaryKey(id)
+    val doctorId=reference("doctor_id", DoctorTable.id, onDelete = ReferenceOption.CASCADE)
+    val patientId=reference("patient_id", PatientTable.id, onDelete = ReferenceOption.CASCADE)
+}

@@ -62,6 +62,9 @@ object DatabaseFactory {
         transaction {
             SchemaUtils.create(WorkTimeTable)
         }
+        transaction {
+            SchemaUtils.create(ChatTable)
+        }
 
     }
 
