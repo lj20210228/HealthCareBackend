@@ -72,7 +72,7 @@ class TerminRepositoryImplementation(val service: TerminServiceInterface,
 
     override suspend fun getTerminForId(terminId: String?): BaseResponse<Termin> {
         if (terminId==null)
-            return BaseResponse.ErrorResponse(message = "Id termina koji zelite da obrisete ne moze biti null")
+            return BaseResponse.ErrorResponse(message = "Id termina koji trazite ne moze biti null")
 
         val finded=service.getTerminForId(terminId)
         if (finded==null)
