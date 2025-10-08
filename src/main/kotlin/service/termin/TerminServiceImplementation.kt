@@ -33,6 +33,7 @@ class TerminServiceImplementation: TerminServiceInterface {
                     it[startTime]=termin.getStartTime()
                     it[endTime]=termin.getEndTime()
                     it[hospitalId]= UUID.fromString(termin.getHospitalId())
+                    it[status]=termin.getTerminStatus()
                 }.map {
                     rowToTermin(it)
                 }.firstOrNull()
@@ -49,6 +50,7 @@ class TerminServiceImplementation: TerminServiceInterface {
                     it[endTime]=termin.getEndTime()
                     it[date]=termin.getDate()
                     it[doctorId]= UUID.fromString(termin.getDoctorId())
+                    it[status]=termin.getTerminStatus()
                 }.map {
                     rowToTermin(it)
                 }.firstOrNull()
