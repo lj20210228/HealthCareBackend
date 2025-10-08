@@ -216,37 +216,49 @@ data class Termin(
     override fun toString(): String {
         return "Termin(id='$id', doctorId='$doctorId', patientId='$patientId', date=$date, startTime=$startTime, endTime=$endTime, hospitalId='$hospitalId')"
     }
-
     /**
      * Metoda koja poredi 2 objekta [com.example.domain.Termin]
      * @param other Objekat koji se treba uporediti sa objektom klase [com.example.domain.Termin]
      * @return [Boolean] Ukoliko su 2 objekta razlicitog tipa vraca se false, ili ukoliko im je bar jedan parametar razlicit,
      * a ukoliko su im svi parametni jednaki vraca se true
      */
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
         other as Termin
-        return (other.id==id)||(doctorId==other.doctorId&&patientId==other.patientId&&
-                date==other.date&&other.startTime==startTime&&other.endTime==endTime&&other.hospitalId==hospitalId&&other.status==status)
-    }
 
+        if (id != other.id) return false
+        if (doctorId != other.doctorId) return false
+        if (patientId != other.patientId) return false
+        if (date != other.date) return false
+        if (startTime != other.startTime) return false
+        if (endTime != other.endTime) return false
+        if (hospitalId != other.hospitalId) return false
+        if (status != other.status) return false
+
+        return true
+    }
     /**
      * Metoda koja hesuje objekay i vraca int vrednost
      * @return [Int] Hash vrednost objekta
      */
     override fun hashCode(): Int {
-        var result = id.hashCode()
+        var result = id?.hashCode() ?: 0
         result = 31 * result + doctorId.hashCode()
         result = 31 * result + patientId.hashCode()
         result = 31 * result + date.hashCode()
         result = 31 * result + startTime.hashCode()
         result = 31 * result + endTime.hashCode()
         result = 31 * result + hospitalId.hashCode()
-        result=31*result +status.hashCode()
+        result = 31 * result + status.hashCode()
         return result
     }
+
+
+
+
 
 
 }
