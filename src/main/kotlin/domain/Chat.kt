@@ -88,11 +88,9 @@ data class Chat(
 
         other as Chat
 
-        if (id != other.id) return false
-        if (doctorId != other.doctorId) return false
-        if (patientId != other.patientId) return false
 
-        return true
+
+        return (id==other.id)||(doctorId==other.doctorId&&other.patientId==patientId)
     }
 
     /**
