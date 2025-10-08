@@ -1,5 +1,6 @@
 package com.example.database
 
+import com.example.domain.DayInWeek
 import com.example.domain.Role
 import com.example.domain.TerminStatus
 import org.jetbrains.exposed.sql.ReferenceOption
@@ -113,6 +114,24 @@ object RecipeTable: Table("recipes")
     val quantity=integer("quantity")
     val instructions=text("instructions")
     val dateExpired=date("date_expired")
+}
+
+/**
+ * Tabela sa podacima o radnom vremenu lekara
+ * @property id Primarni kljuc
+ * @property startTime Pocetak smene
+ * @property endTime Kraj smene
+ * @property dayInWeek Dan na koji se odnosi radno vreme
+ * @property doctorId Spoljni kljuc ka tabeli [DoctorTable], na kog se lekara odnosi
+ */
+object WorkTimeTable: Table("work_time"){
+    val id=uuid("id").autoGenerate()
+    override val primaryKey=PrimaryKey(id)
+    val startTime=time("start_time")
+    val endTime=time("end_time")
+    val dayInWeek= enumeration<DayInWeek>("day")
+    val doctorId=reference("doctor_id", DoctorTable.id, onDelete = ReferenceOption.CASCADE)
+
 }
 /**
  * Tabela koja sluzi za cuvanje podataka o terminima za pacijente kod lekara
