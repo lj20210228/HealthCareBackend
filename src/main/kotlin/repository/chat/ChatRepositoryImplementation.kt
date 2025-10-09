@@ -30,7 +30,7 @@ class ChatRepositoryImplementation(
         val result=service.addChat(chat)
         if (result==null)
             return BaseResponse.ErrorResponse(message = "Cet nije uspesno dodat")
-        return BaseResponse.SuccessResponse(data = chat, message = "Cet uspesno dodat")
+        return BaseResponse.SuccessResponse(data = result, message = "Cet uspesno dodat")
 
     }
 
@@ -40,6 +40,7 @@ class ChatRepositoryImplementation(
         if (chatId.isEmpty())
             return BaseResponse.ErrorResponse(message = "Id ceta koji trazite ne moze biti prazan")
         val result=service.getChat(chatId)
+
         if (result==null)
             return BaseResponse.ErrorResponse(message = "Cet nije pronadjen")
         return BaseResponse.SuccessResponse(data = result, message = "Cet uspesno pronadjen")
