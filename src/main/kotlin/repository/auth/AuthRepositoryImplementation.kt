@@ -23,16 +23,18 @@ class AuthRepositoryImplementation(val userService: UserRepository,val doctorSer
 
 
             if (registerParams.user.getRole() == Role.ROLE_PATIENT) {
+                if (registerParams.patient == null) {
+                    return BaseResponse.ErrorResponse(message = "Niste uneli podatke o pacijentu")
+                }
                 val user = userService.addUser(registerParams.user)
+                println(user)
                 if (user is BaseResponse.ErrorResponse)
                     return BaseResponse.ErrorResponse(user.message)
                 val userAdded = (user as BaseResponse.SuccessResponse).data
 
                 val token = jwtConfig.createAccessToken(userAdded?.getId()!!)
-                if (registerParams.patient == null) {
-                    return BaseResponse.ErrorResponse(message = "Niste uneli podatke o pacijentu")
-                }
-                val patient = patientService.addPatient(registerParams.patient)
+
+                val patient = patientService.addPatient(registerParams.patient.copy(userId = userAdded.getId()))
                 val patientAdded =
                     (patient as BaseResponse.SuccessResponse).data?.copy(userId = userAdded.getId())
 
