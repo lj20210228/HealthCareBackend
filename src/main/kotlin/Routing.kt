@@ -54,29 +54,34 @@ fun Application.configureRouting() {
                 )
             )
         )
-        userRoutes(repository = UserRepositoryImplementation(
-            service = UserServiceImplementation()
-        ))
-        hospitalRoutes(HospitalRepositoryImplementation(
-            HospitalServiceImplementation()
-        ))
-        doctorRoutes(DoctorRepositoryImplementation(
-            DoctorServiceImplementation(),
-            hospitalService = HospitalServiceImplementation()
-        ))
-        patientRoutes(PatientRepositoryImplementation(
-            service = PatientServiceImplementation(),
-            hospitalService = HospitalServiceImplementation()
-        ))
-        selectedDoctorRoutes(
-            repository = SelectedDoctorRepositoryImplementation(
-                service = SelectedDoctorServiceImplementation(
-                    doctorServiceInterface = DoctorServiceImplementation(),
-                    patientService = PatientServiceImplementation()
+
+        authenticate {
+            userRoutes(repository = UserRepositoryImplementation(
+                service = UserServiceImplementation()
+            ))
+            hospitalRoutes(HospitalRepositoryImplementation(
+                HospitalServiceImplementation()
+            ))
+
+            doctorRoutes(DoctorRepositoryImplementation(
+                DoctorServiceImplementation(),
+                hospitalService = HospitalServiceImplementation()
+            ))
+            patientRoutes(PatientRepositoryImplementation(
+                service = PatientServiceImplementation(),
+                hospitalService = HospitalServiceImplementation()
+            ))
+            selectedDoctorRoutes(
+                repository = SelectedDoctorRepositoryImplementation(
+                    service = SelectedDoctorServiceImplementation(
+                        doctorServiceInterface = DoctorServiceImplementation(),
+                        patientService = PatientServiceImplementation()
+                    )
+                    , doctorServiceInterface = DoctorServiceImplementation()
+                    , patientServiceInterface = PatientServiceImplementation()
                 )
-                , doctorServiceInterface = DoctorServiceImplementation()
-                , patientServiceInterface = PatientServiceImplementation()
             )
-        )
+        }
+
     }
 }
