@@ -29,15 +29,18 @@ class MessageRepositoryImplementation(
         if (message==null)
             return BaseResponse.ErrorResponse(message="Poruka ne moze biti null")
 
-        var chat=message.getChatId()?.let { chatService.getChat(it) }
-        if (chat==null){
-            val recipient=userService.getUserById(message.getRecipientId())
-            if (recipient==null)
-                return BaseResponse.ErrorResponse(message="Posiljaoc poruke ne postoji")
+        val recipient=userService.getUserById(message.getRecipientId())
+        if (recipient==null)
+            return BaseResponse.ErrorResponse(message="Posiljalac poruke ne postoji")
 
-            val sender=userService.getUserById(message.getSenderId())
-            if (sender==null)
-                return BaseResponse.ErrorResponse(message="Primaoc poruke ne postoji")
+        val sender=userService.getUserById(message.getSenderId())
+
+        if (sender==null)
+            return BaseResponse.ErrorResponse(message="Primalac poruke ne postoji")
+        var chat=message.getChatId()?.let { chatService.getChat(it) }
+
+        if (chat==null){
+
             val patientId=when(sender.getRole()){
                  Role.ROLE_PATIENT->{
                      sender.getId()
@@ -82,7 +85,7 @@ class MessageRepositoryImplementation(
     override suspend fun getMessagesForSender(senderId: String?): ListResponse<Message> {
 
         if (senderId==null){
-            return ListResponse.ErrorResponse(message = "Niste prosledili posiljaoca")
+            return ListResponse.ErrorResponse(message = "Niste prosledili primaoca")
         }
         val messages=service.getAllMessagesForSender(senderId)
         if (messages.isEmpty()){
