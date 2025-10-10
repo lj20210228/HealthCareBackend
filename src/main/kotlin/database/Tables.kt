@@ -6,7 +6,9 @@ import com.example.domain.TerminStatus
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
+import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.javatime.time
+import java.time.LocalDateTime
 
 object UserTable: Table("users")
 {
@@ -167,4 +169,23 @@ object ChatTable: Table("chat"){
     override val primaryKey= PrimaryKey(id)
     val doctorId=reference("doctor_id", DoctorTable.id, onDelete = ReferenceOption.CASCADE)
     val patientId=reference("patient_id", PatientTable.id, onDelete = ReferenceOption.CASCADE)
+}
+
+/**
+ * Tabela za cuvanje podataka o porukama
+ * @property id Id poruke
+ * @property senderId Id posiljaoca
+ * @property receiverId Id primaoca
+ * @property content Sadrzaj poruke
+ * @property timestamp Tacno vreme kada je poruka poslata
+ * @property chatId Spoljni kljuc ka tabeli Chat
+ */
+object MessageTable : Table() {
+    val id = integer("id").autoIncrement()
+    val senderId = integer("sender_id")
+    val receiverId = integer("receiver_id")
+    val content = text("content")
+    val timestamp = datetime("timestamp").clientDefault { LocalDateTime.now() }
+    override val primaryKey = PrimaryKey(id)
+    val chatId=reference("chat_id", ChatTable.id, onDelete = ReferenceOption.CASCADE)
 }

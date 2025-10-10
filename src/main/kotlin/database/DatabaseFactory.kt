@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.transactionScope
 
 /**
  * DatabaseFactory je centralno mesto za inicijalizaciju baze podataka
@@ -64,6 +65,9 @@ object DatabaseFactory {
         }
         transaction {
             SchemaUtils.create(ChatTable)
+        }
+        transactionScope {
+            SchemaUtils.create(MessageTable)
         }
 
     }
