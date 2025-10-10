@@ -140,4 +140,44 @@ data class Message(
         this.timeStamp = timeStamp
     }
 
+    /**
+     * Proverava da li je trenutni objekat jednak drugom objektu.
+     *
+     * Dva objekta klase [Message] se smatraju jednakim ako imaju isti [id].
+     *
+     * @param other Objekat sa kojim se upoređuje trenutni objekat.
+     * @return `true` ako su objekti isti ili imaju isti [id], `false` inače.
+     */
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Message
+
+        return id == other.id
+    }
+
+    /**
+     * Vraća hash kod trenutnog objekta.
+     *
+     * Hash kod je zasnovan na [id] polju.
+     * Ako je [id] null, vraća 0.
+     *
+     * @return [Int] hash kod objekta.
+     */
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
+    }
+
+    /**
+     * Vraća tekstualnu reprezentaciju objekta [Message].
+     *
+     * Format prikazuje sva polja: [id], [senderId], [recipientId], [content], [timeStamp], [chatId].
+     *
+     * @return [String] opis objekta.
+     */
+    override fun toString(): String {
+        return "Message(id=$id, senderId='$senderId', recipientId='$recipientId', content='$content', timeStamp=$timeStamp, chatId=$chatId)"
+    }
+
 }

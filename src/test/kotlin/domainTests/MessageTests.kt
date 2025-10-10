@@ -2,6 +2,8 @@ package com.example.domainTests
 
 import com.example.domain.Message
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,6 +23,8 @@ class MessageTests {
 
     /** Instanca klase [Message] koja se koristi u testovima. */
     private var message: Message? = null
+    private lateinit var message2: Message
+    private lateinit var message3: Message
 
     /**
      * Inicijalizuje novi objekat [Message] pre svakog testa.
@@ -35,6 +39,20 @@ class MessageTests {
             recipientId = "1",
             content = "Poruka poslata lekaru",
             chatId = "1"
+        )
+        message2 = Message(
+            id = "1",
+            senderId = "C",
+            recipientId = "D",
+            content = "Hi",
+            chatId = "chat2"
+        )
+        message3 = Message(
+            id = "2",
+            senderId = "A",
+            recipientId = "B",
+            content = "Hello",
+            chatId = "chat1"
         )
     }
 
@@ -232,5 +250,50 @@ class MessageTests {
     fun setContent_ispravno() {
         message?.setContent("Poruka")
         assertEquals("Poruka", message?.getContent())
+    }
+
+    /**
+     * Proverava da li metoda [equals] vraća `true` za objekte sa istim ID-em.
+     */
+    @Test
+    fun equals_sameId_returnsTrue() {
+        assertEquals(message, message2)
+    }
+
+    /**
+     * Proverava da li metoda [equals] vraća `false` za objekte sa različitim ID-em.
+     */
+    @Test
+    fun equals_differentId_returnsFalse() {
+        assertNotEquals(message, message3)
+    }
+
+    /**
+     * Proverava da li metoda [hashCode] vraća isti hash za objekte sa istim ID-em.
+     */
+    @Test
+    fun hashCode_sameId_returnsSameHash() {
+        assertEquals(message.hashCode(), message2.hashCode())
+    }
+
+    /**
+     * Proverava da li metoda [hashCode] vraća različit hash za objekte sa različitim ID-em.
+     */
+    @Test
+    fun hashCode_differentId_returnsDifferentHash() {
+        assertNotEquals(message.hashCode(), message3.hashCode())
+    }
+
+    /**
+     * Proverava da li metoda [toString] sadrži sve relevantne informacije o poruci.
+     */
+    @Test
+    fun toString_containsAllFields() {
+        val str = message.toString()
+        assertTrue(str.contains("1"))
+        assertTrue(str.contains("1"))
+        assertTrue(str.contains("1"))
+        assertTrue(str.contains("Poruka poslata lekaru"))
+        assertTrue(str.contains("1"))
     }
 }
