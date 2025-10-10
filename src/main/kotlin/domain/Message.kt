@@ -67,7 +67,7 @@ data class Message(
      * Vraća identifikator primaoca poruke.
      * @return [String] id primaoca ili `null` ako nije postavljen.
      */
-    fun getRecipientId(): String?{
+    fun getRecipientId(): String{
         return this.recipientId
     }
     /**

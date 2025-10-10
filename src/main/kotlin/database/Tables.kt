@@ -175,15 +175,15 @@ object ChatTable: Table("chat"){
  * Tabela za cuvanje podataka o porukama
  * @property id Id poruke
  * @property senderId Id posiljaoca
- * @property receiverId Id primaoca
+ * @property recipientId Id primaoca
  * @property content Sadrzaj poruke
  * @property timestamp Tacno vreme kada je poruka poslata
  * @property chatId Spoljni kljuc ka tabeli Chat
  */
 object MessageTable : Table() {
-    val id = integer("id").autoIncrement()
-    val senderId = integer("sender_id")
-    val receiverId = integer("receiver_id")
+    val id = uuid("id").autoGenerate()
+    val senderId = text("sender_id")
+    val recipientId = text("recipient_id")
     val content = text("content")
     val timestamp = datetime("timestamp").clientDefault { LocalDateTime.now() }
     override val primaryKey = PrimaryKey(id)
