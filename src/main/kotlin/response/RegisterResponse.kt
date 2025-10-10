@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
  * @param user Podaci o korisniku iz user tabele
  * @param doctor Podaci o korisniku ako je lekar
  * @param patient Podaci o korisniku ako je pacijent
- * @param selectedDoctor Podaci o izabranom lekaru kog je pacijent izabrao
+
  */
 @Serializable
 data class RegisterResponse(
@@ -23,6 +23,6 @@ data class RegisterResponse(
     val doctor: Doctor?=null,
     val patient: Patient?=null,
     val token: String,
-    val selectedDoctor: SelectedDoctor?=null
+
 )
 
