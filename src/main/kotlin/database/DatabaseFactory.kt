@@ -66,7 +66,7 @@ object DatabaseFactory {
         transaction {
             SchemaUtils.create(ChatTable)
         }
-        transactionScope {
+        transaction {
             SchemaUtils.create(MessageTable)
         }
 

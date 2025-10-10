@@ -180,7 +180,7 @@ object ChatTable: Table("chat"){
  * @property timestamp Tacno vreme kada je poruka poslata
  * @property chatId Spoljni kljuc ka tabeli Chat
  */
-object MessageTable : Table() {
+object MessageTable : Table("messages") {
     val id = uuid("id").autoGenerate()
     val senderId = text("sender_id")
     val recipientId = text("recipient_id")
