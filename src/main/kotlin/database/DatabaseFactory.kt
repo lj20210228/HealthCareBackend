@@ -1,6 +1,8 @@
 package com.example.database
 
 import com.example.domain.Patient
+import io.ktor.client.plugins.UserAgent
+import io.ktor.network.selector.SelectorManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
@@ -64,12 +66,30 @@ object DatabaseFactory {
             SchemaUtils.create(WorkTimeTable)
         }
         transaction {
+
+
             SchemaUtils.create(ChatTable)
         }
         transaction {
             SchemaUtils.create(MessageTable)
         }
 
+    }
+
+    /**
+     * Pomocna funkcija ukoliko dodje do izmena da se sve dropuju
+     */
+    fun dropAllTables(){
+        SchemaUtils.drop(MessageTable)
+        SchemaUtils.drop(ChatTable)
+        SchemaUtils.drop(RecipeTable)
+        SchemaUtils.drop(TerminTable)
+        SchemaUtils.drop(WorkTimeTable)
+        SchemaUtils.drop(SelectedDoctorTable)
+        SchemaUtils.drop(PatientTable)
+        SchemaUtils.drop(DoctorTable)
+
+        SchemaUtils.drop(UserTable)
     }
 
 

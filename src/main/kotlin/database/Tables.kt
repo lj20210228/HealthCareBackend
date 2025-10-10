@@ -167,8 +167,8 @@ object TerminTable: Table("termins"){
 object ChatTable: Table("chat"){
     val id=uuid("id").autoGenerate()
     override val primaryKey= PrimaryKey(id)
-    val doctorId=reference("doctor_id", UserTable.id, onDelete = ReferenceOption.CASCADE)
-    val patientId=reference("patient_id", UserTable.id, onDelete = ReferenceOption.CASCADE)
+    val doctorId=reference("userDoctor_id", UserTable.id)
+    val patientId=reference("userPatient_id", UserTable.id)
 }
 
 /**
@@ -187,5 +187,5 @@ object MessageTable : Table("messages") {
     val content = text("content")
     val timestamp = datetime("timestamp").clientDefault { LocalDateTime.now() }
     override val primaryKey = PrimaryKey(id)
-    val chatId=reference("chat_id", ChatTable.id, onDelete = ReferenceOption.CASCADE)
+    val chatId=reference("chat_id", ChatTable.id)
 }

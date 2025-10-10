@@ -31,21 +31,17 @@ import kotlin.test.assertTrue
  * @author Lazar Jankovic
  * @see ChatRepository
  * @see UserServiceInterface
- * @see DoctorServiceInterface
- * @see PatientServiceInterface
  *@see HospitalServiceInterface
  */
 class ChatRepositoryTests {
 
     private lateinit var user1: User
     private lateinit var user2: User
-    private lateinit var doctor: Doctor
-    private lateinit var patient: Patient
+
     private lateinit var hospital: Hospital
     private lateinit var userService: UserServiceInterface
     private lateinit var hospitalServiceInterface: HospitalServiceInterface
-    private lateinit var patientService: PatientServiceInterface
-    private lateinit var doctorService: DoctorServiceInterface
+
     private lateinit var chat: Chat
     private lateinit var repository: ChatRepository
 
@@ -59,8 +55,8 @@ class ChatRepositoryTests {
         DatabaseFactory.clearTable("chat")
         DatabaseFactory.clearTable("users")
         DatabaseFactory.clearTable("hospital")
-        DatabaseFactory.clearTable("patient")
-        DatabaseFactory.clearTable("doctor")
+
+
 
 
         hospital= Hospital(
@@ -70,11 +66,9 @@ class ChatRepositoryTests {
         )
         hospitalServiceInterface= HospitalServiceImplementation()
         userService= UserServiceImplementation()
-        patientService= PatientServiceImplementation()
-        doctorService= DoctorServiceImplementation()
+
         repository= ChatRepositoryImplementation(
-            patientService = patientService,
-            doctorService = doctorService,
+            userService = userService,
             service = ChatServiceImplementation()
         )
         user1= User(
@@ -93,29 +87,11 @@ class ChatRepositoryTests {
             user1=userService.addUser(user1)!!
             user2=userService.addUser(user2)!!
         }
-        doctor= Doctor(
-            userId = user2.getId(),
-            fullName = "Pera Peric",
-            specialization = "Neurolog",
-            maxPatients = 40,
-            currentPatients = 20,
-            hospitalId = hospital.getId()!!,
-            isGeneral = false
-        )
-        patient= Patient(
-            userId = user1.getId(),
-            fullName = "Mika Mikic",
-            hospitalId = hospital.getId()!!,
-            jmbg = "1007002790023"
-        )
-        runBlocking {
-            doctor= doctorService.addDoctor(doctor)!!
-            patient=patientService.addPatient(patient)!!
-        }
+
         chat= Chat(
 
-            doctorId = doctor.getId()!!,
-            patientId = patient.getId()!!
+            doctorId = user1.getId()!!,
+            patientId = user2.getId()!!
         )
     }
 
@@ -135,7 +111,7 @@ class ChatRepositoryTests {
      */
     @Test
     fun addChat_testAlreadyExist()=runBlocking {
-       repository.addChat(chat)
+        repository.addChat(chat)
         val result=repository.addChat(chat)
         assertTrue(result is BaseResponse.ErrorResponse)
         assertEquals("Cet vec postoji",result.message)
@@ -221,7 +197,7 @@ class ChatRepositoryTests {
     @Test
     fun getChatForPatient_testChatsDoesntExist()=runBlocking {
 
-        val result=repository.getChatsForPatient(patient.getId())
+        val result=repository.getChatsForPatient(user2.getId())
         println(result)
         assertTrue(result is ListResponse.ErrorResponse)
         assertEquals("Cetovi za ovog pacijenta ne postoje",result.message)
@@ -232,7 +208,7 @@ class ChatRepositoryTests {
     @Test
     fun getChatsForPatient_testSuccessfullyFind()=runBlocking {
         repository.addChat(chat)
-        val result=repository.getChatsForPatient(patient.getId())
+        val result=repository.getChatsForPatient(user2.getId())
         assertTrue(result is ListResponse.SuccessResponse)
         assertEquals(1,result.data?.size)
     }
@@ -269,7 +245,7 @@ class ChatRepositoryTests {
     @Test
     fun getChatForDoctor_testChatsDoesntExist()=runBlocking {
 
-        val result=repository.getChatsForDoctor(doctor.getId())
+        val result=repository.getChatsForDoctor(user1.getId())
         println(result)
         assertTrue(result is ListResponse.ErrorResponse)
         assertEquals("Cetovi za ovog lekara ne postoje",result.message)
@@ -280,7 +256,7 @@ class ChatRepositoryTests {
     @Test
     fun getChatsForDoctor_testSuccessfullyFind()=runBlocking {
         repository.addChat(chat)
-        val result=repository.getChatsForDoctor(doctor.getId())
+        val result=repository.getChatsForDoctor(user1.getId())
         assertTrue(result is ListResponse.SuccessResponse)
         assertEquals(1,result.data?.size)
     }

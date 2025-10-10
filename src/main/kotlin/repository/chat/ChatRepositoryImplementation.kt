@@ -1,15 +1,18 @@
 package com.example.repository.chat
 
+import com.example.UserService
 import com.example.domain.Chat
 import com.example.response.BaseResponse
 import com.example.response.ListResponse
 import com.example.service.DoctorServiceInterface
 import com.example.service.chat.ChatService
 import com.example.service.patient.PatientServiceInterface
+import com.example.service.user.UserServiceInterface
 
 /**
  * Klasa koja implementira metode [ChatRepository]
- * @author Lazar Jankovic
+ * @author Lazar Jankovic  Detail: constraint fk_messages_chat_id__id on table messages depends on table chat
+
  * @see ChatRepository
  * @see Chat
  * @see PatientServiceInterface
@@ -17,8 +20,7 @@ import com.example.service.patient.PatientServiceInterface
  * @see ChatService
  */
 class ChatRepositoryImplementation(
-    val patientService: PatientServiceInterface,
-    val doctorService: DoctorServiceInterface,
+    val userService: UserServiceInterface,
     val service: ChatService
 ): ChatRepository {
     override suspend fun addChat(chat: Chat?): BaseResponse<Chat> {
@@ -51,7 +53,7 @@ class ChatRepositoryImplementation(
             return ListResponse.ErrorResponse(message = "Id pacijenta cije cetove  trazite ne moze biti null")
         if (patientId.isEmpty())
             return ListResponse.ErrorResponse(message = "Id pacijenta cije cetove  trazite ne moze biti prazan")
-        val patientExist=patientService.getPatientById(patientId)
+        val patientExist=userService.getUserById(patientId)
         if (patientExist==null)
             return ListResponse.ErrorResponse(message = "Pacijent ne postoji")
         val result=service.getChatsForPatient(patientId)
@@ -65,7 +67,7 @@ class ChatRepositoryImplementation(
             return ListResponse.ErrorResponse(message = "Id lekara cije cetove  trazite ne moze biti null")
         if (doctorId.isEmpty())
             return ListResponse.ErrorResponse(message = "Id lekara cije cetove  trazite ne moze biti prazan")
-        val doctorExist=doctorService.getDoctorForId(doctorId)
+        val doctorExist=userService.getUserById(doctorId)
         if (doctorExist==null)
             return ListResponse.ErrorResponse(message = "Lekar ne postoji")
         val result=service.getChatsForDoctor(doctorId)
