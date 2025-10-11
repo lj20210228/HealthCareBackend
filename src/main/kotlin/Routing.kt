@@ -54,14 +54,15 @@ fun Application.configureRouting() {
                 )
             )
         )
+        hospitalRoutes(HospitalRepositoryImplementation(
+            HospitalServiceImplementation()
+        ))
 
         authenticate {
             userRoutes(repository = UserRepositoryImplementation(
                 service = UserServiceImplementation()
             ))
-            hospitalRoutes(HospitalRepositoryImplementation(
-                HospitalServiceImplementation()
-            ))
+
 
             doctorRoutes(DoctorRepositoryImplementation(
                 DoctorServiceImplementation(),

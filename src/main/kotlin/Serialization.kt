@@ -7,6 +7,8 @@ import com.example.domain.Hospital
 import com.example.domain.Patient
 import com.example.domain.User
 import com.example.request.RegisterRequest
+import com.example.response.BaseResponse
+import com.example.response.ListResponse
 import com.example.response.RegisterResponse
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -17,9 +19,15 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
+import kotlinx.serialization.serializer
 import org.jetbrains.exposed.sql.*
+import kotlin.reflect.KClass
 
 fun Application.configureSerialization() {
     routing {
@@ -35,11 +43,18 @@ fun Application.configureSerialization() {
                     encodeDefaults=true
                     coerceInputValues=true
                     encodeDefaults=true
+                    classDiscriminator="type"
                     serializersModule= SerializersModule {
+
                         polymorphic(
                             Any::class,
                             actualClass = RegisterResponse::class,
                             actualSerializer = RegisterResponse.serializer()
+                        )
+                        polymorphic(
+                            Any::class,
+                            actualClass = RegisterRequest::class,
+                            actualSerializer = RegisterRequest.serializer()
                         )
                         polymorphic(
                             Any::class,
@@ -71,7 +86,6 @@ fun Application.configureSerialization() {
 
 
 
-
                     }
                 }
 
@@ -81,3 +95,4 @@ fun Application.configureSerialization() {
 
 
 }
+

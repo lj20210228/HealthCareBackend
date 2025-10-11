@@ -2,6 +2,7 @@ package com.example.repository.auth
 
 import com.example.domain.Role
 import com.example.domain.User
+import com.example.request.LoginRequest
 import com.example.request.RegisterRequest
 import com.example.response.BaseResponse
 import com.example.response.RegisterResponse
@@ -15,5 +16,5 @@ import com.example.service.user.UserServiceInterface
  */
 interface AuthRepository {
     suspend fun registerUser(registerParams: RegisterRequest?): BaseResponse<RegisterResponse>
-    suspend fun loginUser(email: String?,password: String?): BaseResponse<RegisterResponse>
+    suspend fun loginUser(loginRequest: LoginRequest?): BaseResponse<RegisterResponse>
 }

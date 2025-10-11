@@ -7,6 +7,7 @@ import com.example.repository.doctor.DoctorRepository
 import com.example.repository.patient.PatientRepository
 import com.example.repository.selectedDoctor.SelectedDoctorRepository
 import com.example.repository.user.UserRepository
+import com.example.request.LoginRequest
 import com.example.request.RegisterRequest
 import com.example.response.BaseResponse
 import com.example.response.RegisterResponse
@@ -78,13 +79,10 @@ class AuthRepositoryImplementation(val userService: UserRepository,val doctorSer
         return BaseResponse.ErrorResponse("Ne mozete da se registrujete jer niste ni lekar ni pacijent")
     }
 
-    override suspend fun loginUser(
-        email: String?,
-        password: String?
-    ): BaseResponse<RegisterResponse> {
-        if (email.isNullOrEmpty()||password.isNullOrEmpty())
+    override suspend fun loginUser(loginRequest: LoginRequest?): BaseResponse<RegisterResponse> {
+        if (loginRequest==null)
             return  BaseResponse.ErrorResponse( message = "Email i lozinka ne smeju biti prazni")
-        val user=userService.getUserByEmail(email)
+        val user=userService.getUserByEmail(loginRequest.email)
         if (user is BaseResponse.ErrorResponse)
             return BaseResponse.ErrorResponse("Neuspesno logovanje")
         val userGet=(user as BaseResponse.SuccessResponse).data

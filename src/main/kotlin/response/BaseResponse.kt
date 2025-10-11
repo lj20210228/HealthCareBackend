@@ -1,6 +1,7 @@
 package com.example.response
 
 import io.ktor.http.HttpStatusCode
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
@@ -10,6 +11,7 @@ import kotlinx.serialization.Serializable
  * @param T tip podataka koji se vraca u odgovoru
  * @property statusCode HTTP status kod koji opisuje rezultat operacije
  */
+
 @Serializable
 sealed class BaseResponse< T>(
     open val statusCode: Int= HttpStatusCode.OK.value
@@ -23,6 +25,7 @@ sealed class BaseResponse< T>(
      */
 
     @Serializable
+    @SerialName("success")
     data class SuccessResponse<T>(
         val data:@Serializable T? = null,
         val message: String? = null,
@@ -37,6 +40,7 @@ sealed class BaseResponse< T>(
      */
 
     @Serializable
+    @SerialName("error")
     data class ErrorResponse<T>(
         val exception: String?= null,
         val message: String? = null,

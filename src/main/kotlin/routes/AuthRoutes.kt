@@ -25,4 +25,16 @@ fun Routing.authRoutes(service: AuthRepository){
             call.respond(HttpStatusCode.BadRequest, mapOf("error" to e.message))
         }
     }
+    post("/login") {
+        try {
+
+            val params = call.receive<String, String>()
+            println(params)
+            val response = service.registerUser(params)
+            call.respond(status = HttpStatusCode.fromValue(response.statusCode), response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.BadRequest, mapOf("error" to e.message))
+        }
+    }
 }

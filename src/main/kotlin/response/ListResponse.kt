@@ -2,6 +2,7 @@ package com.example.response
 
 
 import io.ktor.http.HttpStatusCode
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 /**
  * Model za API odgovore koji vraćaju listu
@@ -23,6 +24,7 @@ sealed class ListResponse< out T>(
      */
 
     @Serializable
+    @SerialName("success")
     data class SuccessResponse< T>(
         val data: @Serializable List<T?>?=null,
         val message: String? = null,
@@ -39,6 +41,7 @@ sealed class ListResponse< out T>(
      */
 
     @Serializable
+    @SerialName("error")
     data class ErrorResponse<T>(
         val exception: String?= null,
         val message: String? = null,
