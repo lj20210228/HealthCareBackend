@@ -12,6 +12,8 @@ import com.example.request.RegisterRequest
 import com.example.response.BaseResponse
 import com.example.response.RegisterResponse
 import com.example.security.JwtConfig
+import com.example.security.hashPassword
+import com.example.security.verifyPassword
 import io.ktor.network.selector.SelectorManager
 
 class AuthRepositoryImplementation(val userService: UserRepository,val doctorService: DoctorRepository,
@@ -84,12 +86,17 @@ class AuthRepositoryImplementation(val userService: UserRepository,val doctorSer
             return  BaseResponse.ErrorResponse( message = "Email i lozinka ne smeju biti prazni")
         val user=userService.getUserByEmail(loginRequest.email)
         if (user is BaseResponse.ErrorResponse)
-            return BaseResponse.ErrorResponse("Neuspesno logovanje")
+            return BaseResponse.ErrorResponse(message = "Neuspesno logovanje")
         val userGet=(user as BaseResponse.SuccessResponse).data
+        println("Baza: '${userGet?.getPassword()}'")
+        println("Hash inputa: '${hashPassword(loginRequest.password)}'")
+        if (!verifyPassword(loginRequest.password, userGet?.getPassword()!!)) {
+            return BaseResponse.ErrorResponse(message = "Neispravna lozinka")
+        }
         val token=jwtConfig.createAccessToken(userGet?.getId()!!)
         return BaseResponse.SuccessResponse(
             data = RegisterResponse(
-                user=userGet!!,
+                user=userGet,
                 token=token
             ), message = "Uspesno ste se ulogovali"
         )

@@ -14,6 +14,7 @@ import com.example.repository.doctor.DoctorRepositoryImplementation
 import com.example.repository.patient.PatientRepositoryImplementation
 import com.example.repository.selectedDoctor.SelectedDoctorRepositoryImplementation
 import com.example.repository.user.UserRepositoryImplementation
+import com.example.request.LoginRequest
 import com.example.request.RegisterRequest
 import com.example.response.BaseResponse
 import com.example.response.RegisterResponse
@@ -204,7 +205,7 @@ class AuthRepositoryTests {
         repository.registerUser(RegisterRequest(
             user=user2,doctor=doctor
         ))
-        val logined=repository.loginUser(user2.getEmail(),user2.getPassword())
+        val logined=repository.loginUser(LoginRequest(user2.getEmail(),user2.getPassword()))
         assertTrue(logined is BaseResponse.SuccessResponse)
         assertEquals(logined.data?.user,user2)
 
@@ -214,7 +215,7 @@ class AuthRepositoryTests {
      */
     @Test
     fun login_testNull()=runBlocking {
-        val logined=repository.loginUser(null,null)
+        val logined=repository.loginUser(null)
         assertTrue(logined is BaseResponse.ErrorResponse)
         assertEquals("Email i lozinka ne smeju biti prazni",logined.message)
     }

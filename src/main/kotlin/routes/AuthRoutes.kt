@@ -32,6 +32,7 @@ fun Routing.authRoutes(service: AuthRepository){
             val params = call.receive<LoginRequest>()
             println(params)
             val response = service.loginUser(params)
+            println(response)
             call.respond(status = HttpStatusCode.fromValue(response.statusCode), response)
         } catch (e: Exception) {
             e.printStackTrace()

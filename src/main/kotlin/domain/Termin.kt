@@ -12,7 +12,7 @@ import java.time.LocalTime
  * @property id Id termina
  * @property doctorId Id lekara kod koga se pregled zakazuje
  * @property patientId Id pacijenta koji zakazuje pregled
- * @property
+ * @property description Opis, na primer pregled rezultata, po default kontrola
  */
 @Serializable
 data class Termin(
@@ -26,7 +26,8 @@ data class Termin(
     @Serializable(with= StrictLocalTimeSerializer::class)
     private var endTime: LocalTime=startTime.plusHours(1),
     private var hospitalId: String,
-    private var status: TerminStatus= TerminStatus.PENDING
+    private var status: TerminStatus= TerminStatus.PENDING,
+    private var description: String?="Kontrola",
 ){
 
 
@@ -207,6 +208,28 @@ data class Termin(
             throw NullPointerException("Status ne moze biti null")
         this.status=status
     }
+    /**
+     * Funkcija za vracanje opisa
+     * @return String
+     */
+    fun getDescription(): String?{
+        return this.description
+    }
+
+    /**
+     * Funkcija za postavljanje opisa termina
+     * @param description opis pregleda koji treba postaviti
+     * @throws NullPointerException Ako je prosledjeni argument null
+     * @throws IllegalArgumentException Ako je prosledjeni argument prazan
+     */
+    fun setDescription(description: String?){
+        if(description==null)
+            throw NullPointerException("Opis ne moze biti null")
+        if (description.isEmpty())
+            throw IllegalArgumentException("Opis ne moze biti pre poetka")
+        this.description=description
+    }
+
 
     /**
      * Metoda koja pretvara objekat klase [com.example.domain.Termin]
