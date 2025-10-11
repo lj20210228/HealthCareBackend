@@ -1,6 +1,7 @@
 package com.example.routes
 
 import com.example.repository.auth.AuthRepository
+import com.example.request.LoginRequest
 import com.example.request.RegisterRequest
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
@@ -28,9 +29,9 @@ fun Routing.authRoutes(service: AuthRepository){
     post("/login") {
         try {
 
-            val params = call.receive<String, String>()
+            val params = call.receive<LoginRequest>()
             println(params)
-            val response = service.registerUser(params)
+            val response = service.loginUser(params)
             call.respond(status = HttpStatusCode.fromValue(response.statusCode), response)
         } catch (e: Exception) {
             e.printStackTrace()
