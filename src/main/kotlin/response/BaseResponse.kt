@@ -11,7 +11,6 @@ import kotlinx.serialization.Serializable
  * @param T tip podataka koji se vraca u odgovoru
  * @property statusCode HTTP status kod koji opisuje rezultat operacije
  */
-
 @Serializable
 sealed class BaseResponse< T>(
     open val statusCode: Int= HttpStatusCode.OK.value
@@ -23,7 +22,6 @@ sealed class BaseResponse< T>(
      * @property data Podaci vraćeni od strane API-ja (mogu biti `null`).
      * @property message Opciona poruka (npr. "Uspešno kreiran korisnik").
      */
-
     @Serializable
     @SerialName("success")
     data class SuccessResponse<T>(
@@ -41,6 +39,7 @@ sealed class BaseResponse< T>(
 
     @Serializable
     @SerialName("error")
+
     data class ErrorResponse<T>(
         val exception: String?= null,
         val message: String? = null,

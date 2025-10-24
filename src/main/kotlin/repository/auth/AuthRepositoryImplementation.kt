@@ -77,8 +77,9 @@ class AuthRepositoryImplementation(val userService: UserRepository,val doctorSer
                 }
 
             }
+            return BaseResponse.ErrorResponse("Ne mozete da se registrujete jer niste ni lekar ni pacijent")
+
         }
-        return BaseResponse.ErrorResponse("Ne mozete da se registrujete jer niste ni lekar ni pacijent")
     }
 
     override suspend fun loginUser(loginRequest: LoginRequest?): BaseResponse<RegisterResponse> {

@@ -51,11 +51,7 @@ fun Application.configureSerialization() {
                             actualClass = RegisterResponse::class,
                             actualSerializer = RegisterResponse.serializer()
                         )
-                        polymorphic(
-                            Any::class,
-                            actualClass = RegisterRequest::class,
-                            actualSerializer = RegisterRequest.serializer()
-                        )
+
                         polymorphic(
                             Any::class,
                             actualClass = RegisterRequest::class,

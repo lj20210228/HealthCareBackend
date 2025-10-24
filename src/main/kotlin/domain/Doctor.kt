@@ -272,7 +272,7 @@ data class Doctor(
         other as Doctor
 
         return id==other.id ||userId==other.userId||(specialization==other.specialization&&maxPatients==other.maxPatients
-                &&hospitalId==other.hospitalId||fullName==other.fullName||isGeneral==other.isGeneral)
+                &&hospitalId==other.hospitalId&&fullName==other.fullName&&isGeneral==other.isGeneral)
     }
     /**
      * Generiše hash kod za [Doctor] objekat.
