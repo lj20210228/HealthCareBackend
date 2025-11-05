@@ -27,6 +27,14 @@ interface DoctorServiceInterface {
      */
     suspend fun getDoctorForId(doctorId: String?): Doctor?
     /**
+     * Funkcija koja pronalazi podatke o lekaru na osnovu njegovog userId
+     * @param userId Id lekara kog treba pronaci
+     * @throws NullPointerException Ukoliko je doctorId null baca se izuzetak
+     * @throws IllegalArgumentException Ukoliko je doctorId prazan string
+     * @return [Doctor] Ukoliko se pronadju podaci o lekaru vracaju se, ukoliko ne vraca se null vrednost
+     */
+    suspend fun getDoctorForUserId(userId: String?): Doctor?
+    /**
      * Funkcija koja pronalazi podatke o lekarima jedne bolnice
      * @param hospitalId Id bolnice cije lekare treba pronaci
      * @throws NullPointerException Ukoliko je [hospitalId] null baca se izuzetak

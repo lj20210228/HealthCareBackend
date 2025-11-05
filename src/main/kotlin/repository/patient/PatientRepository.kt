@@ -30,6 +30,13 @@ interface PatientRepository {
      */
     suspend fun getPatientById(patientId: String?): BaseResponse<Patient>
     /**
+     * Funkcija za slanje zahteva servisnom sloju za pronalazak pacijenta po njegovom userId
+     * @param userId User id pacijenta
+     * @return  Ako je pacijent pronadjen vraca se objekat [BaseResponse<Patient>] koji sadrzi podatke o njemu i poruku da je pronadjen
+     * , ili poruku o neuspesnosti
+     */
+    suspend fun getPatientByUserId(userId: String?): BaseResponse<Patient>
+    /**
      * Funkcija  za slanje zahteva za pronalazak pacijenta za pronalazak pacijenta po njegovom JMBG
      * @param jmbg JMBG pacijenta
      * @return  Ako je pacijent pronadjen vraca se objekat [BaseResponse<Patient>] koji sadrzi podatke o njemu,

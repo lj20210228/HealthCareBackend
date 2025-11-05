@@ -27,6 +27,12 @@ interface DoctorRepository {
      */
     suspend fun getDoctorForId(doctorId: String?): BaseResponse<Doctor>
     /**
+     * Funkcija koja prosledjuje servisnom sloju zahtev za pronalazenje lekara
+     * @param userId Id lekara kog treba pronaci
+     * @return [BaseResponse<Doctor>] Ukoliko se pronadju podaci o lekaru vracaju se sa porukom da je uspesno ili odgovor da nije pronadjeno,
+     */
+    suspend fun getDoctorForUserId(userId: String?): BaseResponse<Doctor>
+    /**
      * Funkcija koja salje servisnom sloju zahtev za podatke o lekarima
      * @param hospitalId Id bolnice cije lekare treba pronaci
      * @return [ListResponse[Doctor]] Ukoliko se pronadju podaci o lekarima vracaju se, ukoliko ne vraca se prazna lista,

@@ -38,6 +38,17 @@ class PatientRepositoryImplementation(val service: PatientServiceInterface
         return BaseResponse.SuccessResponse(data = patient,"Pacijent uspesno pronadjen")
     }
 
+    override suspend fun getPatientByUserId(userId: String?): BaseResponse<Patient> {
+        if(userId==null){
+            return BaseResponse.ErrorResponse(message = "Nisu uneti ispravni podaci za pronalazenje pacijenta")
+
+        }
+        val patient=service.getPatientByUserId(userId)
+        if(patient==null)
+            return BaseResponse.ErrorResponse(message = "Pacijent nije pronadjen")
+        return BaseResponse.SuccessResponse(data = patient,"Pacijent uspesno pronadjen")
+    }
+
     override suspend fun getPatientByJmbg(jmbg: String?): BaseResponse<Patient> {
         if(jmbg==null){
             return BaseResponse.ErrorResponse(message = "Nisu uneti ispravni podaci za pronalazenje pacijenta")

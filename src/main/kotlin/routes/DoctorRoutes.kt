@@ -22,6 +22,12 @@ fun Route.doctorRoutes( doctorRepository: DoctorRepository){
         call.respond(status = HttpStatusCode.fromValue(doctor.statusCode),doctor)
 
     }
+    get("/doctor/userId/{userId}") {
+        val userId=call.parameters["userId"]
+        val doctor=doctorRepository.getDoctorForUserId(userId)
+        call.respond(status = HttpStatusCode.fromValue(doctor.statusCode),doctor)
+
+    }
     get("/doctor/hospital/{hospitalId}") {
         val id=call.parameters["hospitalId"]
         val doctors=doctorRepository.getAllDoctorsInHospital(id)

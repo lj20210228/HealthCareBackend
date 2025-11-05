@@ -83,6 +83,20 @@ class DoctorServiceImplementation: DoctorServiceInterface {
 
     }
 
+    override suspend fun getDoctorForUserId(userId: String?): Doctor? {
+        if(userId==null)
+            throw NullPointerException("Id lekara ne sme biti null")
+        if(userId.isEmpty())
+            throw IllegalArgumentException("Id lekara ne sme biti prazan string")
+
+
+        return DatabaseFactory.dbQuery {
+            DoctorTable.selectAll().where(DoctorTable.userId eq UUID.fromString(userId))
+                .mapNotNull { rowToDoctor(it) }.firstOrNull()
+
+        }
+    }
+
     /**
      * Pronalazi sve lekare u jednoj bolnici
      * @see Doctor

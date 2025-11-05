@@ -1,5 +1,6 @@
 package com.example.repository.auth
 
+import com.example.domain.Doctor
 import com.example.domain.Patient
 import com.example.domain.Role
 import com.example.domain.SelectedDoctor
@@ -91,6 +92,14 @@ class AuthRepositoryImplementation(val userService: UserRepository,val doctorSer
         val userGet=(user as BaseResponse.SuccessResponse).data
         println("Baza: '${userGet?.getPassword()}'")
         println("Hash inputa: '${hashPassword(loginRequest.password)}'")
+        var patient: Patient?=null
+        if (userGet?.getRole()== Role.ROLE_PATIENT){
+            patient=(patientService.getPatientByUserId(userGet.getId()) as BaseResponse.SuccessResponse).data
+        }
+        var doctor: Doctor?=null
+        if (userGet?.getRole()== Role.ROLE_DOCTOR){
+            doctor=(doctorService.getDoctorForUserId(userGet.getId()) as BaseResponse.SuccessResponse).data
+        }
         if (!verifyPassword(loginRequest.password, userGet?.getPassword()!!)) {
             return BaseResponse.ErrorResponse(message = "Neispravna lozinka")
         }
@@ -98,7 +107,9 @@ class AuthRepositoryImplementation(val userService: UserRepository,val doctorSer
         return BaseResponse.SuccessResponse(
             data = RegisterResponse(
                 user=userGet,
-                token=token
+                token=token,
+                patient = patient,
+                doctor = doctor
             ), message = "Uspesno ste se ulogovali"
         )
 

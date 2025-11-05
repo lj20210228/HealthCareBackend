@@ -29,6 +29,15 @@ interface PatientServiceInterface {
      */
     suspend fun getPatientById(patientId: String?): Patient?
     /**
+     * Funkcija za pronalazak pacijenta po userId
+     * @param  userId User id pacijenta
+     * @return  Ako je pacijent pronadjen vraca se objekat [Patient] koji sadrzi podatke o njemu,
+     * ukoliko pacijent nije pronadjen vraca se null
+     * @throws NullPointerException ako je [patientId] null
+     * @throws IllegalArgumentException ako je [patientId] prazan string
+     */
+    suspend fun getPatientByUserId(userId: String?): Patient?
+    /**
      * Funkcija za pronalazak pacijenta po njegovom JMBG
      * @param jmbg JMBG pacijenta
      * @return  Ako je pacijent pronadjen vraca se objekat [Patient] koji sadrzi podatke o njemu,

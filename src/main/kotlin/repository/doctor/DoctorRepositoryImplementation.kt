@@ -46,6 +46,17 @@ class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
         return BaseResponse.SuccessResponse(data = doctor,"Lekar je uspesno pronadjen")
     }
 
+    override suspend fun getDoctorForUserId(userId: String?): BaseResponse<Doctor> {
+        if (userId==null){
+            return BaseResponse.ErrorResponse(message = "Niste uneli ispravne podatke o lekaru")
+        }
+        val doctor=service.getDoctorForId(userId)
+        if (doctor==null){
+            return BaseResponse.ErrorResponse(message = "Lekar sa tim userId ne postoji")
+        }
+        return BaseResponse.SuccessResponse(data = doctor,"Lekar je uspesno pronadjen")
+    }
+
     override suspend fun getAllDoctorsInHospital(hospitalId: String?): ListResponse<Doctor> {
         if (hospitalId==null){
             return ListResponse.ErrorResponse(message = "Nisu uneti ispravni podaci o bolnici")

@@ -67,6 +67,22 @@ class PatientServiceImplementation: PatientServiceInterface {
 
     }
 
+    override suspend fun getPatientByUserId(userId: String?): Patient? {
+        if (userId==null)
+            throw NullPointerException("Prosledjeni patientId jendak je null")
+        if(userId.isEmpty()){
+            throw IllegalArgumentException("Id pacijenta ne moze biti null")
+
+        }
+        return rowToPatient(DatabaseFactory
+            .dbQuery {
+                PatientTable.selectAll().where{
+                    PatientTable.userId eq UUID.fromString(userId)
+                }.firstOrNull()
+            })
+
+    }
+
     /**
      * Funckija za pronalazenje pacijenta po jmbg
      */
