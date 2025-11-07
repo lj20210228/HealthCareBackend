@@ -3,9 +3,7 @@ package com.example.service.recipe
 import com.example.database.DatabaseFactory
 import com.example.database.RecipeTable
 import com.example.domain.Recipe
-import com.example.service.patient.PatientServiceInterface
-import kotlinx.serialization.json.Json
-import org.h2.api.H2Type.row
+
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
@@ -24,7 +22,7 @@ import java.util.UUID
  * @see RecipeServiceInterface
  * @see Recipe
  */
-class RecipeServiceImplementation(val patientService: PatientServiceInterface): RecipeServiceInterface {
+class RecipeServiceImplementation: RecipeServiceInterface {
 
 
     /**
