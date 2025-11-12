@@ -21,7 +21,7 @@ fun Route.terminRoutes(repository: TerminRepository){
         call.respond(status = HttpStatusCode.fromValue(result.statusCode),result)
 
     }
-    put ("/termin/add") {
+    put ("/termin/edit") {
         val params=call.receive<Termin>()
         val result=repository.editTermin(params)
         call.respond(status = HttpStatusCode.fromValue(result.statusCode),result)
