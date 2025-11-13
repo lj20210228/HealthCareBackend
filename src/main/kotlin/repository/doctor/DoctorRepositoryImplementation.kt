@@ -50,7 +50,7 @@ class DoctorRepositoryImplementation(val service: DoctorServiceInterface,
         if (userId==null){
             return BaseResponse.ErrorResponse(message = "Niste uneli ispravne podatke o lekaru")
         }
-        val doctor=service.getDoctorForId(userId)
+        val doctor=service.getDoctorForUserId(userId)
         if (doctor==null){
             return BaseResponse.ErrorResponse(message = "Lekar sa tim userId ne postoji")
         }

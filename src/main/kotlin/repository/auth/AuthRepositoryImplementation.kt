@@ -84,35 +84,53 @@ class AuthRepositoryImplementation(val userService: UserRepository,val doctorSer
     }
 
     override suspend fun loginUser(loginRequest: LoginRequest?): BaseResponse<RegisterResponse> {
-        if (loginRequest==null)
-            return  BaseResponse.ErrorResponse( message = "Email i lozinka ne smeju biti prazni")
-        val user=userService.getUserByEmail(loginRequest.email)
-        if (user is BaseResponse.ErrorResponse)
-            return BaseResponse.ErrorResponse(message = "Neuspesno logovanje")
-        val userGet=(user as BaseResponse.SuccessResponse).data
-        println("Baza: '${userGet?.getPassword()}'")
-        println("Hash inputa: '${hashPassword(loginRequest.password)}'")
-        var patient: Patient?=null
-        if (userGet?.getRole()== Role.ROLE_PATIENT){
-            patient=(patientService.getPatientByUserId(userGet.getId()) as BaseResponse.SuccessResponse).data
-        }
-        var doctor: Doctor?=null
-        if (userGet?.getRole()== Role.ROLE_DOCTOR){
-            doctor=(doctorService.getDoctorForUserId(userGet.getId()) as BaseResponse.SuccessResponse).data
-        }
-        if (!verifyPassword(loginRequest.password, userGet?.getPassword()!!)) {
+        if (loginRequest == null)
+            return BaseResponse.ErrorResponse(message = "Email i lozinka ne smeju biti prazni")
+
+        val userResponse = userService.getUserByEmail(loginRequest.email)
+        if (userResponse is BaseResponse.ErrorResponse)
+            return BaseResponse.ErrorResponse(message = userResponse.message ?: "Neuspešno logovanje")
+
+        val userGet = (userResponse as BaseResponse.SuccessResponse).data
+            ?: return BaseResponse.ErrorResponse(message = "Korisnik nije pronađen")
+
+        println("Baza hash: '${userGet.getPassword()}'")
+        println("Input hash '${hashPassword(loginRequest.password)}'")
+        println("Input lozinka: '${loginRequest.password}'")
+
+        if (!verifyPassword(loginRequest.password, userGet.getPassword())) {
             return BaseResponse.ErrorResponse(message = "Neispravna lozinka")
         }
-        val token=jwtConfig.createAccessToken(userGet?.getId()!!)
+
+        var patient: Patient? = null
+        if (userGet.getRole() == Role.ROLE_PATIENT) {
+            when (val patientResponse = patientService.getPatientByUserId(userGet.getId())) {
+                is BaseResponse.SuccessResponse -> patient = patientResponse.data
+                is BaseResponse.ErrorResponse -> return BaseResponse.ErrorResponse(message = patientResponse.message)
+                null -> return BaseResponse.ErrorResponse(message = "Greška pri učitavanju pacijenta")
+            }
+        }
+
+        var doctor: Doctor? = null
+        if (userGet.getRole() == Role.ROLE_DOCTOR) {
+            when (val doctorResponse = doctorService.getDoctorForUserId(userGet.getId())) {
+                is BaseResponse.SuccessResponse -> doctor = doctorResponse.data
+                is BaseResponse.ErrorResponse -> return BaseResponse.ErrorResponse(message = doctorResponse.message)
+                null -> return BaseResponse.ErrorResponse(message = "Greška pri učitavanju lekara")
+            }
+        }
+
+        val token = jwtConfig.createAccessToken(userGet.getId()!!)
+
         return BaseResponse.SuccessResponse(
             data = RegisterResponse(
-                user=userGet,
-                token=token,
+                user = userGet,
+                token = token,
                 patient = patient,
                 doctor = doctor
-            ), message = "Uspesno ste se ulogovali"
+            ),
+            message = "Uspešno ste se ulogovali"
         )
-
-
     }
+
 }
