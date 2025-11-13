@@ -2,10 +2,15 @@ package com.example
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.example.domain.Chat
 import com.example.domain.Doctor
 import com.example.domain.Hospital
+import com.example.domain.Message
 import com.example.domain.Patient
+import com.example.domain.Recipe
+import com.example.domain.Termin
 import com.example.domain.User
+import com.example.domain.WorkTime
 import com.example.request.RegisterRequest
 import com.example.response.BaseResponse
 import com.example.response.ListResponse
@@ -77,6 +82,35 @@ fun Application.configureSerialization() {
                             actualClass = Patient::class,
                             actualSerializer = Patient.serializer()
                         )
+                        polymorphic(
+                            Any::class,
+                            actualClass = WorkTime::class,
+                            actualSerializer = WorkTime.serializer()
+                        )
+                        polymorphic(
+                            Any::class,
+                            actualClass = Recipe::class,
+                            actualSerializer = Recipe.serializer()
+                        )
+                        polymorphic(
+                            Any::class,
+                            actualClass = Message::class,
+                            actualSerializer = Message.serializer()
+                        )
+                        polymorphic(
+                            Any::class,
+                            actualClass = Chat::class,
+                            actualSerializer = Chat.serializer()
+                        )
+                        polymorphic(
+                            Any::class,
+                            actualClass = Termin::class,
+                            actualSerializer = Termin.serializer()
+                        )
+
+
+
+
 
 
 

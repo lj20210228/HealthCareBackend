@@ -26,7 +26,7 @@ data class Termin(
     @Serializable(with= StrictLocalTimeSerializer::class)
     private var endTime: LocalTime=startTime.plusHours(1),
     private var hospitalId: String,
-    private var status: TerminStatus= TerminStatus.PENDING,
+    private var status: TerminStatus= TerminStatus.ON_HOLD,
     private var description: String?="Kontrola",
 ){
 
